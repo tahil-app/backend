@@ -1,0 +1,12 @@
+﻿global using Tahil.Domain.Services;
+global using Microsoft.Extensions.Configuration;
+global using Tahil.Common.Contracts;
+global using Tahil.Common.Queries;
+global using Tahil.Domain.Dtos;
+global using Tahil.Common.Exceptions;
+global using Tahil.Common.Helpers;
+global using Tahil.Domain.Enums;
+global using Tahil.Common.Commands;
+global using FluentValidation;
+global using Tahil.Domain.Repositories;
+global using Mapster;

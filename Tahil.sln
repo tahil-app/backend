@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.API", "Tahil.API\Tahil.API.csproj", "{9D0496CC-718B-4869-AC77-75D88F796C44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.Application", "Tahil.Application\Tahil.Application.csproj", "{FC13EC2E-EC9B-4AEF-A39E-AD6DB298EE06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.Infrastructure", "Tahil.Infrastructure\Tahil.Infrastructure.csproj", "{8E972CDD-A7C4-4680-9980-93D88875949D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.Domain", "Tahil.Domain\Tahil.Domain.csproj", "{25B1EE9E-EB03-4039-8B0A-8785784D9100}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.Common", "Tahil.Common\Tahil.Common.csproj", "{796E4FCF-820A-4FA0-B5EE-D4CFF360F010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tahil.EmailSender", "Tahil.EmailSender\Tahil.EmailSender.csproj", "{AC0ECE77-86DE-4B14-9AA0-6B4FFA126141}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D0496CC-718B-4869-AC77-75D88F796C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0496CC-718B-4869-AC77-75D88F796C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0496CC-718B-4869-AC77-75D88F796C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0496CC-718B-4869-AC77-75D88F796C44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC13EC2E-EC9B-4AEF-A39E-AD6DB298EE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC13EC2E-EC9B-4AEF-A39E-AD6DB298EE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC13EC2E-EC9B-4AEF-A39E-AD6DB298EE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC13EC2E-EC9B-4AEF-A39E-AD6DB298EE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E972CDD-A7C4-4680-9980-93D88875949D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E972CDD-A7C4-4680-9980-93D88875949D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E972CDD-A7C4-4680-9980-93D88875949D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E972CDD-A7C4-4680-9980-93D88875949D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25B1EE9E-EB03-4039-8B0A-8785784D9100}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25B1EE9E-EB03-4039-8B0A-8785784D9100}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25B1EE9E-EB03-4039-8B0A-8785784D9100}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25B1EE9E-EB03-4039-8B0A-8785784D9100}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796E4FCF-820A-4FA0-B5EE-D4CFF360F010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796E4FCF-820A-4FA0-B5EE-D4CFF360F010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796E4FCF-820A-4FA0-B5EE-D4CFF360F010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796E4FCF-820A-4FA0-B5EE-D4CFF360F010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC0ECE77-86DE-4B14-9AA0-6B4FFA126141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC0ECE77-86DE-4B14-9AA0-6B4FFA126141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC0ECE77-86DE-4B14-9AA0-6B4FFA126141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC0ECE77-86DE-4B14-9AA0-6B4FFA126141}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {802EB903-CE3F-4C0E-BF1C-5158BB2207DB}
+	EndGlobalSection
+EndGlobal

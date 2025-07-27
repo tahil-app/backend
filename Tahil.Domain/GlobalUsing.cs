@@ -1,0 +1,8 @@
+﻿global using Tahil.Domain.ValueObjects;
+global using Tahil.Domain.Entities;
+global using System.Linq.Expressions;
+global using Tahil.Domain.Repositories;
+global using Tahil.Domain.Services;
+global using Tahil.Domain.Enums;
+global using Tahil.Domain.Dtos;
+global using Tahil.Common.Contracts;
