@@ -1,24 +1,17 @@
 *.swp
 *.*~
+*.dbmdl
+*.jfm
 project.lock.json
 .DS_Store
 *.pyc
 nupkg/
 
 # Visual Studio Code
-.vscode/
+.vscode
 
 # Rider
-.idea/
-
-# Visual Studio
-.vs/
-
-# Fleet
-.fleet/
-
-# Code Rush
-.cr/
+.idea
 
 # User-specific files
 *.suo
@@ -41,6 +34,10 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
-logs
-/AIP.Infrastructure/.filenesting.json
-.cursor
+[Ll]ogs/
+**/wwwroot/attachments/
+Images
+**/Images
+
+# Visual Studio 2015
+.vs/

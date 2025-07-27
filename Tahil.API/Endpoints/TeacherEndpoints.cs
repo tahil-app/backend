@@ -1,5 +1,4 @@
 ﻿using Tahil.Application.Teachers.Commands;
-using Tahil.Application.Teachers.Models;
 using Tahil.Application.Teachers.Queries;
 using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;
@@ -18,7 +17,7 @@ public class TeacherEndpoints : ICarterModule
             return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
-        teachers.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
+        teachers.MapPost("/paged", async ([FromBody] QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetTeachersPagedQuery(queryParams));
             return Results.Ok(result);
@@ -38,27 +37,32 @@ public class TeacherEndpoints : ICarterModule
 
         teachers.MapPut("/activate/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
-            var user = await mediator.Send(new ActivateTeacherCommand(id));
-            return Results.Ok(user);
+            var result = await mediator.Send(new ActivateTeacherCommand(id));
+            return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
         teachers.MapPut("/deactivate/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
-            var user = await mediator.Send(new DeActivateTeacherCommand(id));
-            return Results.Ok(user);
+            var result = await mediator.Send(new DeActivateTeacherCommand(id));
+            return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
-        teachers.MapPost("/upload-attachment", async (HttpRequest request, TeacherAttachmentModel model, [FromServices] IMediator mediator) =>
+        teachers.MapPost("/upload-attachment/{id:int}", async (int id,[FromQuery] string title, HttpRequest request, [FromServices] IMediator mediator) =>
         {
             var form = await request.ReadFormAsync();
-            model.File = form.Files.FirstOrDefault()!;
+            var file = form.Files.FirstOrDefault()!;
 
-            if (model.File == null || model.File.Length == 0)
+            if (file == null || file.Length == 0)
                 return Results.BadRequest("No file uploaded.");
 
-            var user = await mediator.Send(new UploadTeacherAttachmetCommand(model));
-            return Results.Ok(user);
+            var result = await mediator.Send(new UploadTeacherAttachmetCommand(id, title, file));
+            return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
+        teachers.MapDelete("/delete-attachment/{attachmentId:int}", async (int attachmentId, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new DeleteTeacherAttachmentCommand(attachmentId));
+            return Results.Ok(result);
+        });//.RequireAuthorization(Policies.AdminOnly);
     }
 }

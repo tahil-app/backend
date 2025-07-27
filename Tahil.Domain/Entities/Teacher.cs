@@ -1,4 +1,7 @@
-﻿namespace Tahil.Domain.Entities;
+﻿using MediatR;
+using Tahil.Common.Exceptions;
+
+namespace Tahil.Domain.Entities;
 
 public class Teacher : Base
 {
@@ -29,17 +32,20 @@ public class Teacher : Base
         Qualification = teacherDto.Qualification;
     }
 
-    public void AddTeacherAttachment(Attachment attachment) 
+    public void AddAttachment(Attachment attachment) 
     {
         TeacherAttachments.Add(new TeacherAttachment 
         {
-            AttachmentId = attachment.Id,
+            Attachment = attachment,
             TeacherId = Id
         });
     }
-    public void RemoveTeacherAttachment(Attachment attachment) 
+    public void RemoveTeacherAttachment(int attachmentId) 
     {
-        var deletedAttach = TeacherAttachments.FirstOrDefault(r => r.AttachmentId == attachment.Id);
-        TeacherAttachments.Remove(deletedAttach!);
+        var deletedTeacherAttach = TeacherAttachments.FirstOrDefault(r => r.AttachmentId == attachmentId);
+        if (deletedTeacherAttach is null)
+            throw new NotFoundException("Attachment");
+
+        TeacherAttachments.Remove(deletedTeacherAttach!);
     }
 }

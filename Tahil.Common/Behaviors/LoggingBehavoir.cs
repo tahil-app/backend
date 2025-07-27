@@ -54,7 +54,7 @@ public class LoggingBehavoir<TRequest, TResponse>
             var propValue = prop.GetValue(obj);
             var propName = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
 
-            if (propName == "FormFile")
+            if (propName == "FormFile" || propName == "File")
             {
                 continue;
             }

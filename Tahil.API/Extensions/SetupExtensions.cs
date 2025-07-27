@@ -61,7 +61,7 @@ public static class SetupExtensions
         services.AddHttpContextAccessor();
         services.AddScoped<IConfigService, ConfigService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IAttachmentService, AttachmentService>();
+        services.AddScoped<IUploadService, UploadService>();
         services.AddScoped<IApplicationContext, ApplicationContext>();
 
         return services;
