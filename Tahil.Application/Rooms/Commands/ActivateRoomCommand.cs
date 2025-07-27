@@ -14,6 +14,6 @@ public class ActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository 
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

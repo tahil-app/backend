@@ -9,6 +9,6 @@ public class GetRoomsPagedQueryHandler(IRoomRepository roomRepository) : IQueryH
         var rooms = await roomRepository.GetPagedAsync(request.QueryParams);
         var pagedRooms = rooms.Adapt<PagedList<RoomDto>>();
 
-        return Result<PagedList<RoomDto>>.Success(pagedRooms);
+        return Result.Success(pagedRooms);
     }
 }

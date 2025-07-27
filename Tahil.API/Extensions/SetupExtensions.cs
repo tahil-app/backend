@@ -51,14 +51,18 @@ public static class SetupExtensions
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<ITeacherRepository, TeacherRepository>();
+        services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 
         return services;
     }
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
         services.AddScoped<IConfigService, ConfigService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAttachmentService, AttachmentService>();
+        services.AddScoped<IApplicationContext, ApplicationContext>();
 
         return services;
     }

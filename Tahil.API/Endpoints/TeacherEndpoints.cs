@@ -1,4 +1,5 @@
 ﻿using Tahil.Application.Teachers.Commands;
+using Tahil.Application.Teachers.Models;
 using Tahil.Application.Teachers.Queries;
 using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;
@@ -46,5 +47,18 @@ public class TeacherEndpoints : ICarterModule
             var user = await mediator.Send(new DeActivateTeacherCommand(id));
             return Results.Ok(user);
         });//.RequireAuthorization(Policies.AdminOnly);
+
+        teachers.MapPost("/upload-attachment", async (HttpRequest request, TeacherAttachmentModel model, [FromServices] IMediator mediator) =>
+        {
+            var form = await request.ReadFormAsync();
+            model.File = form.Files.FirstOrDefault()!;
+
+            if (model.File == null || model.File.Length == 0)
+                return Results.BadRequest("No file uploaded.");
+
+            var user = await mediator.Send(new UploadTeacherAttachmetCommand(model));
+            return Results.Ok(user);
+        });//.RequireAuthorization(Policies.AdminOnly);
+
     }
 }

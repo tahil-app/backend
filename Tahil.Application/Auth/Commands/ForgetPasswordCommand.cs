@@ -21,6 +21,6 @@ public class ForgetPasswordCommandHandler(IEmailSenderService emailSenderService
 
         var result = await emailSenderService.SendEmailAsync(request.Email, "Reset your password", parsedHtml);
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

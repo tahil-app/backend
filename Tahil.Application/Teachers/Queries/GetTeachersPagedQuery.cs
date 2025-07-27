@@ -9,6 +9,6 @@ public class GetTeachersPagedQueryHandler(ITeacherRepository teacherRepository) 
         var teachers = await teacherRepository.GetPagedAsync(request.QueryParams);
         var pagedTeachers = teachers.Adapt<PagedList<TeacherDto>>();
 
-        return Result<PagedList<TeacherDto>>.Success(pagedTeachers);
+        return Result.Success(pagedTeachers);
     }
 }

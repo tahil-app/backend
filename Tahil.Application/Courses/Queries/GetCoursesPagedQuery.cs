@@ -9,6 +9,6 @@ public class GetCoursesPagedQueryHandler(ICourseRepository courseRepository) : I
         var courses = await courseRepository.GetPagedAsync(request.QueryParams);
         var pagedCourses = courses.Adapt<PagedList<CourseDto>>();
 
-        return Result<PagedList<CourseDto>>.Success(pagedCourses);
+        return Result.Success(pagedCourses);
     }
 }

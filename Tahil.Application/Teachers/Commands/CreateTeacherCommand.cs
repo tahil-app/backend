@@ -16,6 +16,6 @@ public class CreateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherReposit
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

@@ -14,6 +14,6 @@ public class DeActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepositor
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

@@ -14,6 +14,6 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository ro
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(true);
+        return Result.Success(true);
     }
 }

@@ -14,6 +14,6 @@ public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepositor
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(true);
+        return Result.Success(true);
     }
 }

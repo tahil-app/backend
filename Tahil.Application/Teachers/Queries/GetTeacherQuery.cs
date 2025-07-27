@@ -9,6 +9,6 @@ public class GetTeacherQueryHandler(ITeacherRepository teacherRepository) : IQue
         var teacher = await teacherRepository.GetAsync(r => r.Id == request.Id);
         var teacherDto = teacher.Adapt<TeacherDto>();
 
-        return Result<TeacherDto>.Success(teacherDto);
+        return Result.Success(teacherDto);
     }
 }

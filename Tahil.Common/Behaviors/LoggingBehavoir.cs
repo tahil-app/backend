@@ -54,6 +54,11 @@ public class LoggingBehavoir<TRequest, TResponse>
             var propValue = prop.GetValue(obj);
             var propName = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
 
+            if (propName == "FormFile")
+            {
+                continue;
+            }
+
             if (prop.GetCustomAttribute<IgnoreLogging>() != null)
             {
                 result[propName] = "***REDACTED***";

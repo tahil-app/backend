@@ -19,6 +19,6 @@ public class LoginQueryHandler(ITeacherRepository userRepository, ITokenService 
         //authModel.Token = tokenService.GenerateToken(user);
         //authModel.RefreshToken = tokenService.GenerateRefreshToken();
 
-        return Result<LoginResult>.Success(default);
+        return Result.Success(new LoginResult());
     }
 }

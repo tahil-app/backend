@@ -14,6 +14,6 @@ public class DeActivateCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepos
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

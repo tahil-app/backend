@@ -34,3 +34,10 @@ public class Result<T>
             : Result<TNew>.Failure(Error);
     }
 }
+
+public static class Result
+{
+    public static Result<T> Success<T>(T value) => Result<T>.Success(value);
+    public static Result<T> Failure<T>(string error) => Result<T>.Failure(error);
+    public static Result<T> Failure<T>(IEnumerable<string> errors) => Result<T>.Invalid(errors.ToList());
+}

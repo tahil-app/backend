@@ -2,6 +2,7 @@
 
 public enum UserRole
 {
+    None,
     Admin,
     Employee,
     Teacher,

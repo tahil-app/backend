@@ -15,6 +15,6 @@ public class SignupCommandHandler(IUnitOfWork unitOfWork, ITeacherRepository use
         
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }

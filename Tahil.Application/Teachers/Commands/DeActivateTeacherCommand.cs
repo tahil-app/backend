@@ -14,6 +14,6 @@ public class DeActivateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherRep
 
         var result = await unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(result);
+        return Result.Success(result);
     }
 }
