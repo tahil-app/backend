@@ -13,6 +13,7 @@ public class User: Base
     public DateOnly JoinedDate { get; set; }
     public DateOnly BirthDate { get; set; }
     public bool IsActive { get; set; }
+    public string? ImagePath { get; set; }
 
     public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
 
@@ -39,6 +40,11 @@ public class User: Base
         BirthDate = userDto.BirthDate;
 
         Validate();
+    }
+
+    public void ChangeImage(string imagePath) 
+    {
+        ImagePath = imagePath;
     }
 
     public void UpdatePassword(string password) 

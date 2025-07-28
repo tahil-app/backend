@@ -31,6 +31,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(p => p.BirthDate)
             .HasColumnName("birth_date");
 
+        builder.Property(p => p.ImagePath)
+            .HasColumnName("image_path");
+
         builder.OwnsOne(p => p.Email, emailBuilder =>
         {
             emailBuilder.Property(p => p.Value)

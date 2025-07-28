@@ -25,6 +25,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                 Role = r.User.Role,
                 Experience = r.Experience,
                 Qualification = r.Qualification,
+                ImagePath = r.User.ImagePath,
                 Attachments = r.TeacherAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,

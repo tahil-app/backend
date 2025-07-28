@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tahil.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Tahil.Infrastructure.Data;
 namespace Tahil.Infrastructure.Migrations
 {
     [DbContext(typeof(BEContext))]
-    partial class BEContextModelSnapshot : ModelSnapshot
+    [Migration("20250728175154_addUserImage")]
+    partial class addUserImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,8 +182,7 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnName("gender");
 
                     b.Property<string>("ImagePath")
-                        .HasColumnType("text")
-                        .HasColumnName("image_path");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")

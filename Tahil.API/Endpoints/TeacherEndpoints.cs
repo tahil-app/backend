@@ -62,5 +62,14 @@ public class TeacherEndpoints : ICarterModule
             var result = await mediator.Send(new DeleteTeacherAttachmentCommand(attachmentId));
             return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
+
+        teachers.MapPost("/upload-image", async ([FromForm] UserAttachmentModel model, [FromServices] IMediator mediator) =>
+        {
+            if (model.File == null || model.File.Length == 0)
+                return Results.BadRequest("No file uploaded.");
+
+            var result = await mediator.Send(new UploadTeacherImageCommand(model));
+            return Results.Ok(true);
+        }).DisableAntiforgery(); //.RequireAuthorization(Policies.AdminOnly);
     }
 }
