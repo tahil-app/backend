@@ -5,3 +5,4 @@ global using Carter;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
 global using Tahil.Domain.Consts;
+global using Tahil.Application.Models;

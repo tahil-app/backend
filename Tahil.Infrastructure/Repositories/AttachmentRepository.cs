@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using Tahil.Common.Exceptions;
 using Tahil.Domain.Dtos;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -22,9 +23,12 @@ public class AttachmentRepository : Repository<Attachment>, IAttachmentRepositor
 
     public async Task<Attachment> RemoveAttachment(int attachmentId) 
     {
-        var deletedAttach = await GetAsync(r => r.Id == attachmentId);
-        HardDelete(deletedAttach!);
+        var attachment = await GetAsync(r => r.Id == attachmentId);
+        if (attachment is null)
+            throw new NotFoundException("Attachment");
 
-        return deletedAttach;
+        HardDelete(attachment!);
+
+        return attachment;
     }
 }

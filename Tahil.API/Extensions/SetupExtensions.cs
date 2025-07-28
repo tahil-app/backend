@@ -62,6 +62,7 @@ public static class SetupExtensions
         services.AddScoped<IConfigService, ConfigService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUploadService, UploadService>();
+        services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IApplicationContext, ApplicationContext>();
 
         return services;

@@ -2,34 +2,35 @@
 
 public class UploadService: IUploadService
 {
-    public async Task<string> UploadAsync(string path, Guid guid, string fileName, string extension, Stream stream)
+    public async Task<string> UploadAsync(string folderPath, Guid guid, string fileName, Stream stream)
     {
-        Directory.CreateDirectory(path); // Ensure directory exists
+        Directory.CreateDirectory(folderPath); // Ensure directory exists
 
-        string fullPath = Path.Combine(path, $"{fileName}-{guid}{extension}");
+        string guidFileName = $"{Path.GetFileNameWithoutExtension(fileName)}-{guid}{Path.GetExtension(fileName)}";
 
-        string directoryPath = Path.GetDirectoryName(fullPath)!;
+        string directoryPath = Path.GetDirectoryName(folderPath)!;
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
         }
 
-        using (var fileStream = new FileStream(fullPath, FileMode.Create))
+        string filePath = Path.Combine(folderPath, guidFileName);
+        using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
             await stream.CopyToAsync(fileStream);
         }
 
-        return fileName;
+        return guidFileName;
     }
 
-    public async Task<bool> DeleteAsync(string path)
+    public async Task<bool> DeleteAsync(string filePath)
     {
-        if (!File.Exists(path))
+        if (!File.Exists(filePath))
             return true;
 
         try
         {
-            await Task.Run(() => File.Delete(path));
+            await Task.Run(() => File.Delete(filePath));
             return true;
         }
         catch

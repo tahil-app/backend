@@ -1,4 +1,5 @@
-﻿using Tahil.Application.Teachers.Commands;
+﻿using Org.BouncyCastle.Asn1.Ocsp;
+using Tahil.Application.Teachers.Commands;
 using Tahil.Application.Teachers.Queries;
 using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;
@@ -47,17 +48,14 @@ public class TeacherEndpoints : ICarterModule
             return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
-        teachers.MapPost("/upload-attachment/{id:int}", async (int id,[FromQuery] string title, HttpRequest request, [FromServices] IMediator mediator) =>
+        teachers.MapPost("/upload-attachment", async ([FromForm] UserAttachmentModel model,[FromServices] IMediator mediator) =>
         {
-            var form = await request.ReadFormAsync();
-            var file = form.Files.FirstOrDefault()!;
-
-            if (file == null || file.Length == 0)
+            if (model.File == null || model.File.Length == 0)
                 return Results.BadRequest("No file uploaded.");
 
-            var result = await mediator.Send(new UploadTeacherAttachmetCommand(id, title, file));
-            return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+            var result = await mediator.Send(new UploadTeacherAttachmetCommand(model));
+            return Results.Ok(true);
+        }).DisableAntiforgery(); //.RequireAuthorization(Policies.AdminOnly);
 
         teachers.MapDelete("/delete-attachment/{attachmentId:int}", async (int attachmentId, [FromServices] IMediator mediator) =>
         {

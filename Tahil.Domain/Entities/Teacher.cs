@@ -32,12 +32,13 @@ public class Teacher : Base
         Qualification = teacherDto.Qualification;
     }
 
-    public void AddAttachment(Attachment attachment) 
+    public void AddAttachment(Attachment attachment, string displayName) 
     {
         TeacherAttachments.Add(new TeacherAttachment 
         {
             Attachment = attachment,
-            TeacherId = Id
+            TeacherId = Id,
+            DisplayName = displayName
         });
     }
     public void RemoveTeacherAttachment(int attachmentId) 

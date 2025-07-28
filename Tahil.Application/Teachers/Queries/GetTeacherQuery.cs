@@ -6,9 +6,7 @@ public class GetTeacherQueryHandler(ITeacherRepository teacherRepository) : IQue
 {
     public async Task<Result<TeacherDto>> Handle(GetTeacherQuery request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.Id == request.Id);
-        var teacherDto = teacher.Adapt<TeacherDto>();
-
+        var teacherDto = await teacherRepository.GetTeacherAsync(request.Id);
         return Result.Success(teacherDto);
     }
 }

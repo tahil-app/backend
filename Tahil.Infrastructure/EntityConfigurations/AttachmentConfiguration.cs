@@ -19,10 +19,6 @@ public class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
             .HasColumnName("file_size")
             .IsRequired();
 
-        builder.Property(p => p.FileId)
-            .HasColumnName("file_id")
-            .IsRequired();
-
         builder.Property(p => p.CreatedBy)
             .HasColumnName("created_by")
             .IsRequired();

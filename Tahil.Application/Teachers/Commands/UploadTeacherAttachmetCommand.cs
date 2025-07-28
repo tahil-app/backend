@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Org.BouncyCastle.Asn1.X509;
+﻿using Tahil.Application.Models;
 
 namespace Tahil.Application.Teachers.Commands;
 
-public record UploadTeacherAttachmetCommand(int TeacherId, string Title, IFormFile File) : ICommand<Result<bool>>;
+public record UploadTeacherAttachmetCommand(UserAttachmentModel AttachmentModel) : ICommand<Result<bool>>;
 
 public class UploadTeacherAttachmetCommandHandler(
     IUnitOfWork unitOfWork,
@@ -15,26 +14,24 @@ public class UploadTeacherAttachmetCommandHandler(
 {
     public async Task<Result<bool>> Handle(UploadTeacherAttachmetCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.Id == request.TeacherId, [r => r.TeacherAttachments]);
+        var teacher = await teacherRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId, [r => r.TeacherAttachments]);
         if (teacher is null)
             throw new NotFoundException("Teacher");
 
+        var file = request.AttachmentModel.File;
         Guid guid = Guid.NewGuid();
-        using var stream = request.File.OpenReadStream();
-        var uploadFolder = Path.Combine("wwwroot", "attachments", "teachers", request.TeacherId.ToString());
-        var extension = Path.GetExtension(request.File.FileName);
+        using var stream = file.OpenReadStream();
+        var uploadFolderPath = Path.Combine("wwwroot", "attachments", "teachers", request.AttachmentModel.UserId.ToString());
 
-        var fileName = await uploadService.UploadAsync(uploadFolder, guid, request.Title, extension, stream);
+        var uploadFileName = await uploadService.UploadAsync(uploadFolderPath, guid, file.FileName, stream);
 
         var attachment = attachmentRepository.AddAttachment(new AttachmentDto
         {
-            FileId = guid,
-            FileName = $"{fileName}-{guid}{extension}",
+            FileName = uploadFileName,
             FileSize = stream.Length,
-            MimeType = request.File.ContentType
         }, applicationContext.UserName);
 
-        teacher.AddAttachment(attachment);
+        teacher.AddAttachment(attachment, request.AttachmentModel.DisplayName);
 
         var result = await unitOfWork.SaveChangesAsync();
 

@@ -17,6 +17,9 @@ public class TeacherAttachmentConfiguration : IEntityTypeConfiguration<TeacherAt
         builder.Property(p => p.AttachmentId)
             .HasColumnName("attachment_id");
 
+        builder.Property(p => p.DisplayName)
+            .HasColumnName("display_name");
+
         builder.HasOne(r => r.Teacher)
             .WithMany(r => r.TeacherAttachments)
             .HasForeignKey(r => r.TeacherId);     

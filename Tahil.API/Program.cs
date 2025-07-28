@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Tahil.API.Middlewares;
 using Tahil.Application;
 
@@ -35,7 +36,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CORS");
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.WebRootPath, "attachments")
+    ),
+    RequestPath = "/attachments",
+    ServeUnknownFileTypes = true, // Optional: serve files without known MIME types
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+    }
+});
 
 app.UseExceptionHandler();
 
