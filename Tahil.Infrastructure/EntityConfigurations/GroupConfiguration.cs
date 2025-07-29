@@ -1,10 +1,10 @@
 ﻿namespace Tahil.Infrastructure.EntityConfigurations;
 
-public class RoomConfiguration : IEntityTypeConfiguration<Room>
+public class GroupConfiguration : IEntityTypeConfiguration<Group>
 {
-    public void Configure(EntityTypeBuilder<Room> builder)
+    public void Configure(EntityTypeBuilder<Group> builder)
     {
-        builder.ToTable("room");
+        builder.ToTable("group");
 
         builder.HasKey(p => p.Id);
 
@@ -17,8 +17,5 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.Property(p => p.Capacity)
             .HasColumnName("capacity");
-
-        builder.Property(p => p.IsActive)
-            .HasColumnName("is_active");
     }
 }

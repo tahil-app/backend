@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using Tahil.Application.Teachers.Commands;
+﻿using Tahil.Application.Teachers.Commands;
 using Tahil.Application.Teachers.Queries;
 using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;

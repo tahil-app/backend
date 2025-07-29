@@ -18,7 +18,7 @@ public static class Check
 
     public static void IsPositive<T>(T value, string paramName) where T : struct, INumber<T>
     {
-        if (value <= T.Zero)
+        if (value < T.Zero)
             throw new DomainException($"{paramName} must be positive");
     }
 }

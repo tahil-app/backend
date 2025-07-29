@@ -16,6 +16,7 @@ public class User: Base
     public string? ImagePath { get; set; }
 
     public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
+    public ICollection<Student> Students { get; set; } = new List<Student>();
 
     public void Validate() 
     {

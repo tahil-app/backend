@@ -14,6 +14,7 @@ public static class RoomMapping
         return new Room
         {
             Name = model.Name,
+            Capacity = model.Capacity,
             IsActive = model.IsActive,
         };
     }

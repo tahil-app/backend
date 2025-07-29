@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Tahil.Common.Exceptions;
+﻿using Tahil.Common.Exceptions;
 
 namespace Tahil.Domain.Entities;
 

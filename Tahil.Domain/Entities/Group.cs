@@ -2,11 +2,10 @@
 
 namespace Tahil.Domain.Entities;
 
-public class Room : Base
+public class Group : Base
 {
     public string Name { get; set; } = default!;
     public int Capacity { get; set; }
-    public bool IsActive { get; set; }
 
     public void Validate()
     {
@@ -14,14 +13,11 @@ public class Room : Base
         Check.IsPositive(Capacity, nameof(Capacity));
     }
 
-    public void Update(RoomDto roomDto) 
+    public void Update(GroupDto groupDto)
     {
-        Name = roomDto.Name;
-        Capacity = roomDto.Capacity;
+        Name = groupDto.Name;
+        Capacity = groupDto.Capacity;
 
         Validate();
     }
-
-    public void Activate() => IsActive = true;
-    public void DeActivate() => IsActive = false;
 }

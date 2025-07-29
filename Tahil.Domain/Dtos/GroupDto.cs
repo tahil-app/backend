@@ -1,6 +1,6 @@
 ﻿namespace Tahil.Domain.Dtos;
 
-public class RoomDto: BaseDto
+public class GroupDto: BaseDto
 {
     public string Name { get; set; } = default!;
     public int Capacity { get; set; }
