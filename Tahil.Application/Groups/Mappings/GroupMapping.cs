@@ -6,7 +6,8 @@ public static class GroupMapping
 {
     public static void RegisterMappings()
     {
-
+        TypeAdapterConfig<Group, GroupDto>.NewConfig()
+            .Map(dest => dest.NumberOfStudents, src => src.StudentGroups.Count);
     }
 
     public static Group ToGroup(this GroupDto model)

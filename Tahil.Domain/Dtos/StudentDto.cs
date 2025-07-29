@@ -5,5 +5,5 @@ public class StudentDto : UserDto
     public string Qualification { get; set; } = string.Empty;
 
     public List<AttachmentDto> Attachments { get; set; } = new();
-    public List<GroupDto> Groups { get; set; } = new();
+    public List<GroupDto>? Groups { get; set; }
 }

@@ -14,7 +14,7 @@ public class CreateStudentCommandHandler(IUnitOfWork unitOfWork, IStudentReposit
         student.User.SetRole(UserRole.Student);
 
         if (request.Student.Groups.Any())
-            student.AddToGroups(request.Student.Groups.Adapt<List<Group>>());
+            student.UpdateGroups(request.Student.Groups.Adapt<List<Group>>());
 
         await studentRepository.AddStudentAsync(student);
 

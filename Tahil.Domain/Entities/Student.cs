@@ -30,16 +30,16 @@ public class Student : Base
         Qualification = studentDto.Qualification;
     }
 
-    public void AddAttachment(Attachment attachment, string displayName) 
+    public void AddAttachment(Attachment attachment, string displayName)
     {
-        StudentAttachments.Add(new StudentAttachment 
+        StudentAttachments.Add(new StudentAttachment
         {
             Attachment = attachment,
             StudentId = Id,
             DisplayName = displayName
         });
     }
-    public void RemoveStudentAttachment(int attachmentId) 
+    public void RemoveStudentAttachment(int attachmentId)
     {
         var deletedStudentAttach = StudentAttachments.FirstOrDefault(r => r.AttachmentId == attachmentId);
         if (deletedStudentAttach is null)
@@ -48,20 +48,21 @@ public class Student : Base
         StudentAttachments.Remove(deletedStudentAttach!);
     }
 
-    public void AddToGroups(List<Group> groups)
+    public void UpdateGroups(List<Group> groups)
     {
-        groups.ForEach(group => StudentGroups.Add(new StudentGroup 
-        {
-            Group = group,
-            StudentId = Id
-        }));
-    }
-    public void RemoveFromGroup(List<int> groupIds)
-    {
-       var deletedFromGroups = StudentGroups.Where(r => groupIds.Contains(r.GroupId)).ToList();
-        deletedFromGroups.ForEach(stGroup => 
-        {
-            StudentGroups.Remove(stGroup);
-        });
+        var groupsToAdd = groups.Where(r => !StudentGroups.Select(s => s.GroupId).Contains(r.Id)).ToList();
+        foreach (var newGroup in groupsToAdd)
+            StudentGroups.Add(new StudentGroup
+            {
+                StudentId = Id,
+                GroupId = newGroup.Id,
+            });
+
+        var groupsToRemove = StudentGroups.Where(sg => !groups.Select(g => g.Id).Contains(sg.GroupId)).ToList();
+        foreach (var group in groupsToRemove)
+            StudentGroups.Remove(group);
+
+        if (groups.Count == 0)
+            StudentGroups.Clear();
     }
 }

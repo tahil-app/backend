@@ -7,6 +7,8 @@ public class Group : Base
     public string Name { get; set; } = default!;
     public int Capacity { get; set; }
 
+    public ICollection<StudentGroup> StudentGroups { get; set; } = new List<StudentGroup>();
+
     public void Validate()
     {
         Check.IsNull(Name, nameof(Name));

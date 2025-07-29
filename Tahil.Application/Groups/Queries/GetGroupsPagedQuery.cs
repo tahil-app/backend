@@ -6,7 +6,7 @@ public class GetGroupsPagedQueryHandler(IGroupRepository groupRepository) : IQue
 {
     public async Task<Result<PagedList<GroupDto>>> Handle(GetGroupsPagedQuery request, CancellationToken cancellationToken)
     {
-        var groups = await groupRepository.GetPagedAsync(request.QueryParams);
+        var groups = await groupRepository.GetPagedAsync(request.QueryParams, includes: [r => r.StudentGroups]);
         var pagedGroups = groups.Adapt<PagedList<GroupDto>>();
 
         return Result.Success(pagedGroups);

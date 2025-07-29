@@ -5,4 +5,6 @@ public class GroupDto: BaseDto
     public string Name { get; set; } = default!;
     public int Capacity { get; set; }
     public bool IsActive { get; set; }
+
+    public int NumberOfStudents { get; set; }
 }

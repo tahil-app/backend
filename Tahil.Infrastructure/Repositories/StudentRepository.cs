@@ -25,6 +25,11 @@ public class StudentRepository : Repository<Student>, IStudentRepository
                 Role = r.User.Role,
                 Qualification = r.Qualification,
                 ImagePath = r.User.ImagePath,
+                Groups = r.StudentGroups.Select(g => new GroupDto 
+                {
+                    Id = g.Group.Id,
+                    Name = g.Group.Name
+                }).ToList(),
                 Attachments = r.StudentAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,
