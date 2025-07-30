@@ -8,6 +8,9 @@ public class Room : Base
     public int Capacity { get; set; }
     public bool IsActive { get; set; }
 
+    public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
+    public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
+
     public void Validate()
     {
         Check.IsNull(Name, nameof(Name));

@@ -11,6 +11,8 @@ public class Teacher : Base
     public User User { get; set; } = default!;
 
     public ICollection<TeacherAttachment> TeacherAttachments { get; set; } = new List<TeacherAttachment>();
+    public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
+    public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
 
     public void Activate() => User.IsActive = true;
     public void DeActivate() => User.IsActive = false;
