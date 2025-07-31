@@ -1,12 +1,15 @@
 ﻿using Tahil.Common.Exceptions;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class TeacherRepository : Repository<Teacher>, ITeacherRepository
 {
-    public TeacherRepository(BEContext context) : base(context.Set<Teacher>())
+    private readonly LocalizedStrings _localizedStrings;
+    public TeacherRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Teacher>())
     {
+        _localizedStrings = localizedStrings;
     }
 
     public async Task<TeacherDto> GetTeacherAsync(int id)
@@ -60,10 +63,10 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
         var existTeacher = await GetAsync(u => u.User.Email.Value == teacher.User.Email.Value || u.User.PhoneNumber == teacher.User.PhoneNumber);
 
         if (existTeacher is not null && existTeacher.User.Email.Value == teacher.User.Email.Value)
-            throw new DuplicateException("Email");
+            throw new DuplicateException(_localizedStrings.DuplicatedEmail);
 
         if (existTeacher is not null && existTeacher.User.PhoneNumber == teacher.User.PhoneNumber)
-            throw new DuplicateException("Phone Number");
+            throw new DuplicateException(_localizedStrings.DuplicatedPhoneNumber);
     }
 
 }

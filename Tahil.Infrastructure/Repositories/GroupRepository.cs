@@ -1,13 +1,16 @@
 ﻿using Tahil.Common.Exceptions;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class GroupRepository : Repository<Group>, IGroupRepository
 {
     private readonly BEContext _context;
-    public GroupRepository(BEContext context) : base(context.Set<Group>())
+    private readonly LocalizedStrings _localizedStrings;
+    public GroupRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Group>())
     {
         _context = context;
+        _localizedStrings = localizedStrings;
     }
 
     public async Task AddGroupAsync(Group group)
@@ -21,7 +24,7 @@ public class GroupRepository : Repository<Group>, IGroupRepository
     {
         var hasStudents = await _context.Set<Student>().AnyAsync(r => r.StudentGroups.Select(g => g.GroupId == groupId).Any());
         if (hasStudents)
-            throw new DomainException("This group has students, you can't delete it.");
+            throw new DomainException(_localizedStrings.GroupHasStudentCantDelete);
 
         var group = await GetAsync(r => r.Id == groupId);
         HardDelete(group!);
@@ -32,6 +35,6 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         var existGroup = await GetAsync(u => u.Name == group.Name);
 
         if (existGroup is not null && existGroup.Name == group.Name)
-            throw new DuplicateException("Group");
+            throw new DuplicateException(_localizedStrings.DuplicatedGroup);
     }
 }

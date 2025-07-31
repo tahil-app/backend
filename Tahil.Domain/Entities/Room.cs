@@ -1,6 +1,4 @@
-﻿using Tahil.Common.Helpers;
-
-namespace Tahil.Domain.Entities;
+﻿namespace Tahil.Domain.Entities;
 
 public class Room : Base
 {

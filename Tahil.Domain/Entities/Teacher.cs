@@ -45,9 +45,6 @@ public class Teacher : Base
     public void RemoveTeacherAttachment(int attachmentId) 
     {
         var deletedTeacherAttach = TeacherAttachments.FirstOrDefault(r => r.AttachmentId == attachmentId);
-        if (deletedTeacherAttach is null)
-            throw new NotFoundException("Attachment");
-
         TeacherAttachments.Remove(deletedTeacherAttach!);
     }
 }

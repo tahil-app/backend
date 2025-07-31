@@ -6,5 +6,6 @@ public enum LessonScheduleStatus
     Active,
     Paused,
     Completed,
-    Canceled
+    Canceled,
+    Archived
 }

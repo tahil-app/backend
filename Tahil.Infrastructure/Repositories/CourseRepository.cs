@@ -1,11 +1,14 @@
 ﻿using Tahil.Common.Exceptions;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class CourseRepository : Repository<Course>, ICourseRepository
 {
-    public CourseRepository(BEContext context) : base(context.Set<Course>())
+    private readonly LocalizedStrings _localizedStrings;
+    public CourseRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Course>())
     {
+        _localizedStrings = localizedStrings;
     }
 
     public async Task AddCourseAsync(Course course)
@@ -21,6 +24,6 @@ public class CourseRepository : Repository<Course>, ICourseRepository
         var existCourse = await GetAsync(u => u.Name == course.Name);
 
         if (existCourse is not null && existCourse.Name == course.Name)
-            throw new DomainException("The course exists, enter another.");
+            throw new DomainException(_localizedStrings.DuplicatedCourse);
     }
 }

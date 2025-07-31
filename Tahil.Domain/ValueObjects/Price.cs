@@ -7,8 +7,8 @@ public class Price
 
     private Price(decimal amount, string currency)
     {
-        if (amount < 0) throw new ArgumentException("Price cannot be negative.");
-        if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency cannot be null or empty.");
+        Check.IsPositive(amount, "Price");
+        Check.IsNull(amount, "Price");
 
         Amount = amount;
         Currency = currency.ToUpper(); // Normalize currency to uppercase

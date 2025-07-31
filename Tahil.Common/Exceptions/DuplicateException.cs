@@ -2,7 +2,7 @@
 
 public class DuplicateException : DomainException
 {
-    public DuplicateException(string entity) : base($"{entity} is duplicated")
+    public DuplicateException(string message) : base(message)
     {
     }
 }

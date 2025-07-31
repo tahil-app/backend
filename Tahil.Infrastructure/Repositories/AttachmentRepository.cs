@@ -1,13 +1,16 @@
 ﻿using Mapster;
 using Tahil.Common.Exceptions;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class AttachmentRepository : Repository<Attachment>, IAttachmentRepository
 {
-    public AttachmentRepository(BEContext context) : base(context.Set<Attachment>())
+    private readonly LocalizedStrings _localizedStrings;
+    public AttachmentRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Attachment>())
     {
+        _localizedStrings = localizedStrings;
     }
 
     public Attachment AddAttachment(AttachmentDto attachmentDto, string userName)
@@ -25,7 +28,7 @@ public class AttachmentRepository : Repository<Attachment>, IAttachmentRepositor
     {
         var attachment = await GetAsync(r => r.Id == attachmentId);
         if (attachment is null)
-            throw new NotFoundException("Attachment");
+            throw new NotFoundException(_localizedStrings.NotFoundAttachment);
 
         HardDelete(attachment!);
 

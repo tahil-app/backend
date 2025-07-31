@@ -27,6 +27,9 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
             .HasColumnName("group_id")
             .IsRequired();
 
+        builder.Property(p => p.ReferenceId)
+            .HasColumnName("reference");
+
         builder.Property(p => p.Day)
             .HasColumnName("day")
             .IsRequired();
@@ -74,6 +77,10 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
             .HasForeignKey(p => p.TeacherId);
 
         builder.HasOne(p => p.Group)
+            .WithMany(r => r.Schedules)
+            .HasForeignKey(p => p.GroupId);
+
+        builder.HasOne(p => p.Reference)
             .WithMany(r => r.Schedules)
             .HasForeignKey(p => p.GroupId);
     }

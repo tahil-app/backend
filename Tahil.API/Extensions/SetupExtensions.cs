@@ -12,16 +12,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Tahil.Domain.Localization;
+using Tahil.Domain.Helpers;
 
 namespace Tahil.API.Extensions;
 
 public static class SetupExtensions
 {
-    public static IServiceCollection AddCORS(this IServiceCollection services) 
+    public static IServiceCollection AddCORS(this IServiceCollection services)
     {
-        services.AddCors(options => 
+        services.AddCors(options =>
         {
-            options.AddPolicy("CORS", policy => 
+            options.AddPolicy("CORS", policy =>
             {
                 policy.AllowAnyHeader()
                 .AllowAnyOrigin()
@@ -54,6 +58,7 @@ public static class SetupExtensions
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<ILessonScheduleRepository, LessonScheduleRepository>();
 
         return services;
     }
@@ -61,6 +66,7 @@ public static class SetupExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+
         services.AddScoped<IConfigService, ConfigService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUploadService, UploadService>();
@@ -161,7 +167,7 @@ public static class SetupExtensions
         return services;
     }
 
-    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services) 
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
         {
@@ -181,6 +187,32 @@ public static class SetupExtensions
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
         services.AddScoped<IEmailSenderService, EmailSenderService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddLocalizations(this IServiceCollection services)
+    {
+        services.AddSingleton<ILocalizationService, LocalizationService>();
+        services.AddSingleton<LocalizedStrings>(r =>
+            new LocalizedStrings(r.GetRequiredService<ILocalizationService>())
+        );
+
+        services.AddLocalization(opt => opt.ResourcesPath = "Resources");
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            var supportedCultures = new[] { "en", "ar" };
+            var cultures = supportedCultures.Select(c => new CultureInfo(c)).ToList();
+
+            options.DefaultRequestCulture = new RequestCulture("ar");
+            options.SupportedCultures = cultures;
+            options.SupportedUICultures = cultures;
+
+            options.RequestCultureProviders = new[]
+            {
+                new AcceptLanguageHeaderRequestCultureProvider()
+            };
+        });
 
         return services;
     }

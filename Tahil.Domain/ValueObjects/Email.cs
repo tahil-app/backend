@@ -13,11 +13,8 @@ public class Email
 
     public static Email Create(string email)
     {
-        if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email cannot be empty", nameof(email));
-
-        if (!IsValidEmail(email))
-            throw new ArgumentException("Invalid email format", nameof(email));
+        Check.IsNull(email, "Email");
+        Check.IsValidEmail(email);
 
         return new(email.ToLowerInvariant());
     }

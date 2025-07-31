@@ -1,12 +1,16 @@
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Tahil.API.Middlewares;
 using Tahil.Application;
+using Tahil.Domain.Helpers;
+using Tahil.Domain.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 ApplicationConfig.Initialize();
 
+builder.Services.AddLocalizations();
 builder.Services.AddCORS();
 builder.Services.AddServices();
 builder.Services.AddMSContext();
@@ -49,6 +53,11 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
+var localizedStrings = app.Services.GetRequiredService<LocalizedStrings>();
+Check.Configure(localizedStrings);
+
 app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
@@ -59,6 +68,6 @@ app.UseAuthorization();
 
 app.MapGroup("/api").MapCarter();
 
-app.MapGet("/", () => "The server is running :)");
+app.MapGet("/", (LocalizedStrings service) => service.ServerRunning);
 
 app.Run();

@@ -74,6 +74,13 @@ public abstract class Repository<T> : IRepository<T> where T : Base
         };
     }
 
+    public Task<bool> AnyAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null)
+    {
+        IQueryable<T> query = Include(includes);
+        query = predicate != null ? query.Where(predicate) : query;
+        return query.AsNoTracking().AnyAsync();
+    }
+
     public void Add(T entity)
     {
         if (entity == null)

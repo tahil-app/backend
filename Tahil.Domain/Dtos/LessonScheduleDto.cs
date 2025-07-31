@@ -1,6 +1,6 @@
-﻿namespace Tahil.Domain.Entities;
+﻿namespace Tahil.Domain.Dtos;
 
-public class LessonSchedule : Base
+public class LessonScheduleDto: BaseDto
 {
     public int RoomId { get; set; }
     public int CourseId { get; set; }
@@ -21,13 +21,4 @@ public class LessonSchedule : Base
 
     public string CreatedBy { get; set; } = default!;
     public string UpdatedBy { get; set; } = default!;
-
-    public Room? Room { get; set; }
-    public Course? Course { get; set; }
-    public Teacher? Teacher { get; set; }
-    public Group? Group { get; set; }
-    public LessonSchedule? Reference { get; set; }
-
-    public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
-    public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
 }

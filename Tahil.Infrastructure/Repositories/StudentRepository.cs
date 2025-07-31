@@ -1,12 +1,15 @@
 ﻿using Tahil.Common.Exceptions;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class StudentRepository : Repository<Student>, IStudentRepository
 {
-    public StudentRepository(BEContext context) : base(context.Set<Student>())
+    private readonly LocalizedStrings _localizedStrings;
+    public StudentRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Student>())
     {
+        _localizedStrings = localizedStrings;
     }
 
     public async Task<StudentDto> GetStudentAsync(int id)
@@ -64,10 +67,10 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         var existStudent = await GetAsync(u => u.User.Email.Value == student.User.Email.Value || u.User.PhoneNumber == student.User.PhoneNumber);
 
         if (existStudent is not null && existStudent.User.Email.Value == student.User.Email.Value)
-            throw new DuplicateException("Email");
+            throw new DuplicateException(_localizedStrings.DuplicatedEmail);
 
         if (existStudent is not null && existStudent.User.PhoneNumber == student.User.PhoneNumber)
-            throw new DuplicateException("Phone Number");
+            throw new DuplicateException(_localizedStrings.DuplicatedPhoneNumber);
     }
 
 }
