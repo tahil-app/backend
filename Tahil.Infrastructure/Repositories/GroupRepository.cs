@@ -1,40 +1,58 @@
-﻿using Tahil.Common.Exceptions;
-using Tahil.Domain.Localization;
+﻿using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class GroupRepository : Repository<Group>, IGroupRepository
 {
-    private readonly BEContext _context;
     private readonly LocalizedStrings _localizedStrings;
     public GroupRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Group>())
     {
-        _context = context;
         _localizedStrings = localizedStrings;
     }
 
-    public async Task AddGroupAsync(Group group)
+    public async Task<Result<bool>> AddGroupAsync(Group group, Guid tenantId)
     {
-        await CheckExistsAsync(group);
+        var result = await CheckDuplicateGroupNameAsync(group);
 
-        Add(group);
+        if (result.IsSuccess)
+        {
+            group.TenantId = tenantId;
+            Add(group);
+        }
+
+        return result;
     }
 
-    public async Task DeleteGroupAsync(int groupId)
+    public async Task<Result<bool>> DeleteGroupAsync(int id)
     {
-        var hasStudents = await _context.Set<Student>().AnyAsync(r => r.StudentGroups.Select(g => g.GroupId == groupId).Any());
-        if (hasStudents)
-            throw new DomainException(_localizedStrings.GroupHasStudentCantDelete);
+        var group = await GetAsync(g => g.Id == id, [g => g.StudentGroups, g => g.Schedules, g => g.Sessions]);
 
-        var group = await GetAsync(r => r.Id == groupId);
-        HardDelete(group!);
+        if (group is null)
+            return Result<bool>.Failure(_localizedStrings.NotAvailableGroup);
+
+        // Check if group has child relationships
+        if (group.StudentGroups.Any())
+            return Result<bool>.Failure(_localizedStrings.GroupHasStudentCantDelete);
+
+        if (group.Schedules.Any())
+            return Result<bool>.Failure(_localizedStrings.GroupHasSchedules);
+
+        if (group.Sessions.Any())
+            return Result<bool>.Failure(_localizedStrings.GroupHasSessions);
+
+        // If no child relationships exist, proceed with deletion
+        HardDelete(group);
+        return Result<bool>.Success(true);
     }
 
-    private async Task CheckExistsAsync(Group group) 
+    private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group) 
     {
-        var existGroup = await GetAsync(u => u.Name == group.Name);
+        var existGroup = await GetAsync(g => g.Name == group.Name);
 
+        // Check if group name is duplicated
         if (existGroup is not null && existGroup.Name == group.Name)
-            throw new DuplicateException(_localizedStrings.DuplicatedGroup);
+            return Result<bool>.Failure(_localizedStrings.DuplicatedGroup);
+
+        return Result<bool>.Success(true);
     }
 }

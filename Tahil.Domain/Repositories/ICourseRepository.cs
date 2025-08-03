@@ -2,5 +2,6 @@
 
 public interface ICourseRepository : IRepository<Course> 
 {
-    Task AddCourseAsync(Course course);
+    Task<Result<bool>> AddCourseAsync(Course course, Guid tenantId);
+    Task<Result<bool>> DeleteCourseAsync(int id);
 }

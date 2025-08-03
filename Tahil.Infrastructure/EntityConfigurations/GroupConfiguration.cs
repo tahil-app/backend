@@ -15,7 +15,25 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
             .HasColumnName("name")
             .IsRequired();
 
-        builder.Property(p => p.Capacity)
-            .HasColumnName("capacity");
+        builder.Property(p => p.CourseId)
+            .HasColumnName("course_id");
+
+        builder.HasOne(r => r.Course)
+            .WithMany(r => r.Groups)
+            .HasForeignKey(r => r.CourseId);
+
+        builder.Property(p => p.TeacherId)
+            .HasColumnName("teacher_id");
+
+        builder.HasOne(r => r.Teacher)
+            .WithMany(r => r.Groups)
+            .HasForeignKey(r => r.TeacherId);
+
+        builder.Property(p => p.TenantId)
+            .HasColumnName("tenant_id");
+
+        builder.HasOne(r => r.Tenant)
+            .WithMany(r => r.Groups)
+            .HasForeignKey(r => r.TenantId);
     }
 }

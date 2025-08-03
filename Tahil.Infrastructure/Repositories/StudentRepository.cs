@@ -1,5 +1,4 @@
-﻿using Tahil.Common.Exceptions;
-using Tahil.Domain.Dtos;
+﻿using Tahil.Domain.Dtos;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -54,23 +53,51 @@ public class StudentRepository : Repository<Student>, IStudentRepository
             .FirstOrDefaultAsync() ?? string.Empty;
     }
 
-    public async Task AddStudentAsync(Student student)
+    public async Task<Result<bool>> AddStudentAsync(Student student, Guid tenantId)
     {
-        await CheckExistsAsync(student);
+        var result = await CheckDuplicateStudentAsync(student);
 
-        student.User.IsActive = true;
-        Add(student);
+        if (result.IsSuccess)
+        {
+            student.User.TenantId = tenantId;
+            student.User.IsActive = true;
+            Add(student);
+        }
+
+        return result;
     }
 
-    private async Task CheckExistsAsync(Student student)
+    public async Task<Result<bool>> DeleteStudentAsync(int id)
     {
-        var existStudent = await GetAsync(u => u.User.Email.Value == student.User.Email.Value || u.User.PhoneNumber == student.User.PhoneNumber);
+        var student = await GetAsync(s => s.Id == id, [s => s.StudentGroups, s => s.StudentAttachments]);
 
+        if (student is null)
+            return Result<bool>.Failure(_localizedStrings.NotAvailableStudent);
+
+        // Check if student has child relationships
+        if (student.StudentGroups.Any())
+            return Result<bool>.Failure(_localizedStrings.StudentHasGroups);
+
+        if (student.StudentAttachments.Any())
+            return Result<bool>.Failure(_localizedStrings.StudentHasAttachments);
+
+        // If no child relationships exist, proceed with deletion
+        HardDelete(student);
+        return Result<bool>.Success(true);
+    }
+
+    private async Task<Result<bool>> CheckDuplicateStudentAsync(Student student) 
+    {
+        var existStudent = await GetAsync(s => s.User.Email.Value == student.User.Email.Value || s.User.PhoneNumber == student.User.PhoneNumber);
+
+        // Check if email is duplicated
         if (existStudent is not null && existStudent.User.Email.Value == student.User.Email.Value)
-            throw new DuplicateException(_localizedStrings.DuplicatedEmail);
+            return Result<bool>.Failure(_localizedStrings.DuplicatedEmail);
 
+        // Check if phone number is duplicated
         if (existStudent is not null && existStudent.User.PhoneNumber == student.User.PhoneNumber)
-            throw new DuplicateException(_localizedStrings.DuplicatedPhoneNumber);
-    }
+            return Result<bool>.Failure(_localizedStrings.DuplicatedPhoneNumber);
 
+        return Result<bool>.Success(true);
+    }
 }

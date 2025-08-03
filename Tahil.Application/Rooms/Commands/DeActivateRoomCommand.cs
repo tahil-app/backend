@@ -2,13 +2,13 @@
 
 public record DeActivateRoomCommand(int Id) : ICommand<Result<bool>>;
 
-public class DeActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository) : ICommandHandler<DeActivateRoomCommand, Result<bool>>
+public class DeActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository, LocalizedStrings locale) : ICommandHandler<DeActivateRoomCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeActivateRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await roomRepository.GetAsync(r => r.Id == request.Id);
         if (room is null)
-            throw new NotFoundException("Room");
+            return Result<bool>.Failure(locale.NotAvailableRoom);
 
         room.DeActivate();
 

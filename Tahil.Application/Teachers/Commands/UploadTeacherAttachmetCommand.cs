@@ -29,7 +29,7 @@ public class UploadTeacherAttachmetCommandHandler(
         {
             FileName = uploadFileName,
             FileSize = stream.Length,
-        }, applicationContext.UserName);
+        }, applicationContext.UserName, applicationContext.TenantId);
 
         teacher.AddAttachment(attachment, request.AttachmentModel.DisplayName);
 

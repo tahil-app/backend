@@ -31,6 +31,16 @@ public class ApplicationContext : IApplicationContext
         }
     }
 
+    public Guid TenantId
+    {
+        get
+        {
+            ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
+            var id = claimuser.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
+            return id is not null ? Guid.Parse(id) : new Guid("0");
+        }
+    }
+
     public UserRole GetUserRole()
     {
         ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;

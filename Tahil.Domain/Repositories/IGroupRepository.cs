@@ -2,6 +2,6 @@
 
 public interface IGroupRepository : IRepository<Group> 
 {
-    Task AddGroupAsync(Group group);
-    Task DeleteGroupAsync(int groupId);
+    Task<Result<bool>> AddGroupAsync(Group group, Guid tenantId);
+    Task<Result<bool>> DeleteGroupAsync(int id);
 }

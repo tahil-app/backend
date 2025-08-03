@@ -9,4 +9,8 @@ public class Tenant
     public bool IsActive { get; set; } = true;
 
     public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<Course> Courses { get; set; } = new List<Course>();
+    public ICollection<Room> Rooms { get; set; } = new List<Room>();
+    public ICollection<Group> Groups { get; set; } = new List<Group>();
+    public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
 }

@@ -15,30 +15,30 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetAllGroupsQuery());
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.ALL);
 
         groups.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetGroupsPagedQuery(queryParams));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOrEmployee);
 
         groups.MapPost("/create", async (GroupDto model, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new CreateGroupCommand(model));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOrEmployee);
 
         groups.MapPut("/update", async (GroupDto model, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new UpdateGroupCommand(model));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.ALL);
+        }).RequireAuthorization(Policies.AdminOrEmployee);
 
         groups.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var user = await mediator.Send(new DeleteGroupCommand(id));
             return Results.Ok(user);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOnly);
     }
 }

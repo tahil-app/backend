@@ -1,16 +1,18 @@
-﻿namespace Tahil.Application.Groups.Commands;
+﻿using Tahil.Application.Groups.Validators;
 
-public record UpdateGroupCommand(GroupDto GroupDto) : ICommand<Result<bool>>;
+namespace Tahil.Application.Groups.Commands;
 
-public class UpdateGroupCommandHandler(IUnitOfWork unitOfWork, IGroupRepository groupRepository) : ICommandHandler<UpdateGroupCommand, Result<bool>>
+public record UpdateGroupCommand(GroupDto Group) : IGroupCommand, ICommand<Result<bool>>;
+
+public class UpdateGroupCommandHandler(IUnitOfWork unitOfWork, IGroupRepository groupRepository, LocalizedStrings locale) : ICommandHandler<UpdateGroupCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UpdateGroupCommand request, CancellationToken cancellationToken)
     {
-        var group = await groupRepository.GetAsync(r => r.Id == request.GroupDto.Id);
+        var group = await groupRepository.GetAsync(r => r.Id == request.Group.Id);
         if (group == null)
-            throw new NotFoundException("Group");
+            return Result<bool>.Failure(locale.NotAvailableGroup);
 
-        group.Update(request.GroupDto);
+        group.Update(request.Group);
 
         var result = await unitOfWork.SaveChangesAsync();
 

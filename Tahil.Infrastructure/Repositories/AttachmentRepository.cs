@@ -1,5 +1,4 @@
 ﻿using Mapster;
-using Tahil.Common.Exceptions;
 using Tahil.Domain.Dtos;
 using Tahil.Domain.Localization;
 
@@ -13,25 +12,26 @@ public class AttachmentRepository : Repository<Attachment>, IAttachmentRepositor
         _localizedStrings = localizedStrings;
     }
 
-    public Attachment AddAttachment(AttachmentDto attachmentDto, string userName)
+    public Attachment AddAttachment(AttachmentDto attachmentDto, string userName, Guid tenantId)
     {
         var attachment = attachmentDto.Adapt<Attachment>();
         attachment.CreatedOn = DateTime.Now;
         attachment.CreatedBy = userName;
+        attachment.TenantId = tenantId;
 
         Add(attachment);
 
         return attachment;
     }
 
-    public async Task<Attachment> RemoveAttachment(int attachmentId) 
+    public async Task<Result<Attachment>> RemoveAttachment(int attachmentId) 
     {
         var attachment = await GetAsync(r => r.Id == attachmentId);
         if (attachment is null)
-            throw new NotFoundException(_localizedStrings.NotFoundAttachment);
+            return Result<Attachment>.Failure(_localizedStrings.NotFoundAttachment);
 
         HardDelete(attachment!);
 
-        return attachment;
+        return Result<Attachment>.Success(attachment);
     }
 }

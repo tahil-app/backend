@@ -4,5 +4,6 @@ public interface ITeacherRepository : IRepository<Teacher>
 {
     Task<TeacherDto> GetTeacherAsync(int id);
     Task<string> GetAttachmentDisplayNameAsync(string attachmentName);
-    Task AddTeacherAsync(Teacher teacher);
+    Task<Result<bool>> AddTeacherAsync(Teacher teacher, Guid tenantId);
+    Task<Result<bool>> DeleteTeacherAsync(int id);
 }

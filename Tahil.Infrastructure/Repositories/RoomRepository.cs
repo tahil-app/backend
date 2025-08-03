@@ -1,5 +1,4 @@
-﻿using Tahil.Common.Exceptions;
-using Tahil.Domain.Localization;
+﻿using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
@@ -11,19 +10,47 @@ public class RoomRepository : Repository<Room>, IRoomRepository
         _localizedStrings = localizedStrings;
     }
 
-    public async Task AddRoomAsync(Room room)
+    public async Task<Result<bool>> AddRoomAsync(Room room, Guid tenantId)
     {
-        await CheckExistsAsync(room);
+        var result = await CheckDuplicateRoomNameAsync(room);
 
-        room.IsActive = true;
-        Add(room);
+        if (result.IsSuccess)
+        {
+            room.TenantId = tenantId;
+            room.IsActive = true;
+            Add(room);
+        }
+
+        return result;
     }
 
-    private async Task CheckExistsAsync(Room room) 
+    public async Task<Result<bool>> DeleteRoomAsync(int id)
     {
-        var existRoom = await GetAsync(u => u.Name == room.Name);
+        var room = await GetAsync(r => r.Id == id, [r => r.Schedules, r => r.Sessions]);
 
+        if (room is null)
+            return Result<bool>.Failure(_localizedStrings.NotAvailableRoom);
+
+        // Check if room has child relationships
+        if (room.Schedules.Any())
+            return Result<bool>.Failure(_localizedStrings.RoomHasSchedules);
+
+        if (room.Sessions.Any())
+            return Result<bool>.Failure(_localizedStrings.RoomHasSessions);
+
+        // If no child relationships exist, proceed with deletion
+        HardDelete(room);
+        return Result<bool>.Success(true);
+    }
+
+    private async Task<Result<bool>> CheckDuplicateRoomNameAsync(Room room) 
+    {
+        var existRoom = await GetAsync(r => r.Name == room.Name);
+
+        // Check if room name is duplicated
         if (existRoom is not null && existRoom.Name == room.Name)
-            throw new DuplicateException(_localizedStrings.DuplicatedRoom);
+            return Result<bool>.Failure(_localizedStrings.DuplicatedRoom);
+
+        return Result<bool>.Success(true);
     }
 }

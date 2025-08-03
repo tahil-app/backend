@@ -20,5 +20,12 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.Property(p => p.IsActive)
             .HasColumnName("is_active");
+
+        builder.Property(p => p.TenantId)
+            .HasColumnName("tenant_id");
+
+        builder.HasOne(r => r.Tenant)
+            .WithMany(r => r.Rooms)
+            .HasForeignKey(r => r.TenantId);
     }
 }

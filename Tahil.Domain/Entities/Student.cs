@@ -1,6 +1,4 @@
-﻿using Tahil.Common.Exceptions;
-
-namespace Tahil.Domain.Entities;
+﻿namespace Tahil.Domain.Entities;
 
 public class Student : Base
 {

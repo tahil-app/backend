@@ -3,7 +3,8 @@
 public class GroupDto: BaseDto
 {
     public string Name { get; set; } = default!;
-    public int Capacity { get; set; }
+    public int CourseId { get; set; }
+    public int TeacherId { get; set; }
     public bool IsActive { get; set; }
 
     public int NumberOfStudents { get; set; }

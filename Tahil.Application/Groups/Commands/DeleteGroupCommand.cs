@@ -1,15 +1,18 @@
 ﻿namespace Tahil.Application.Groups.Commands;
 
-public record DeleteGroupCommand(int GroupId) : ICommand<Result<bool>>;
+public record DeleteGroupCommand(int Id) : ICommand<Result<bool>>;
 
 public class DeleteGroupCommandHandler(IUnitOfWork unitOfWork, IGroupRepository groupRepository) : ICommandHandler<DeleteGroupCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteGroupCommand request, CancellationToken cancellationToken)
     {
-        await groupRepository.DeleteGroupAsync(request.GroupId);
+        var deleteResult = await groupRepository.DeleteGroupAsync(request.Id);
+        if (deleteResult.IsSuccess)
+        {
+            var result = await unitOfWork.SaveChangesAsync();
+            return Result.Success(result);
+        }
 
-        var result = await unitOfWork.SaveChangesAsync();
-
-        return Result.Success(result);
+        return deleteResult;
     }
 }

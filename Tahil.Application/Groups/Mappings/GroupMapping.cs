@@ -15,7 +15,8 @@ public static class GroupMapping
         return new Group
         {
             Name = model.Name,
-            Capacity = model.Capacity
+            CourseId = model.CourseId,
+            TeacherId = model.TeacherId,
         };
     }
 }

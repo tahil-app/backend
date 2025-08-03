@@ -129,6 +129,21 @@
   <data name="Course" xml:space="preserve">
     <value>الدورة</value>
   </data>
+  <data name="CourseHasSchedules" xml:space="preserve">
+    <value>الدورة لها جداول، لا يمكن حذفها</value>
+  </data>
+  <data name="CourseHasSessions" xml:space="preserve">
+    <value>الدورة لها جلسات، لا يمكن حذفها</value>
+  </data>
+  <data name="CourseHasTeachers" xml:space="preserve">
+    <value>الدورة لها معلمين، لا يمكن حذفها</value>
+  </data>
+  <data name="CourseNameTooLong" xml:space="preserve">
+    <value>اسم الدورة لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="CourseNameTooShort" xml:space="preserve">
+    <value>اسم الدورة يجب أن يكون على الأقل 2 أحرف</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>البريد الالكترونى</value>
   </data>
@@ -140,6 +155,18 @@
   </data>
   <data name="GroupHasStudentCantDelete" xml:space="preserve">
     <value>المجموعة مسجل بها طلاب, لا يمكن حذفها</value>
+  </data>
+  <data name="GroupHasSchedules" xml:space="preserve">
+    <value>المجموعة لها جداول، لا يمكن حذفها</value>
+  </data>
+  <data name="GroupHasSessions" xml:space="preserve">
+    <value>المجموعة لها جلسات، لا يمكن حذفها</value>
+  </data>
+  <data name="GroupNameTooLong" xml:space="preserve">
+    <value>اسم المجموعة لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="GroupNameTooShort" xml:space="preserve">
+    <value>اسم المجموعة يجب أن يكون على الأقل 2 أحرف</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>بيانات الدخول غير صحيحة</value>
@@ -180,6 +207,18 @@
   <data name="Room" xml:space="preserve">
     <value>الحلقة</value>
   </data>
+  <data name="RoomHasSchedules" xml:space="preserve">
+    <value>الحلقة لها جداول، لا يمكن حذفها</value>
+  </data>
+  <data name="RoomHasSessions" xml:space="preserve">
+    <value>الحلقة لها جلسات، لا يمكن حذفها</value>
+  </data>
+  <data name="RoomNameTooLong" xml:space="preserve">
+    <value>اسم الحلقة لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="RoomNameTooShort" xml:space="preserve">
+    <value>اسم الحلقة يجب أن يكون على الأقل 2 أحرف</value>
+  </data>
   <data name="ServerRunning" xml:space="preserve">
     <value>:) السيرفر يعمل</value>
   </data>
@@ -189,7 +228,22 @@
   <data name="StartDate" xml:space="preserve">
     <value>وقت البداية</value>
   </data>
+  <data name="Student" xml:space="preserve">
+    <value>الطالب</value>
+  </data>
+  <data name="StudentHasGroups" xml:space="preserve">
+    <value>الطالب مسجل في مجموعات، لا يمكن حذفه</value>
+  </data>
+  <data name="StudentHasAttachments" xml:space="preserve">
+    <value>الطالب له مرفقات، لا يمكن حذفه</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>المعلم</value>
+  </data>
+  <data name="TeacherHasCourses" xml:space="preserve">
+    <value>المعلم له دورات، لا يمكن حذفه</value>
+  </data>
+  <data name="TeacherHasAttachments" xml:space="preserve">
+    <value>المعلم له مرفقات، لا يمكن حذفه</value>
   </data>
 </root>

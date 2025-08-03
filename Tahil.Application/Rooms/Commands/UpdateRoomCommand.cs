@@ -1,14 +1,19 @@
-﻿namespace Tahil.Application.Rooms.Commands;
+﻿using Tahil.Application.Rooms.Validators;
 
-public record UpdateRoomCommand(RoomDto RoomDto) : ICommand<Result<bool>>;
+namespace Tahil.Application.Rooms.Commands;
 
-public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository) : ICommandHandler<UpdateRoomCommand, Result<bool>>
+public record UpdateRoomCommand(RoomDto RoomDto) : ICommand<Result<bool>>, IRoomCommand
+{
+    public RoomDto Room => RoomDto;
+}
+
+public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository, LocalizedStrings locale) : ICommandHandler<UpdateRoomCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await roomRepository.GetAsync(r => r.Id == request.RoomDto.Id);
         if (room == null)
-            throw new NotFoundException("Room");
+            return Result<bool>.Failure(locale.NotAvailableRoom);
 
         room.Update(request.RoomDto);
 

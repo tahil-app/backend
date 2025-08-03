@@ -129,6 +129,21 @@
   <data name="Course" xml:space="preserve">
     <value>Course</value>
   </data>
+  <data name="CourseHasSchedules" xml:space="preserve">
+    <value>Course has schedules, cannot delete</value>
+  </data>
+  <data name="CourseHasSessions" xml:space="preserve">
+    <value>Course has sessions, cannot delete</value>
+  </data>
+  <data name="CourseHasTeachers" xml:space="preserve">
+    <value>Course has teachers, cannot delete</value>
+  </data>
+  <data name="CourseNameTooLong" xml:space="preserve">
+    <value>Course name cannot exceed 100 characters</value>
+  </data>
+  <data name="CourseNameTooShort" xml:space="preserve">
+    <value>Course name must be at least 2 characters</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
   </data>
@@ -139,7 +154,19 @@
     <value>Group</value>
   </data>
   <data name="GroupHasStudentCantDelete" xml:space="preserve">
-    <value>The group has students, You can't delete i</value>
+    <value>The group has students, You can't delete it</value>
+  </data>
+  <data name="GroupHasSchedules" xml:space="preserve">
+    <value>Group has schedules, cannot delete</value>
+  </data>
+  <data name="GroupHasSessions" xml:space="preserve">
+    <value>Group has sessions, cannot delete</value>
+  </data>
+  <data name="GroupNameTooLong" xml:space="preserve">
+    <value>Group name cannot exceed 100 characters</value>
+  </data>
+  <data name="GroupNameTooShort" xml:space="preserve">
+    <value>Group name must be at least 2 characters</value>
   </data>
   <data name="InvalidCredentials" xml:space="preserve">
     <value>Invalid credentials</value>
@@ -180,6 +207,18 @@
   <data name="Room" xml:space="preserve">
     <value>Room</value>
   </data>
+  <data name="RoomHasSchedules" xml:space="preserve">
+    <value>Room has schedules, cannot delete</value>
+  </data>
+  <data name="RoomHasSessions" xml:space="preserve">
+    <value>Room has sessions, cannot delete</value>
+  </data>
+  <data name="RoomNameTooLong" xml:space="preserve">
+    <value>Room name cannot exceed 100 characters</value>
+  </data>
+  <data name="RoomNameTooShort" xml:space="preserve">
+    <value>Room name must be at least 2 characters</value>
+  </data>
   <data name="ServerRunning" xml:space="preserve">
     <value>The server is running :)</value>
   </data>
@@ -189,7 +228,22 @@
   <data name="StartDate" xml:space="preserve">
     <value>Start Date</value>
   </data>
+  <data name="Student" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="StudentHasGroups" xml:space="preserve">
+    <value>Student has groups, cannot delete</value>
+  </data>
+  <data name="StudentHasAttachments" xml:space="preserve">
+    <value>Student has attachments, cannot delete</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>Teacher</value>
+  </data>
+  <data name="TeacherHasCourses" xml:space="preserve">
+    <value>Teacher has courses, cannot delete</value>
+  </data>
+  <data name="TeacherHasAttachments" xml:space="preserve">
+    <value>Teacher has attachments, cannot delete</value>
   </data>
 </root>

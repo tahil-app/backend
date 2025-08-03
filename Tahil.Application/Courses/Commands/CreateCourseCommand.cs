@@ -1,17 +1,22 @@
 ﻿using Tahil.Application.Courses.Mappings;
+using Tahil.Application.Courses.Validators;
 
 namespace Tahil.Application.Courses.Commands;
 
-public record CreateCourseCommand(CourseDto CourseDto) : ICommand<Result<bool>>;
+public record CreateCourseCommand(CourseDto Course) : ICourseCommand, ICommand<Result<bool>>;
 
-public class CreateCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepository courseRepository) : ICommandHandler<CreateCourseCommand, Result<bool>>
+public class CreateCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepository courseRepository, IApplicationContext applicationContext) : ICommandHandler<CreateCourseCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        await courseRepository.AddCourseAsync(request.CourseDto.ToCourse());
+        var addResult = await courseRepository.AddCourseAsync(request.Course.ToCourse(), applicationContext.TenantId);
 
-        var result = await unitOfWork.SaveChangesAsync();
+        if (addResult.IsSuccess)
+        {
+            var result = await unitOfWork.SaveChangesAsync();
+            return Result.Success(result);
+        }
 
-        return Result.Success(result);
+        return addResult;
     }
 }

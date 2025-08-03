@@ -2,6 +2,6 @@
 
 public interface IAttachmentRepository: IRepository<Attachment>
 {
-    Attachment AddAttachment(AttachmentDto attachmentDto, string userName);
-    Task<Attachment> RemoveAttachment(int attachmentId);
+    Attachment AddAttachment(AttachmentDto attachmentDto, string userName, Guid tenantId);
+    Task<Result<Attachment>> RemoveAttachment(int attachmentId);
 }

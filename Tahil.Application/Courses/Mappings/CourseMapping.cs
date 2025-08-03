@@ -14,6 +14,7 @@ public static class CourseMapping
         return new Course
         {
             Name = model.Name,
+            Description = model.Description,
             IsActive = model.IsActive,
         };
     }

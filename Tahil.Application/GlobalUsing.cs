@@ -10,3 +10,4 @@ global using Tahil.Common.Commands;
 global using FluentValidation;
 global using Tahil.Domain.Repositories;
 global using Mapster;
+global using Tahil.Domain.Localization;

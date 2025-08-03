@@ -2,13 +2,13 @@
 
 public record ActivateRoomCommand(int Id) : ICommand<Result<bool>>;
 
-public class ActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository) : ICommandHandler<ActivateRoomCommand, Result<bool>>
+public class ActivateRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository roomRepository, LocalizedStrings locale) : ICommandHandler<ActivateRoomCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(ActivateRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await roomRepository.GetAsync(r => r.Id == request.Id);
         if (room is null)
-            throw new NotFoundException("Room");
+            return Result<bool>.Failure(locale.NotAvailableRoom);
 
         room.Activate();
 

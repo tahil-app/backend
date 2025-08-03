@@ -63,6 +63,11 @@ namespace Tahil.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
@@ -72,7 +77,13 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("course", (string)null);
                 });
@@ -86,16 +97,30 @@ namespace Tahil.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Capacity")
+                    b.Property<int>("CourseId")
                         .HasColumnType("integer")
-                        .HasColumnName("capacity");
+                        .HasColumnName("course_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer")
+                        .HasColumnName("teacher_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("group", (string)null);
                 });
@@ -283,7 +308,13 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("room", (string)null);
                 });
@@ -567,6 +598,44 @@ namespace Tahil.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Tahil.Domain.Entities.Course", b =>
+                {
+                    b.HasOne("Tahil.Domain.Entities.Tenant", "Tenant")
+                        .WithMany("Courses")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("Tahil.Domain.Entities.Group", b =>
+                {
+                    b.HasOne("Tahil.Domain.Entities.Course", "Course")
+                        .WithMany("Groups")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tahil.Domain.Entities.Teacher", "Teacher")
+                        .WithMany("Groups")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tahil.Domain.Entities.Tenant", "Tenant")
+                        .WithMany("Groups")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Teacher");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("Tahil.Domain.Entities.LessonSchedule", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.Course", "Course")
@@ -649,6 +718,17 @@ namespace Tahil.Infrastructure.Migrations
                     b.Navigation("Schedule");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Tahil.Domain.Entities.Room", b =>
+                {
+                    b.HasOne("Tahil.Domain.Entities.Tenant", "Tenant")
+                        .WithMany("Rooms")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Tahil.Domain.Entities.Student", b =>
@@ -788,6 +868,8 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.Course", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("Schedules");
 
                     b.Navigation("Sessions");
@@ -827,6 +909,8 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.Teacher", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("Schedules");
 
                     b.Navigation("Sessions");
@@ -838,6 +922,12 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.Tenant", b =>
                 {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Groups");
+
+                    b.Navigation("Rooms");
+
                     b.Navigation("Users");
                 });
 

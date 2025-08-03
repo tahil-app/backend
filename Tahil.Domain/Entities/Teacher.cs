@@ -1,6 +1,4 @@
-﻿using Tahil.Common.Exceptions;
-
-namespace Tahil.Domain.Entities;
+﻿namespace Tahil.Domain.Entities;
 
 public class Teacher : Base
 {
@@ -10,6 +8,7 @@ public class Teacher : Base
     public int UserId { get; set; }
     public User User { get; set; } = default!;
 
+    public ICollection<Group> Groups { get; set; } = new List<Group>();
     public ICollection<TeacherAttachment> TeacherAttachments { get; set; } = new List<TeacherAttachment>();
     public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
     public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
