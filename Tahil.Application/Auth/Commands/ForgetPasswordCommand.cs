@@ -16,7 +16,7 @@ public class ForgetPasswordCommandHandler(
     {
         var user = await userRepository.GetAsync(r => r.IsActive && r.Email.Value == request.Email, [r => r.Tenant!]);
         if (user is null)
-            throw new DomainException(locale.InvalidCredentials);
+            return Result<bool>.Failure(locale.InvalidCredentials);
 
 
         var placeholders = new Dictionary<string, string>

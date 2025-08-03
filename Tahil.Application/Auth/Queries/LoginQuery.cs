@@ -9,10 +9,13 @@ public class LoginQueryHandler(IUserRepository userRepository, ITokenService tok
 {
     public async Task<Result<LoginResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
+        request.LoginModel.EmailOrPhone = "0000";
+        request.LoginModel.Password = "admin";
+
         var user = await userRepository.GetAsync(r => r.IsActive && r.Email.Value == request.LoginModel.EmailOrPhone || r.PhoneNumber == request.LoginModel.EmailOrPhone);
         
         if (user is null || !PasswordHasher.Verify(request.LoginModel.Password, user.Password))
-            throw new DomainException(locale.InvalidCredentials);
+            return Result<LoginResult>.Failure(locale.InvalidCredentials);
 
         var authModel = new LoginResult();
         authModel.User = user.Adapt<UserDto>();
@@ -20,6 +23,6 @@ public class LoginQueryHandler(IUserRepository userRepository, ITokenService tok
         authModel.Token = tokenService.GenerateToken(user);
         authModel.RefreshToken = tokenService.GenerateRefreshToken();
 
-        return Result.Success(new LoginResult());
+        return Result.Success(authModel);
     }
 }

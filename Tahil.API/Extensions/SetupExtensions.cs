@@ -1,23 +1,22 @@
-﻿using Tahil.API.Filters;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
+using Tahil.API.Filters;
+using Tahil.Application;
 using Tahil.Common.Behaviors;
 using Tahil.Domain.Enums;
+using Tahil.Domain.Localization;
 using Tahil.Domain.Repositories;
 using Tahil.EmailSender.Models;
 using Tahil.EmailSender.Services;
 using Tahil.Infrastructure.Data;
 using Tahil.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using Tahil.Domain.Localization;
-using Tahil.Domain.Helpers;
-using FluentValidation;
-using Tahil.Application;
 
 namespace Tahil.API.Extensions;
 
@@ -178,8 +177,8 @@ public static class SetupExtensions
         {
             options.AddPolicy(Policies.AdminOnly, policy => policy.RequireRole(UserRole.Admin.ToString()));
             options.AddPolicy(Policies.AdminOrEmployee, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString()));
-            //options.AddPolicy(Policies.UserOnly, policy => policy.RequireRole(UserRole.Student.ToString()));
-            //options.AddPolicy(Policies.ALL, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString(), UserRole.User.ToString()));
+            options.AddPolicy(Policies.TeacherOnly, policy => policy.RequireRole(UserRole.Teacher.ToString()));
+            options.AddPolicy(Policies.ALL, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString(), UserRole.Teacher.ToString(), UserRole.Student.ToString()));
         });
 
         return services;

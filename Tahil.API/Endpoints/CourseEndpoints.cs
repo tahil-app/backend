@@ -15,36 +15,36 @@ public class CourseEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetAllCoursesQuery());
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.ALL);
 
         courses.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetCoursesPagedQuery(queryParams));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOnly);
 
         courses.MapPost("/create", async (CourseDto model, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new CreateCourseCommand(model));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOnly);
 
         courses.MapPut("/update", async (CourseDto model, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new UpdateCourseCommand(model));
             return Results.Ok(result);
-        });//.RequireAuthorization(Policies.ALL);
+        }).RequireAuthorization(Policies.AdminOnly);
 
         courses.MapPut("/activate/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var user = await mediator.Send(new ActivateCourseCommand(id));
             return Results.Ok(user);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOnly);
 
         courses.MapPut("/deactivate/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var user = await mediator.Send(new DeActivateCourseCommand(id));
             return Results.Ok(user);
-        });//.RequireAuthorization(Policies.AdminOnly);
+        }).RequireAuthorization(Policies.AdminOnly);
     }
 }

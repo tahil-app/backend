@@ -28,7 +28,7 @@ public class AuthEndpoints : ICarterModule
             return Results.Ok(result);
         });
 
-        auth.MapPost("/forget-password/{email}", async (string email, [FromServices] IMediator mediator) =>
+        auth.MapGet("/forget-password/{email}", async (string email, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new ForgetPasswordCommand(email));
             return Results.Ok(result);

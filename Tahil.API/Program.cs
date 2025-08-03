@@ -28,7 +28,7 @@ builder.Services.AddEndpointsApiExplorer(); // Required for Minimal APIs
 builder.Services.AddSwagger();
 
 builder.Services.AddJwtAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationPolicies();
 
 var app = builder.Build();
 
