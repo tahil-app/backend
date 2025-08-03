@@ -11,6 +11,12 @@ public class GroupEndpoints : ICarterModule
     {
         var groups = app.MapGroup("/groups");
 
+        groups.MapGet("/all", async ([FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetAllGroupsQuery());
+            return Results.Ok(result);
+        });//.RequireAuthorization(Policies.AdminOnly);
+
         groups.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetGroupsPagedQuery(queryParams));

@@ -1,4 +1,6 @@
-﻿namespace Tahil.Domain.Entities;
+﻿using Tahil.Common.Helpers;
+
+namespace Tahil.Domain.Entities;
 
 public class LessonSchedule : Base
 {
@@ -8,13 +10,13 @@ public class LessonSchedule : Base
     public int GroupId { get; set; }
     public int? ReferenceId { get; set; }
 
-    public DayOfWeek Day { get; set; }
-    public TimeSpan StartTime { get; set; }
-    public TimeSpan EndTime { get; set; }
-
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
     public LessonScheduleStatus Status { get; set; }
+
+    public DayOfWeek? Day { get; set; }
+    public TimeSpan? StartTime { get; set; }
+    public TimeSpan? EndTime { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -30,4 +32,17 @@ public class LessonSchedule : Base
 
     public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
     public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
+
+
+    public void Update(LessonScheduleDto scheduleDto, string userName)
+    {
+        GroupId = scheduleDto.GroupId;
+        RoomId = scheduleDto.RoomId;
+        CourseId = scheduleDto.CourseId;
+        TeacherId = scheduleDto.TeacherId;
+        StartDate = scheduleDto.StartDate;
+        EndDate = scheduleDto.EndDate;
+        UpdatedAt = Date.Now;
+        UpdatedBy = userName;
+    }
 }

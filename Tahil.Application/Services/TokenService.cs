@@ -22,6 +22,7 @@ public class TokenService(IConfiguration configuration) : ITokenService
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email.Value ?? string.Empty),
             new Claim("PhoneNumber", user.PhoneNumber ?? string.Empty),
+            new Claim("TenantId", user.TenantId.ToString() ?? "00000000-0000-0000-0000-000000000001"),
             new Claim(ClaimTypes.Role, user.Role.ToString() ?? UserRole.Admin.ToString())
         };
 

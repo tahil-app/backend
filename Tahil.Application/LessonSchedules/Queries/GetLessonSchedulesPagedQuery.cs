@@ -6,7 +6,7 @@ public class GetLessonSchedulesPagedQueryHandler(ILessonScheduleRepository lesso
 {
     public async Task<Result<PagedList<LessonScheduleDto>>> Handle(GetLessonSchedulesPagedQuery request, CancellationToken cancellationToken)
     {
-        var schedules = await lessonScheduleRepository.GetPagedAsync(request.QueryParams);
+        var schedules = await lessonScheduleRepository.GetPagedAsync(request.QueryParams, includes: [r => r.Group, r => r.Room, r => r.Course, r => r.Teacher]);
         var pagedSchedules = schedules.Adapt<PagedList<LessonScheduleDto>>();
 
         return Result.Success(pagedSchedules);

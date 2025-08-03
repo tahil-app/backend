@@ -2,7 +2,7 @@
 
 public enum LessonScheduleStatus
 {
-    Pending,
+    New,
     Active,
     Paused,
     Completed,

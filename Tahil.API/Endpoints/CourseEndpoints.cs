@@ -11,6 +11,12 @@ public class CourseEndpoints : ICarterModule
     {
         var courses = app.MapGroup("/courses");
 
+        courses.MapGet("/all", async ([FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetAllCoursesQuery());
+            return Results.Ok(result);
+        });//.RequireAuthorization(Policies.AdminOnly);
+
         courses.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetCoursesPagedQuery(queryParams));

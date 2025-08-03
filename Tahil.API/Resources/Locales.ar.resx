@@ -132,14 +132,23 @@
   <data name="Email" xml:space="preserve">
     <value>البريد الالكترونى</value>
   </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>وقت الانتهاء</value>
+  </data>
   <data name="Group" xml:space="preserve">
     <value>المجموعة</value>
   </data>
   <data name="GroupHasStudentCantDelete" xml:space="preserve">
     <value>المجموعة مسجل بها طلاب, لا يمكن حذفها</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>بيانات الدخول غير صحيحة</value>
+  </data>
   <data name="InvalidEmailFormat" xml:space="preserve">
     <value>البريد غير صحيح</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>حدث خطأ فى انشاء الرمز</value>
   </data>
   <data name="IsDuplicated" xml:space="preserve">
     <value>مكرر</value>
@@ -150,8 +159,20 @@
   <data name="IsNotFount" xml:space="preserve">
     <value>غير متاح</value>
   </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>مطلوب</value>
+  </data>
+  <data name="LessonSchedule" xml:space="preserve">
+    <value>جدول التوزيع الرئيسي</value>
+  </data>
   <data name="MustBePositive" xml:space="preserve">
     <value>يجب ان تكون القيمة اكبر من 0</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>الرقم السرى</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>رقم الهاتف</value>
@@ -161,6 +182,12 @@
   </data>
   <data name="ServerRunning" xml:space="preserve">
     <value>:) السيرفر يعمل</value>
+  </data>
+  <data name="StartAndEndDatesValidation" xml:space="preserve">
+    <value>تاريخ البداية يجب ان يكون اقل او يساوى تاريخ الانتهاء</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>وقت البداية</value>
   </data>
   <data name="Teacher" xml:space="preserve">
     <value>المعلم</value>

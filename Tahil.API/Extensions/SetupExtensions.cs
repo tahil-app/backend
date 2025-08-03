@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Tahil.Domain.Localization;
 using Tahil.Domain.Helpers;
+using FluentValidation;
+using Tahil.Application;
 
 namespace Tahil.API.Extensions;
 
@@ -52,6 +54,7 @@ public static class SetupExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<ITeacherRepository, TeacherRepository>();
@@ -59,6 +62,7 @@ public static class SetupExtensions
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<ILessonScheduleRepository, LessonScheduleRepository>();
+        services.AddScoped<ILookupRepository, LookupRepository>();
 
         return services;
     }
@@ -134,9 +138,10 @@ public static class SetupExtensions
         return services;
     }
 
-    public static IServiceCollection AddValidationModule(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddValidationModule(this IServiceCollection services)
     {
-        //services.AddValidatorsFromAssembly(assembly);
+        services.AddValidatorsFromAssemblyContaining<ApplicationConfig>();
+
         return services;
     }
 

@@ -11,6 +11,12 @@ public class RoomEndpoints : ICarterModule
     {
         var rooms = app.MapGroup("/rooms");
 
+        rooms.MapGet("/all", async ([FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetAllRoomsQuery());
+            return Results.Ok(result);
+        });//.RequireAuthorization(Policies.AdminOnly);
+
         rooms.MapPost("/paged", async ([FromBody]QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetRoomsPagedQuery(queryParams));

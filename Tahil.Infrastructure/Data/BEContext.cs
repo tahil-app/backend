@@ -14,6 +14,7 @@ public class BEContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         modelBuilder.SeedUsers();
+        modelBuilder.SeedTenants();
         base.OnModelCreating(modelBuilder);
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddExceptionHandler<CustomExceptionHandling>();
 
 builder.Services.AddCarterModule();
 builder.Services.AddMediatRModule(typeof(ApplicationConfig).Assembly);
+builder.Services.AddValidationModule();
 
 builder.Services.AddEndpointsApiExplorer(); // Required for Minimal APIs
 builder.Services.AddSwagger();

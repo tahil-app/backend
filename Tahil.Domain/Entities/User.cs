@@ -14,7 +14,9 @@ public class User: Base
     public DateOnly BirthDate { get; set; }
     public bool IsActive { get; set; }
     public string? ImagePath { get; set; }
+    public Guid? TenantId { get; set; } 
 
+    public Tenant? Tenant { get; set; }
     public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
     public ICollection<Student> Students { get; set; } = new List<Student>();
 

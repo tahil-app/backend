@@ -132,14 +132,23 @@
   <data name="Email" xml:space="preserve">
     <value>Email</value>
   </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
   <data name="Group" xml:space="preserve">
     <value>Group</value>
   </data>
   <data name="GroupHasStudentCantDelete" xml:space="preserve">
     <value>The group has students, You can't delete i</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials</value>
+  </data>
   <data name="InvalidEmailFormat" xml:space="preserve">
     <value>in invalid format</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>Invalid refresh token</value>
   </data>
   <data name="IsDuplicated" xml:space="preserve">
     <value>is duplicated</value>
@@ -150,8 +159,20 @@
   <data name="IsNotFount" xml:space="preserve">
     <value>is not found</value>
   </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>is required</value>
+  </data>
+  <data name="LessonSchedule" xml:space="preserve">
+    <value>Lesson Schedule</value>
+  </data>
   <data name="MustBePositive" xml:space="preserve">
     <value>must be greater than zero</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>PhoneNumber</value>
@@ -161,6 +182,12 @@
   </data>
   <data name="ServerRunning" xml:space="preserve">
     <value>The server is running :)</value>
+  </data>
+  <data name="StartAndEndDatesValidation" xml:space="preserve">
+    <value>Start Date must be less than or equal to End Date.</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start Date</value>
   </data>
   <data name="Teacher" xml:space="preserve">
     <value>Teacher</value>

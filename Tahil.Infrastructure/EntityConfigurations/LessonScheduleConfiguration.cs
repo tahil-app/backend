@@ -31,8 +31,7 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
             .HasColumnName("reference");
 
         builder.Property(p => p.Day)
-            .HasColumnName("day")
-            .IsRequired();
+            .HasColumnName("day");
 
         builder.Property(p => p.StartTime)
             .HasColumnName("start_time");
@@ -82,6 +81,6 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
 
         builder.HasOne(p => p.Reference)
             .WithMany(r => r.Schedules)
-            .HasForeignKey(p => p.GroupId);
+            .HasForeignKey(p => p.ReferenceId);
     }
 }

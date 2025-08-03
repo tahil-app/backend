@@ -34,6 +34,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(p => p.ImagePath)
             .HasColumnName("image_path");
 
+        builder.Property(p => p.TenantId)
+            .HasColumnName("tenant_id");
+
         builder.OwnsOne(p => p.Email, emailBuilder =>
         {
             emailBuilder.Property(p => p.Value)
@@ -47,5 +50,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(p => p.IsActive)
             .HasColumnName("is_active");
+
+        builder.HasOne(r => r.Tenant)
+            .WithMany(r => r.Users)
+            .HasForeignKey(r => r.TenantId);
     }
 }

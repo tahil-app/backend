@@ -6,4 +6,5 @@ public class TeacherDto : UserDto
     public string Qualification { get; set; } = string.Empty;
 
     public List<AttachmentDto> Attachments { get; set; } = new();
+    public List<CourseDto> Courses { get; set; }
 }

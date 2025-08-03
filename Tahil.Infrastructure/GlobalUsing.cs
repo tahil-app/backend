@@ -6,3 +6,4 @@ global using System.Linq.Expressions;
 global using Tahil.Infrastructure.Data;
 global using Tahil.Infrastructure.Helpers;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Tahil.Domain.Consts;

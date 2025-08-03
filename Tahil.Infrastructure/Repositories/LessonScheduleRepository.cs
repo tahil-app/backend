@@ -2,33 +2,46 @@
 using Tahil.Common.Helpers;
 using Tahil.Domain.Enums;
 using Tahil.Domain.Localization;
+using Tahil.Domain.Services;
 
 namespace Tahil.Infrastructure.Repositories;
 
 public class LessonScheduleRepository : Repository<LessonSchedule>, ILessonScheduleRepository
 {
+    private readonly BEContext _context;
     private readonly DbSet<LessonSession> lessonSessionDbSet;
     private readonly DbSet<Room> roomDbSet;
     private readonly DbSet<Course> courseDbSet;
     private readonly DbSet<Teacher> teacherDbSet;
     private readonly LocalizedStrings _localizedStrings;
+    private readonly IApplicationContext _applicationContext;
 
-    public LessonScheduleRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<LessonSchedule>()) 
+    public LessonScheduleRepository(BEContext context, LocalizedStrings localizedStrings, IApplicationContext applicationContext) : base(context.Set<LessonSchedule>()) 
     {
+        _context = context;
         lessonSessionDbSet = context.Set<LessonSession>();
         roomDbSet = context.Set<Room>();
         courseDbSet = context.Set<Course>();
         teacherDbSet = context.Set<Teacher>();
         _localizedStrings = localizedStrings;
+        _applicationContext = applicationContext;
     }
 
-    public async Task AddLessonScheduleAsync(LessonSchedule schedule)
+    public new void Add(LessonSchedule schedule)
     {
-        await CheckConflictAsync(schedule);
-        
         schedule.CreatedAt = Date.Now;
+        schedule.CreatedBy = _applicationContext.UserName;
+
+        schedule.UpdatedAt = Date.Now;
+        schedule.UpdatedBy = _applicationContext.UserName;
+
+        schedule.Status = LessonScheduleStatus.New;
+
+        schedule.Day = null;
+        schedule.StartTime = null;
+        schedule.EndTime = null;
         
-        Add(schedule);
+        _context.Add(schedule);
     }
 
     public async Task UpdateLessonScheduleAsync(LessonSchedule schedule)
@@ -74,18 +87,6 @@ public class LessonScheduleRepository : Repository<LessonSchedule>, ILessonSched
 
     private async Task CheckConflictAsync(LessonSchedule schedule)
     {
-        var roomIsValid = await roomDbSet.AnyAsync(r => r.IsActive && r.Id == schedule.RoomId);
-        if (!roomIsValid)
-            throw new DomainException(_localizedStrings.Room);
-
-        var courseIsValid = await courseDbSet.AnyAsync(r => r.IsActive && r.Id == schedule.CourseId);
-        if (!courseIsValid)
-            throw new DomainException(_localizedStrings.NotAvailableCourse);
-
-        var teacherIsValid = await teacherDbSet.AnyAsync(r => r.User.IsActive && r.Id == schedule.TeacherId);
-        if (!teacherIsValid)
-            throw new DomainException(_localizedStrings.NotAvailableTeacher);
-
         var hasConflict = await AnyAsync(e => 
                 e.Day == schedule.Day &&
                 e.Id != schedule.Id && // to avoid self-conflict during update
