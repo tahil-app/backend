@@ -21,7 +21,7 @@ public class AttachmentEndpoints : ICarterModule
                 true => Results.File(fullPath!, contentType!, downloadName), // Force download
                 false => Results.NotFound($"File '{fileName}' not found.")
             };
-        });
+        }).RequireAuthorization(Policies.ALL);
 
         attachments.MapGet("/view/{fileName}", (string fileName, IWebHostEnvironment env) =>
         {
@@ -32,7 +32,7 @@ public class AttachmentEndpoints : ICarterModule
                 true => Results.File(fullPath!, contentType!), // View in browser
                 false => Results.NotFound($"File '{fileName}' not found.")
             };
-        });
+        }).RequireAuthorization(Policies.ALL);
     }
 
     private static bool LocateAttachment(string fileName, IWebHostEnvironment env, out string? fullPath, out string? contentType, out string? userType)

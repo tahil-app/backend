@@ -7,14 +7,15 @@ public record UploadStudentImageCommand(UserAttachmentModel AttachmentModel) : I
 public class UploadStudentLogoCommandHandler(
     IUnitOfWork unitOfWork,
     IUploadService uploadService,
-    IStudentRepository studentRepository)
+    IStudentRepository studentRepository,
+    LocalizedStrings locale)
     : ICommandHandler<UploadStudentImageCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UploadStudentImageCommand request, CancellationToken cancellationToken)
     {
         var student = await studentRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId);
         if (student is null)
-            throw new NotFoundException("Student");
+            return Result<bool>.Failure(locale.NotAvailableStudent);
 
         var deletedImage = student.User.ImagePath;
 

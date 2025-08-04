@@ -2,13 +2,13 @@
 
 public record DeActivateTeacherCommand(int Id) : ICommand<Result<bool>>;
 
-public class DeActivateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherRepository teacherRepository) : ICommandHandler<DeActivateTeacherCommand, Result<bool>>
+public class DeActivateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherRepository teacherRepository, LocalizedStrings locale) : ICommandHandler<DeActivateTeacherCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeActivateTeacherCommand request, CancellationToken cancellationToken)
     {
         var teacher = await teacherRepository.GetAsync(r => r.Id == request.Id);
         if (teacher is null)
-            throw new NotFoundException("Teacher");
+            return Result<bool>.Failure(locale.NotAvailableTeacher);
 
         teacher.DeActivate();
 

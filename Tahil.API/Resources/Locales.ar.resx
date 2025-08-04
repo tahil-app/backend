@@ -120,6 +120,12 @@
   <data name="Attachment" xml:space="preserve">
     <value>المرفق</value>
   </data>
+  <data name="NotFoundAttachment" xml:space="preserve">
+    <value>المرفق غير متاح</value>
+  </data>
+  <data name="NotAvailableAttachment" xml:space="preserve">
+    <value>المرفق لم يعد متاحا</value>
+  </data>
   <data name="CannotBeNull" xml:space="preserve">
     <value>يجب ان تحتوى على قيمة</value>
   </data>
@@ -201,6 +207,9 @@
   <data name="Password" xml:space="preserve">
     <value>الرقم السرى</value>
   </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>كلمة المرور يجب أن تكون على الأقل 6 أحرف</value>
+  </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>رقم الهاتف</value>
   </data>
@@ -237,6 +246,15 @@
   <data name="StudentHasAttachments" xml:space="preserve">
     <value>الطالب له مرفقات، لا يمكن حذفه</value>
   </data>
+  <data name="StudentNameTooLong" xml:space="preserve">
+    <value>اسم الطالب لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="StudentNameTooShort" xml:space="preserve">
+    <value>اسم الطالب يجب أن يكون على الأقل 2 أحرف</value>
+  </data>
+  <data name="StudentQualificationTooLong" xml:space="preserve">
+    <value>مؤهلات الطالب لا يمكن أن تتجاوز 200 حرف</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>المعلم</value>
   </data>
@@ -245,5 +263,35 @@
   </data>
   <data name="TeacherHasAttachments" xml:space="preserve">
     <value>المعلم له مرفقات، لا يمكن حذفه</value>
+  </data>
+  <data name="TeacherNameTooLong" xml:space="preserve">
+    <value>اسم المعلم لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="TeacherNameTooShort" xml:space="preserve">
+    <value>اسم المعلم يجب أن يكون على الأقل 2 أحرف</value>
+  </data>
+  <data name="TeacherExperienceTooLong" xml:space="preserve">
+    <value>خبرة المعلم لا يمكن أن تتجاوز 500 حرف</value>
+  </data>
+  <data name="TeacherQualificationTooLong" xml:space="preserve">
+    <value>مؤهلات المعلم لا يمكن أن تتجاوز 200 حرف</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>المستخدم</value>
+  </data>
+  <data name="UserHasTeachers" xml:space="preserve">
+    <value>المستخدم له معلمين، لا يمكن حذفه</value>
+  </data>
+  <data name="UserHasStudents" xml:space="preserve">
+    <value>المستخدم له طلاب، لا يمكن حذفه</value>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>الموظف</value>
+  </data>
+  <data name="EmployeeNameTooLong" xml:space="preserve">
+    <value>اسم الموظف لا يمكن أن يتجاوز 100 حرف</value>
+  </data>
+  <data name="EmployeeNameTooShort" xml:space="preserve">
+    <value>اسم الموظف يجب أن يكون على الأقل 2 أحرف</value>
   </data>
 </root>

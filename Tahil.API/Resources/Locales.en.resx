@@ -120,6 +120,12 @@
   <data name="Attachment" xml:space="preserve">
     <value>Attachment</value>
   </data>
+  <data name="NotFoundAttachment" xml:space="preserve">
+    <value>Attachment is not found</value>
+  </data>
+  <data name="NotAvailableAttachment" xml:space="preserve">
+    <value>Attachment is not available anymore</value>
+  </data>
   <data name="CannotBeNull" xml:space="preserve">
     <value>cannot be null</value>
   </data>
@@ -201,6 +207,9 @@
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Password must be at least 6 characters</value>
+  </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>PhoneNumber</value>
   </data>
@@ -237,6 +246,15 @@
   <data name="StudentHasAttachments" xml:space="preserve">
     <value>Student has attachments, cannot delete</value>
   </data>
+  <data name="StudentNameTooLong" xml:space="preserve">
+    <value>Student name cannot exceed 100 characters</value>
+  </data>
+  <data name="StudentNameTooShort" xml:space="preserve">
+    <value>Student name must be at least 2 characters</value>
+  </data>
+  <data name="StudentQualificationTooLong" xml:space="preserve">
+    <value>Student qualification cannot exceed 200 characters</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>Teacher</value>
   </data>
@@ -245,5 +263,35 @@
   </data>
   <data name="TeacherHasAttachments" xml:space="preserve">
     <value>Teacher has attachments, cannot delete</value>
+  </data>
+  <data name="TeacherNameTooLong" xml:space="preserve">
+    <value>Teacher name cannot exceed 100 characters</value>
+  </data>
+  <data name="TeacherNameTooShort" xml:space="preserve">
+    <value>Teacher name must be at least 2 characters</value>
+  </data>
+  <data name="TeacherExperienceTooLong" xml:space="preserve">
+    <value>Teacher experience cannot exceed 500 characters</value>
+  </data>
+  <data name="TeacherQualificationTooLong" xml:space="preserve">
+    <value>Teacher qualification cannot exceed 200 characters</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="UserHasTeachers" xml:space="preserve">
+    <value>User has teachers, cannot delete</value>
+  </data>
+  <data name="UserHasStudents" xml:space="preserve">
+    <value>User has students, cannot delete</value>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>Employee</value>
+  </data>
+  <data name="EmployeeNameTooLong" xml:space="preserve">
+    <value>Employee name cannot exceed 100 characters</value>
+  </data>
+  <data name="EmployeeNameTooShort" xml:space="preserve">
+    <value>Employee name must be at least 2 characters</value>
   </data>
 </root>

@@ -2,5 +2,6 @@
 
 public interface IUserRepository : IRepository<User> 
 {
-    Task AddUserAsync(User newUser);
+    Task<Result<bool>> AddUserAsync(User user, Guid tenantId);
+    Task<Result<bool>> DeleteUserAsync(int id);
 }

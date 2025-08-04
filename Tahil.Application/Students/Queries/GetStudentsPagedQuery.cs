@@ -6,7 +6,7 @@ public class GetStudentsPagedQueryHandler(IStudentRepository studentRepository) 
 {
     public async Task<Result<PagedList<StudentDto>>> Handle(GetStudentsPagedQuery request, CancellationToken cancellationToken)
     {
-        var students = await studentRepository.GetPagedAsync(request.QueryParams);
+        var students = await studentRepository.GetPagedAsync(request.QueryParams, r => r.User.Role == UserRole.Student);
         var pagedStudents = students.Adapt<PagedList<StudentDto>>();
 
         return Result.Success(pagedStudents);

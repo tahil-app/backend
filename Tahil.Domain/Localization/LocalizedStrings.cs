@@ -8,6 +8,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string InvalidCredentials => loc[nameof(InvalidCredentials)];
     public string InvalidRefreshToken => loc[nameof(InvalidRefreshToken)];
     public string Password => loc[nameof(Password)];
+    public string PasswordTooShort => loc[nameof(PasswordTooShort)];
     public string RequiredPassword => Required(Password);
 
     #endregion
@@ -51,6 +52,9 @@ public class LocalizedStrings(ILocalizationService loc)
     public string Student => loc[nameof(Student)];
     public string StudentHasGroups => loc[nameof(StudentHasGroups)];
     public string StudentHasAttachments => loc[nameof(StudentHasAttachments)];
+    public string StudentNameTooLong => loc[nameof(StudentNameTooLong)];
+    public string StudentNameTooShort => loc[nameof(StudentNameTooShort)];
+    public string StudentQualificationTooLong => loc[nameof(StudentQualificationTooLong)];
     public string DuplicatedStudent => Duplicate(Student);
     public string NotAvailableStudent => NotAvailable(Student);
     public string RequiredStudent => Required(Student);
@@ -60,9 +64,22 @@ public class LocalizedStrings(ILocalizationService loc)
     public string Teacher => loc[nameof(Teacher)];
     public string TeacherHasCourses => loc[nameof(TeacherHasCourses)];
     public string TeacherHasAttachments => loc[nameof(TeacherHasAttachments)];
+    public string TeacherNameTooLong => loc[nameof(TeacherNameTooLong)];
+    public string TeacherNameTooShort => loc[nameof(TeacherNameTooShort)];
+    public string TeacherExperienceTooLong => loc[nameof(TeacherExperienceTooLong)];
+    public string TeacherQualificationTooLong => loc[nameof(TeacherQualificationTooLong)];
     public string DuplicatedTeacher => Duplicate(Teacher);
     public string NotAvailableTeacher => NotAvailable(Teacher);
     public string RequiredTeacher => Required(Teacher);
+    #endregion
+
+    #region Employee
+    public string Employee => loc[nameof(Employee)];
+    public string EmployeeNameTooLong => loc[nameof(EmployeeNameTooLong)];
+    public string EmployeeNameTooShort => loc[nameof(EmployeeNameTooShort)];
+    public string DuplicatedEmployee => Duplicate(Employee);
+    public string NotAvailableEmployee => NotAvailable(Employee);
+    public string RequiredEmployee => Required(Employee);
     #endregion
 
     #region Lesson Schedule
@@ -74,6 +91,7 @@ public class LocalizedStrings(ILocalizationService loc)
 
     #region Shared
     public string Name => loc[nameof(Name)];
+    public string User => loc[nameof(User)];
     public string Attachment => loc[nameof(Attachment)];
     public string PhoneNumber => loc[nameof(PhoneNumber)];
     public string Email => loc[nameof(Email)];
@@ -93,8 +111,12 @@ public class LocalizedStrings(ILocalizationService loc)
     public string RequiredPhoneNumber => Required(PhoneNumber);
     public string DuplicatedPhoneNumber => Duplicate(PhoneNumber);
     public string NotFoundAttachment => NotFound(Attachment);
+    public string NotAvailableAttachment => NotAvailable(Attachment);
     public string RequiredStartDate => Required(StartDate);
     public string RequiredEndDate => Required(EndDate);
+    public string NotAvailableUser => NotAvailable(User);
+    public string UserHasTeachers => loc[nameof(UserHasTeachers)];
+    public string UserHasStudents => loc[nameof(UserHasStudents)];
     #endregion
 
 

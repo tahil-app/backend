@@ -9,14 +9,15 @@ public class UploadTeacherAttachmetCommandHandler(
     IUploadService uploadService,
     IAttachmentRepository attachmentRepository,
     IApplicationContext applicationContext,
-    ITeacherRepository teacherRepository)
+    ITeacherRepository teacherRepository,
+    LocalizedStrings locale)
     : ICommandHandler<UploadTeacherAttachmetCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UploadTeacherAttachmetCommand request, CancellationToken cancellationToken)
     {
         var teacher = await teacherRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId, [r => r.TeacherAttachments]);
         if (teacher is null)
-            throw new NotFoundException("Teacher");
+            return Result<bool>.Failure(locale.NotAvailableTeacher);
 
         var file = request.AttachmentModel.File;
         Guid guid = Guid.NewGuid();

@@ -6,13 +6,14 @@ public class DeleteStudentAttachmentCommandHandler(
     IUnitOfWork unitOfWork,
     IUploadService uploadService,
     IStudentRepository studentRepository,
-    IAttachmentRepository attachmentRepository) : ICommandHandler<DeleteStudentAttachmentCommand, Result<bool>>
+    IAttachmentRepository attachmentRepository,
+    LocalizedStrings locale) : ICommandHandler<DeleteStudentAttachmentCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteStudentAttachmentCommand request, CancellationToken cancellationToken)
     {
         var student = await studentRepository.GetAsync(r => r.StudentAttachments.Any(a => a.AttachmentId == request.AttachmentId), [r => r.StudentAttachments]);
         if (student is null)
-            throw new NotFoundException("Attachment");
+            return Result<bool>.Failure(locale.NotAvailableAttachment);
 
         student.RemoveStudentAttachment(request.AttachmentId);
 
@@ -21,7 +22,7 @@ public class DeleteStudentAttachmentCommandHandler(
         var result = await unitOfWork.SaveChangesAsync();
         if (result)
         {
-            var deletedPath = Path.Combine("wwwroot", "attachments", "students", student.Id.ToString(), deletedAttach.FileName!);
+            var deletedPath = Path.Combine("wwwroot", "attachments", "students", student.Id.ToString(), deletedAttach.Value.FileName!);
             await uploadService.DeleteAsync(deletedPath);
         }
 
