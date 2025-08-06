@@ -7,14 +7,15 @@ public record SignupCommand(SignupModel Model) : ICommand<Result<bool>>;
 
 public class SignupCommandHandler(
     IUnitOfWork unitOfWork, 
-    IUserRepository userRepository
+    IUserRepository userRepository,
+    IApplicationContext applicationContext
     ) : ICommandHandler<SignupCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(SignupCommand request, CancellationToken cancellationToken)
     {
         var user = request.Model.ToUser();
 
-        await userRepository.AddUserAsync(user);
+        await userRepository.AddUserAsync(user, applicationContext.TenantId);
         
         var result = await unitOfWork.SaveChangesAsync();
 

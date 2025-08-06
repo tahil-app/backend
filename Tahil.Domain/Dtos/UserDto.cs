@@ -8,8 +8,8 @@ public class UserDto : BaseDto
     public string Password { get; set; } = string.Empty;
     public UserRole Role { get; set; }
     public Gender Gender { get; set; }
-    public DateOnly JoinedDate { get; set; }
-    public DateOnly BirthDate { get; set; }
+    public DateOnly? JoinedDate { get; set; }
+    public DateOnly? BirthDate { get; set; }
     public bool IsActive { get; set; }
     public string? ImagePath { get; set; }
 }

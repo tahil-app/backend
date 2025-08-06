@@ -1,4 +1,6 @@
-﻿using Tahil.Domain.Localization;
+﻿using Mapster;
+using Tahil.Domain.Dtos;
+using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
 
@@ -43,6 +45,25 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         // If no child relationships exist, proceed with deletion
         HardDelete(group);
         return Result<bool>.Success(true);
+    }
+
+    public async Task<GroupDto> GetGroupAsync(int id) 
+    {
+        var query = _dbSet.Where(r => r.Id == id)
+            .Select(r => new GroupDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                CourseId = r.CourseId,
+                Course = r.Course.Adapt<CourseDto>(),
+                TeacherId = r.TeacherId,
+                Teacher = r.Teacher.Adapt<TeacherDto>(),
+                Students = r.StudentGroups.Select(s => s.Student).ToList().Adapt<List<StudentDto>>(),
+                Capacity = r.Capacity,
+                NumberOfStudents = r.StudentGroups.Count
+            });
+
+        return await query.FirstOrDefaultAsync() ?? new();
     }
 
     private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group) 

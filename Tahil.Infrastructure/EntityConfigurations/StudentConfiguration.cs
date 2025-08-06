@@ -19,8 +19,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasColumnName("user_id");
 
         builder.HasOne(r => r.User)
-            .WithMany(r => r.Students)
-            .HasForeignKey(r => r.UserId);
+            .WithOne(r => r.Student)
+            .HasForeignKey<Student>(r => r.UserId);
 
         builder.Navigation(r => r.User)
             .AutoInclude();

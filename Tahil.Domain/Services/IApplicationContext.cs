@@ -5,6 +5,6 @@ public interface IApplicationContext
     string UserName { get; }
     int UserId { get; }
     Guid TenantId { get; }
-    UserRole GetUserRole();
+    UserRole UserRole { get; }
     bool IsAuthenticated();
 }

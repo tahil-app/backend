@@ -6,7 +6,7 @@ public class Group : Base
     public int CourseId { get; set; }
     public int TeacherId { get; set; }
     public Guid TenantId { get; set; }
-
+    public int Capacity { get; set; }
 
     public Course? Course { get; set; }
     public Teacher? Teacher { get; set; }
@@ -29,6 +29,7 @@ public class Group : Base
         Name = groupDto.Name;
         CourseId = groupDto.CourseId;
         TeacherId = groupDto.TeacherId;
+        Capacity = groupDto.Capacity;
 
         Validate();
     }

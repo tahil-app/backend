@@ -22,8 +22,8 @@ public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
             .HasColumnName("user_id");
 
         builder.HasOne(r => r.User)
-            .WithMany(r => r.Teachers)
-            .HasForeignKey(r => r.UserId);
+            .WithOne(r => r.Teacher)
+            .HasForeignKey<Teacher>(r => r.UserId);
 
         builder.Navigation(r => r.User)
             .AutoInclude();

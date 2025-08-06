@@ -10,15 +10,15 @@ public class User: Base
     public string Password { get; set; } = string.Empty;
     public UserRole Role { get; set; }
     public Gender Gender { get; set; }
-    public DateOnly JoinedDate { get; set; }
-    public DateOnly BirthDate { get; set; }
+    public DateOnly? JoinedDate { get; set; }
+    public DateOnly? BirthDate { get; set; }
     public bool IsActive { get; set; }
     public string? ImagePath { get; set; }
     public Guid? TenantId { get; set; } 
 
     public Tenant? Tenant { get; set; }
-    public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
-    public ICollection<Student> Students { get; set; } = new List<Student>();
+    public Teacher? Teacher { get; set; }
+    public Student? Student { get; set; }
 
     public void Validate() 
     {
@@ -39,8 +39,8 @@ public class User: Base
         PhoneNumber = userDto.PhoneNumber;
         Email = Email.Create(userDto.Email);
         Gender = userDto.Gender;
-        JoinedDate = userDto.JoinedDate;
-        BirthDate = userDto.BirthDate;
+        JoinedDate = userDto.JoinedDate == default ? null : userDto.JoinedDate;
+        BirthDate = userDto.BirthDate == default ? null : userDto.BirthDate;
 
         Validate();
     }

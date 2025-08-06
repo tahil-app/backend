@@ -177,6 +177,7 @@ public static class SetupExtensions
         {
             options.AddPolicy(Policies.AdminOnly, policy => policy.RequireRole(UserRole.Admin.ToString()));
             options.AddPolicy(Policies.AdminOrEmployee, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString()));
+            options.AddPolicy(Policies.AdminOrEmployeeOrTeacher, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString(), UserRole.Teacher.ToString()));
             options.AddPolicy(Policies.TeacherOnly, policy => policy.RequireRole(UserRole.Teacher.ToString()));
             options.AddPolicy(Policies.ALL, policy => policy.RequireRole(UserRole.Admin.ToString(), UserRole.Employee.ToString(), UserRole.Teacher.ToString(), UserRole.Student.ToString()));
         });

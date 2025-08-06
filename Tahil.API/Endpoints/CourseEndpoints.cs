@@ -47,7 +47,7 @@ public class CourseEndpoints : ICarterModule
             return Results.Ok(user);
         }).RequireAuthorization(Policies.AdminOnly);
 
-        courses.MapDelete("/delete/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        courses.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new DeleteCourseCommand(id));
             return Results.Ok(result);

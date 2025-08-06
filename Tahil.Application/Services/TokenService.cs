@@ -17,14 +17,23 @@ public class TokenService(IConfiguration configuration) : ITokenService
         var audience = jwtSettings["Audience"];
         var expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiresInMinutes"]));
 
+        var userId = user.Id;
+
+        if (user.Role == UserRole.Teacher)
+            userId = user.Teacher!.Id;
+
+        if (user.Role == UserRole.Student)
+            userId = user.Student!.Id;
+
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email.Value ?? string.Empty),
             new Claim("PhoneNumber", user.PhoneNumber ?? string.Empty),
             new Claim("TenantId", user.TenantId.ToString() ?? "00000000-0000-0000-0000-000000000001"),
-            new Claim(ClaimTypes.Role, user.Role.ToString() ?? UserRole.Admin.ToString())
+            new Claim(ClaimTypes.Role, user.Role.ToString() ?? UserRole.Admin.ToString()),
+            new Claim("Name", user.Name ?? string.Empty),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

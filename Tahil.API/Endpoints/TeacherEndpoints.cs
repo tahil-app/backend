@@ -17,6 +17,12 @@ public class TeacherEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAuthorization(Policies.AdminOrEmployeeOrTeacher);
 
+        teachers.MapGet("/by-course/{courseId:int}", async (int courseId, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetCourseTeachersQueryQuery(courseId));
+            return Results.Ok(result);
+        }).RequireAuthorization(Policies.AdminOrEmployee);
+
         teachers.MapPost("/paged", async ([FromBody] QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetTeachersPagedQuery(queryParams));

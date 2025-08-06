@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tahil.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Tahil.Infrastructure.Data;
 namespace Tahil.Infrastructure.Migrations
 {
     [DbContext(typeof(BEContext))]
-    partial class BEContextModelSnapshot : ModelSnapshot
+    [Migration("20250805224846_allowGroupCapacity")]
+    partial class allowGroupCapacity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,8 +350,7 @@ namespace Tahil.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("student", (string)null);
                 });
@@ -435,8 +437,7 @@ namespace Tahil.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("teacher", (string)null);
                 });
@@ -753,8 +754,8 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.Student", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.User", "User")
-                        .WithOne("Student")
-                        .HasForeignKey("Tahil.Domain.Entities.Student", "UserId")
+                        .WithMany("Students")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -802,8 +803,8 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.Teacher", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.User", "User")
-                        .WithOne("Teacher")
-                        .HasForeignKey("Tahil.Domain.Entities.Teacher", "UserId")
+                        .WithMany("Teachers")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -954,9 +955,9 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Student");
+                    b.Navigation("Students");
 
-                    b.Navigation("Teacher");
+                    b.Navigation("Teachers");
                 });
 #pragma warning restore 612, 618
         }

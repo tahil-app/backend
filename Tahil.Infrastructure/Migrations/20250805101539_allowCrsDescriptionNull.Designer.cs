@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tahil.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Tahil.Infrastructure.Data;
 namespace Tahil.Infrastructure.Migrations
 {
     [DbContext(typeof(BEContext))]
-    partial class BEContextModelSnapshot : ModelSnapshot
+    [Migration("20250805101539_allowCrsDescriptionNull")]
+    partial class allowCrsDescriptionNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,10 +103,6 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("integer")
-                        .HasColumnName("capacity");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("integer")
@@ -347,8 +346,7 @@ namespace Tahil.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("student", (string)null);
                 });
@@ -435,8 +433,7 @@ namespace Tahil.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("teacher", (string)null);
                 });
@@ -544,7 +541,7 @@ namespace Tahil.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("BirthDate")
+                    b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date")
                         .HasColumnName("birth_date");
 
@@ -560,7 +557,7 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
-                    b.Property<DateOnly?>("JoinedDate")
+                    b.Property<DateOnly>("JoinedDate")
                         .HasColumnType("date")
                         .HasColumnName("joined_date");
 
@@ -597,8 +594,10 @@ namespace Tahil.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            BirthDate = new DateOnly(1, 1, 1),
                             Gender = 0,
                             IsActive = true,
+                            JoinedDate = new DateOnly(1, 1, 1),
                             Name = "Admin",
                             Password = "$2a$11$GGEGcXpeP39kYGG6NFIS3O0EskcYWfucTDcK8Y8kBLJw93iDqcjSG",
                             PhoneNumber = "0000",
@@ -753,8 +752,8 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.Student", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.User", "User")
-                        .WithOne("Student")
-                        .HasForeignKey("Tahil.Domain.Entities.Student", "UserId")
+                        .WithMany("Students")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -802,8 +801,8 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.Teacher", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.User", "User")
-                        .WithOne("Teacher")
-                        .HasForeignKey("Tahil.Domain.Entities.Teacher", "UserId")
+                        .WithMany("Teachers")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -954,9 +953,9 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Student");
+                    b.Navigation("Students");
 
-                    b.Navigation("Teacher");
+                    b.Navigation("Teachers");
                 });
 #pragma warning restore 612, 618
         }

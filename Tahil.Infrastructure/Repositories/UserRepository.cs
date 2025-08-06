@@ -33,10 +33,10 @@ public class UserRepository : Repository<User>, IUserRepository
             return Result<bool>.Failure(_localizedStrings.NotAvailableUser);
 
         // Check if user has child relationships
-        if (user.Teachers.Any())
+        if (user.Teacher != null)
             return Result<bool>.Failure(_localizedStrings.UserHasTeachers);
 
-        if (user.Students.Any())
+        if (user.Student != null)
             return Result<bool>.Failure(_localizedStrings.UserHasStudents);
 
         // If no child relationships exist, proceed with deletion

@@ -25,6 +25,9 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
         builder.Property(p => p.TeacherId)
             .HasColumnName("teacher_id");
 
+        builder.Property(p => p.Capacity)
+            .HasColumnName("capacity");
+
         builder.HasOne(r => r.Teacher)
             .WithMany(r => r.Groups)
             .HasForeignKey(r => r.TeacherId);

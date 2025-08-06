@@ -11,6 +11,12 @@ public class GroupEndpoints : ICarterModule
     {
         var groups = app.MapGroup("/groups");
 
+        groups.MapGet("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetGroupQuery(id));
+            return Results.Ok(result);
+        }).RequireAuthorization(Policies.AdminOrEmployeeOrTeacher);
+
         groups.MapGet("/all", async ([FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetAllGroupsQuery());
@@ -21,7 +27,7 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetGroupsPagedQuery(queryParams));
             return Results.Ok(result);
-        }).RequireAuthorization(Policies.AdminOrEmployee);
+        }).RequireAuthorization(Policies.AdminOrEmployeeOrTeacher);
 
         groups.MapPost("/create", async (GroupDto model, [FromServices] IMediator mediator) =>
         {

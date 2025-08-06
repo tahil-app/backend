@@ -26,7 +26,7 @@ public class ApplicationContext : IApplicationContext
         get
         {
             ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
-            var id = claimuser.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            var id = claimuser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             return id is not null ? int.Parse(id) : 0;
         }
     }
@@ -36,16 +36,20 @@ public class ApplicationContext : IApplicationContext
         get
         {
             ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
-            var id = claimuser.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
-            return id is not null ? Guid.Parse(id) : new Guid("0");
+            var tenantId = claimuser.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
+            var result = Guid.TryParse(tenantId, out Guid convertedTenantId);
+            return result ? convertedTenantId : new Guid("6AF39530-F6E0-4298-A890-FB5C50310C7C");
         }
     }
 
-    public UserRole GetUserRole()
+    public UserRole UserRole
     {
-        ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
-        var role = claimuser.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        return role is not null ? Enum.Parse<UserRole>(role) : UserRole.None;
+        get 
+        {
+            ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
+            var role = claimuser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            return role is not null ? Enum.Parse<UserRole>(role) : UserRole.None;
+        }
     }
 
     public bool IsAuthenticated()

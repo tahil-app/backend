@@ -32,7 +32,7 @@ public abstract class RoomCommandValidator<T> : AbstractValidator<T>
                 .WithMessage(locale.RoomNameTooLong);
 
             RuleFor(x => x.Room.Capacity)
-                .GreaterThan(0)
+                .GreaterThanOrEqualTo(0)
                 .WithMessage(locale.MustBePositive);
         });
     }
