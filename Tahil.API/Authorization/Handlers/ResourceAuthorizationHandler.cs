@@ -30,12 +30,6 @@ public class ResourceAuthorizationHandler(
             return;
         }
 
-        if (!int.TryParse(userIdClaim.Value, out var userId))
-        {
-            context.Fail();
-            return;
-        }
-
         // Extract resource ID from route
         var resourceId = ExtractResourceIdFromRoute(httpContext);
         if (resourceId == null && requirement.Operation.RequireId())
@@ -43,6 +37,9 @@ public class ResourceAuthorizationHandler(
             context.Fail();
             return;
         }
+
+        if (requirement.Operation == AuthorizationOperation.Update)
+            resourceId = ExtractEntityIdFromUpdate(httpContext);
 
         // Check if user can access the resource
         var canAccess = await resourceAuthorizationService.CanAccessEntityAsync(requirement.EntityType, requirement.Operation, resourceId);
@@ -71,6 +68,42 @@ public class ResourceAuthorizationHandler(
         {
             if (int.TryParse(queryId.ToString(), out var id))
                 return id;
+        }
+
+        return null;
+    }
+
+    private int? ExtractEntityIdFromUpdate(HttpContext httpContext)
+    {
+        // Try to get the ID from request body for update operations
+        if (httpContext.Request.Method == "PUT" || httpContext.Request.Method == "PATCH")
+        {
+            // Enable buffering to read the request body multiple times
+            httpContext.Request.EnableBuffering();
+            
+            // Try to read the request body to extract the ID
+            using var reader = new StreamReader(httpContext.Request.Body, leaveOpen: true);
+            var bodyContent = reader.ReadToEndAsync().Result;
+            
+            // Reset the position so the body can be read again by the actual handler
+            httpContext.Request.Body.Position = 0;
+            
+            // Try to parse JSON and extract the ID field
+            try
+            {
+                var jsonDoc = System.Text.Json.JsonDocument.Parse(bodyContent);
+                if (jsonDoc.RootElement.TryGetProperty("id", out var idElement) && 
+                    idElement.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    if (int.TryParse(idElement.GetInt32().ToString(), out var id))
+                        return id;
+                }
+            }
+            catch
+            {
+                // If JSON parsing fails, return null
+                return null;
+            }
         }
 
         return null;

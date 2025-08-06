@@ -14,7 +14,7 @@ public class GroupRepository : Repository<Group>, IGroupRepository
 
     public async Task<Result<bool>> AddGroupAsync(Group group, Guid tenantId)
     {
-        var result = await CheckDuplicateGroupNameAsync(group);
+        var result = await CheckDuplicateGroupNameAsync(group, tenantId);
 
         if (result.IsSuccess)
         {
@@ -25,9 +25,9 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return result;
     }
 
-    public async Task<Result<bool>> DeleteGroupAsync(int id)
+    public async Task<Result<bool>> DeleteGroupAsync(int id, Guid tenantId)
     {
-        var group = await GetAsync(g => g.Id == id, [g => g.StudentGroups, g => g.Schedules, g => g.Sessions]);
+        var group = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.StudentGroups, g => g.Schedules, g => g.Sessions]);
 
         if (group is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableGroup);
@@ -47,9 +47,9 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return Result<bool>.Success(true);
     }
 
-    public async Task<GroupDto> GetGroupAsync(int id) 
+    public async Task<GroupDto> GetGroupAsync(int id, Guid tenantId) 
     {
-        var query = _dbSet.Where(r => r.Id == id)
+        var query = _dbSet.Where(r => r.Id == id && r.TenantId == tenantId)
             .Select(r => new GroupDto
             {
                 Id = r.Id,
@@ -66,9 +66,9 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return await query.FirstOrDefaultAsync() ?? new();
     }
 
-    private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group) 
+    private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group, Guid tenantId) 
     {
-        var existGroup = await GetAsync(g => g.Name == group.Name);
+        var existGroup = await GetAsync(g => g.Name == group.Name && g.TenantId == tenantId);
 
         // Check if group name is duplicated
         if (existGroup is not null && existGroup.Name == group.Name)

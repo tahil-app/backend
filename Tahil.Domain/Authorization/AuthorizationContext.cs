@@ -12,6 +12,7 @@ public class AuthorizationContext
     public required User User { get; set; }
 
     public int UserId => User.Id;
+    public Guid? UserTenantId => User.TenantId;
     public bool IsAdmin => User.Role == UserRole.Admin;
     public bool IsEmployee => User.Role == UserRole.Employee;
     public bool IsTeacher => User.Role == UserRole.Teacher;

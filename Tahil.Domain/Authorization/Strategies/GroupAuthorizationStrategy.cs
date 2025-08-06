@@ -8,7 +8,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
     {
         var canAccess = false;
         switch (authorizationContext.AuthorizationOperation)
-        {       
+        {
             case AuthorizationOperation.ViewDetail:
                 canAccess = await CanViewGroupDetail(authorizationContext);
                 break;
@@ -22,12 +22,15 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
                 break;
 
             case AuthorizationOperation.Create:
+                canAccess = CanCreateGroup(authorizationContext);
+                break;
+
             case AuthorizationOperation.Update:
-                canAccess = CanCreateOrEditGroup(authorizationContext);
+                canAccess = await CanUpdateGroup(authorizationContext);
                 break;
 
             case AuthorizationOperation.Delete:
-                canAccess = CanDeleteGroup(authorizationContext);
+                canAccess = await CanDeleteGroup(authorizationContext);
                 break;
         }
 
@@ -43,7 +46,10 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         // Teacher can only access groups they are assigned to
         if (authorizationContext.IsTeacher)
         {
-            var group = await groupRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TeacherId == authorizationContext.UserId);
+            var group = await groupRepository.GetAsync(g =>
+            g.Id == authorizationContext.EntityId &&
+            g.TeacherId == authorizationContext.UserId &&
+            g.TenantId == authorizationContext.UserTenantId);
             return group != null;
         }
 
@@ -57,7 +63,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
 
         return false;
     }
-    
+
     private bool CanViewPaged(AuthorizationContext authorizationContext)
     {
         if (authorizationContext.IsAdmin || authorizationContext.IsEmployee || authorizationContext.IsTeacher)
@@ -66,7 +72,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         return false;
     }
 
-    private bool CanCreateOrEditGroup(AuthorizationContext authorizationContext) 
+    private bool CanCreateGroup(AuthorizationContext authorizationContext)
     {
         if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
             return true;
@@ -74,11 +80,21 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         return false;
     }
 
-    private bool CanDeleteGroup(AuthorizationContext authorizationContext)
+    private async Task<bool> CanUpdateGroup(AuthorizationContext authorizationContext)
+    {
+        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
+            return true;
+
+        var group = await groupRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
+        return group != null;
+    }
+
+    private async Task<bool> CanDeleteGroup(AuthorizationContext authorizationContext)
     {
         if (authorizationContext.IsAdmin)
             return true;
 
-        return false;
+        var group = await groupRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
+        return group != null;
     }
-} 
+}

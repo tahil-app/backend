@@ -2,11 +2,12 @@
 
 public record GetGroupQuery(int Id) : IQuery<Result<GroupDto>>;
 
-public class GetGroupQueryHandler(IGroupRepository groupRepository) : IQueryHandler<GetGroupQuery, Result<GroupDto>>
+public class GetGroupQueryHandler(IGroupRepository groupRepository, IApplicationContext applicationContext) : IQueryHandler<GetGroupQuery, Result<GroupDto>>
 {
     public async Task<Result<GroupDto>> Handle(GetGroupQuery request, CancellationToken cancellationToken)
     {
-        var groupDto = await groupRepository.GetGroupAsync(request.Id);
+        var groupDto = await groupRepository.GetGroupAsync(request.Id, applicationContext.TenantId);
+
         return Result.Success(groupDto);
     }
 }
