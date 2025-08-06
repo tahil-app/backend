@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Tahil.Domain.Entities;
 
 namespace Tahil.Application.Services;
 
 public class ApplicationContext : IApplicationContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public ApplicationContext(IHttpContextAccessor httpContextAccessor)
+    private readonly IUserRepository _userRepository;
+    public ApplicationContext(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
     {
         _httpContextAccessor = httpContextAccessor;
+        _userRepository = userRepository;
     }
 
     public string UserName
@@ -50,6 +53,11 @@ public class ApplicationContext : IApplicationContext
             var role = claimuser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
             return role is not null ? Enum.Parse<UserRole>(role) : UserRole.None;
         }
+    }
+
+    public async Task<User> GetUserAsync()
+    {
+        return (await _userRepository.GetAsync(r => r.Id == UserId))!;
     }
 
     public bool IsAuthenticated()

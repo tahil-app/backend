@@ -7,4 +7,5 @@ public interface IApplicationContext
     Guid TenantId { get; }
     UserRole UserRole { get; }
     bool IsAuthenticated();
+    Task<User> GetUserAsync();
 }

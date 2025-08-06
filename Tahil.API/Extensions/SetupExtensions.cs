@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -7,9 +8,12 @@ using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using Tahil.API.Authorization.Handlers;
 using Tahil.API.Filters;
 using Tahil.Application;
 using Tahil.Common.Behaviors;
+using Tahil.Domain.Authorization.Services;
+using Tahil.Domain.Authorization.Strategies;
 using Tahil.Domain.Enums;
 using Tahil.Domain.Localization;
 using Tahil.Domain.Repositories;
@@ -75,7 +79,16 @@ public static class SetupExtensions
         services.AddScoped<IUploadService, UploadService>();
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IApplicationContext, ApplicationContext>();
+        
+        // Authorization services
+        services.AddScoped<IResourceAuthorizationService, ResourceAuthorizationService>();
+        services.AddScoped<IAuthorizationHandler, ResourceAuthorizationHandler>();
 
+        // Resource authorization strategies
+        services.AddScoped<IEntityAuthorizationStrategy, GroupAuthorizationStrategy>();
+        services.AddScoped<IEntityAuthorizationStrategy, CourseAuthorizationStrategy>();
+        services.AddScoped<IEntityAuthorizationStrategy, RoomAuthorizationStrategy>();
+        
         return services;
     }
 

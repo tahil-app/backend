@@ -7,3 +7,4 @@ global using Tahil.Domain.Enums;
 global using Tahil.Domain.Dtos;
 global using Tahil.Common.Contracts;
 global using Tahil.Domain.Helpers;
+global using Tahil.Domain.Consts;
