@@ -12,6 +12,7 @@ public static class UserSeeding
                 PhoneNumber = "0000",
                 Name = "Admin",
                 Role = Domain.Enums.UserRole.Admin,
+                TenantId = new Guid("6AF39530-F6E0-4298-A890-FB5C50310C7C"),
                 Password = "$2a$11$GGEGcXpeP39kYGG6NFIS3O0EskcYWfucTDcK8Y8kBLJw93iDqcjSG" //PasswordHasher.Hash("admin")
             }
         );
