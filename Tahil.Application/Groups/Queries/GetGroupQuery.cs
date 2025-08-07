@@ -6,8 +6,6 @@ public class GetGroupQueryHandler(IGroupRepository groupRepository, IApplication
 {
     public async Task<Result<GroupDto>> Handle(GetGroupQuery request, CancellationToken cancellationToken)
     {
-        var groupDto = await groupRepository.GetGroupAsync(request.Id, applicationContext.TenantId);
-
-        return Result.Success(groupDto);
+        return await groupRepository.GetGroupAsync(request.Id, applicationContext.TenantId);
     }
 }

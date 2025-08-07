@@ -53,9 +53,9 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return Result<bool>.Success(true);
     }
 
-    public async Task<GroupDto> GetGroupAsync(int id, Guid tenantId) 
+    public async Task<Result<GroupDto>> GetGroupAsync(int id, Guid tenantId) 
     {
-        var query = _dbSet.Where(r => r.Id == id && r.TenantId == tenantId)
+        var query = await _dbSet.Where(r => r.Id == id && r.TenantId == tenantId)
             .Select(r => new GroupDto
             {
                 Id = r.Id,
@@ -67,9 +67,12 @@ public class GroupRepository : Repository<Group>, IGroupRepository
                 Students = r.StudentGroups.Select(s => s.Student).ToList().Adapt<List<StudentDto>>(),
                 Capacity = r.Capacity,
                 NumberOfStudents = r.StudentGroups.Count
-            });
+            }).FirstOrDefaultAsync();
 
-        return await query.FirstOrDefaultAsync() ?? new();
+        if (query == null)
+            return Result<GroupDto>.Failure(_localizedStrings.NotAvailableGroup);
+
+        return Result<GroupDto>.Success(query);
     }
 
     public async Task<Result<bool>> UpdateStudentsAsync(int id, List<int> studentIds, Guid tenantId)

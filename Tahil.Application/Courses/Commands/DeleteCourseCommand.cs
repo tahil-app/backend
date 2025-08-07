@@ -2,11 +2,11 @@
 
 public record DeleteCourseCommand(int Id) : ICommand<Result<bool>>;
 
-public class DeleteCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepository courseRepository) : ICommandHandler<DeleteCourseCommand, Result<bool>>
+public class DeleteCourseCommandHandler(IUnitOfWork unitOfWork, ICourseRepository courseRepository, IApplicationContext applicationContext) : ICommandHandler<DeleteCourseCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        var deleteResult = await courseRepository.DeleteCourseAsync(request.Id);
+        var deleteResult = await courseRepository.DeleteCourseAsync(request.Id, applicationContext.TenantId);
         if (deleteResult.IsSuccess) 
         {
             var result = await unitOfWork.SaveChangesAsync();

@@ -29,4 +29,20 @@ public class Course : Base
 
     public void Activate() => IsActive = true;
     public void DeActivate() => IsActive = false;
+
+    public void UpdateTeachers(List<Teacher> teachers) 
+    {
+        var newTeachers = teachers.Where(s => !TeacherCourses.Any(sg => sg.TeacherId == s.Id)).ToList();
+        var removedTeachers = TeacherCourses.Where(sg => !teachers.Any(s => s.Id == sg.TeacherId)).ToList();
+
+        foreach (var teacher in newTeachers)
+        {
+            TeacherCourses.Add(new TeacherCourse { TeacherId = teacher.Id, CourseId = Id });
+        }
+
+        foreach (var teacher in removedTeachers)
+        {
+            TeacherCourses.Remove(teacher);
+        }
+    }
 }

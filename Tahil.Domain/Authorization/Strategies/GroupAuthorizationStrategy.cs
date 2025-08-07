@@ -98,4 +98,5 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         var group = await groupRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
         return group != null;
     }
+
 }

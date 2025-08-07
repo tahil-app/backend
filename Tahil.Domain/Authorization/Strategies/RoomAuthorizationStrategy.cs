@@ -40,7 +40,7 @@ public class RoomAuthorizationStrategy(IRoomRepository roomRepository) : IEntity
 
     private bool CanViewAll(AuthorizationContext authorizationContext)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
+        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee || authorizationContext.IsTeacher)
             return true;
 
         return false;

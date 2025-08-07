@@ -13,15 +13,15 @@ public class StudentEndpoints : ICarterModule
 
         #region Get Students
         
-        students.MapGet("/all", async ([FromServices] IMediator mediator) =>
-        {
-            var result = await mediator.Send(new GetAllStudentsQuery());
-            return Results.Ok(result);
-        }).RequireAuthorization(Policies.ALL);
-
         students.MapGet("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetStudentQuery(id));
+            return Results.Ok(result);
+        }).RequireAuthorization(Policies.ALL);
+
+        students.MapGet("/all", async ([FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetAllStudentsQuery());
             return Results.Ok(result);
         }).RequireAuthorization(Policies.ALL);
 
