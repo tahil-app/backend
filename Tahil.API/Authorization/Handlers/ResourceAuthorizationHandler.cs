@@ -38,7 +38,7 @@ public class ResourceAuthorizationHandler(
             return;
         }
 
-        if (requirement.Operation == AuthorizationOperation.Update)
+        if (requirement.Operation == AuthorizationOperation.UpdateWithEntity)
             resourceId = ExtractEntityIdFromUpdate(httpContext);
 
         // Check if user can access the resource

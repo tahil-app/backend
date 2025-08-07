@@ -33,4 +33,20 @@ public class Group : Base
 
         Validate();
     }
+
+    public void UpdateStudents(List<Student> students) 
+    {
+        var newStudents = students.Where(s => !StudentGroups.Any(sg => sg.StudentId == s.Id)).ToList();
+        var removedStudents = StudentGroups.Where(sg => !students.Any(s => s.Id == sg.StudentId)).ToList();
+
+        foreach (var student in newStudents)
+        {
+            StudentGroups.Add(new StudentGroup { StudentId = student.Id, GroupId = Id });
+        }
+
+        foreach (var student in removedStudents)    
+        {
+            StudentGroups.Remove(student);
+        }
+    }
 }

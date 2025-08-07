@@ -11,6 +11,14 @@ public class StudentEndpoints : ICarterModule
     {
         var students = app.MapGroup("/students");
 
+        #region Get Students
+        
+        students.MapGet("/all", async ([FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetAllStudentsQuery());
+            return Results.Ok(result);
+        }).RequireAuthorization(Policies.ALL);
+
         students.MapGet("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetStudentQuery(id));
@@ -22,6 +30,10 @@ public class StudentEndpoints : ICarterModule
             var result = await mediator.Send(new GetStudentsPagedQuery(queryParams));
             return Results.Ok(result);
         }).RequireAuthorization(Policies.AdminOrEmployeeOrTeacher);
+
+        #endregion
+
+        #region Create / Update / Delete
 
         students.MapPost("/create", async (StudentDto model, [FromServices] IMediator mediator) =>
         {
@@ -35,6 +47,16 @@ public class StudentEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAuthorization(Policies.AdminOrEmployee);
 
+        students.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var user = await mediator.Send(new DeleteStudentCommand(id));
+            return Results.Ok(user);
+        }).RequireAuthorization(Policies.AdminOnly);
+
+        #endregion
+
+        #region Manage Activation
+
         students.MapPut("/activate/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new ActivateStudentCommand(id));
@@ -47,7 +69,11 @@ public class StudentEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAuthorization(Policies.AdminOrEmployee);
 
-        students.MapPost("/upload-attachment", async ([FromForm] UserAttachmentModel model,[FromServices] IMediator mediator) =>
+        #endregion
+
+        #region Manage Attachments and Image
+
+        students.MapPost("/upload-attachment", async ([FromForm] UserAttachmentModel model, [FromServices] IMediator mediator) =>
         {
             if (model.File == null || model.File.Length == 0)
                 return Results.BadRequest("No file uploaded.");
@@ -71,10 +97,7 @@ public class StudentEndpoints : ICarterModule
             return Results.Ok(true);
         }).DisableAntiforgery().RequireAuthorization(Policies.AdminOrEmployee);
 
-        students.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
-        {
-            var user = await mediator.Send(new DeleteStudentCommand(id));
-            return Results.Ok(user);
-        }).RequireAuthorization(Policies.AdminOnly);
+        #endregion
+
     }
 }

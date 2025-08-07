@@ -9,8 +9,8 @@ public class LoginQueryHandler(IUserRepository userRepository, ITokenService tok
 {
     public async Task<Result<LoginResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        request.LoginModel.EmailOrPhone = "jfg@gfrf.v";
-        request.LoginModel.Password = "111111111";
+        request.LoginModel.EmailOrPhone = "0000";
+        request.LoginModel.Password = "admin";
 
         var user = await userRepository.GetAsync(
             r => r.IsActive && r.Email.Value == request.LoginModel.EmailOrPhone || r.PhoneNumber == request.LoginModel.EmailOrPhone,

@@ -13,6 +13,8 @@ public class GroupEndpoints : ICarterModule
     {
         var groups = app.MapGroup("/groups");
 
+        #region Get Groups
+
         groups.MapGet("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new GetGroupQuery(id));
@@ -31,6 +33,10 @@ public class GroupEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
 
+        #endregion
+
+        #region Create / Update / Delete
+
         groups.MapPost("/create", async (GroupDto model, [FromServices] IMediator mediator) =>
         {
             var result = await mediator.Send(new CreateGroupCommand(model));
@@ -41,12 +47,25 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateGroupCommand(model));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Group, AuthorizationOperation.Update);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.UpdateWithEntity);
 
         groups.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
             var user = await mediator.Send(new DeleteGroupCommand(id));
             return Results.Ok(user);
         }).RequireAccess(EntityType.Group, AuthorizationOperation.Delete);
+
+        #endregion
+
+        #region Manage Group Students
+
+        groups.MapPut("/update-students/{id:int}", async (int id, [FromBody] List<int> studentIds, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new UpdateGroupStudentsCommand(id, studentIds));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.UpdateWithId);
+
+        #endregion
+
     }
 }

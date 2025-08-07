@@ -25,7 +25,8 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
                 canAccess = CanCreateGroup(authorizationContext);
                 break;
 
-            case AuthorizationOperation.Update:
+            case AuthorizationOperation.UpdateWithId:
+            case AuthorizationOperation.UpdateWithEntity:
                 canAccess = await CanUpdateGroup(authorizationContext);
                 break;
 

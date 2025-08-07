@@ -1,5 +1,8 @@
 ﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Entities;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -7,9 +10,12 @@ namespace Tahil.Infrastructure.Repositories;
 public class GroupRepository : Repository<Group>, IGroupRepository
 {
     private readonly LocalizedStrings _localizedStrings;
+    private readonly BEContext _context;
+    
     public GroupRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Group>())
     {
         _localizedStrings = localizedStrings;
+        _context = context;
     }
 
     public async Task<Result<bool>> AddGroupAsync(Group group, Guid tenantId)
@@ -66,6 +72,21 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return await query.FirstOrDefaultAsync() ?? new();
     }
 
+    public async Task<Result<bool>> UpdateStudentsAsync(int id, List<int> studentIds, Guid tenantId)
+    {
+        // Get the group with its current students
+        var group = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.StudentGroups]);
+
+        if (group is null)
+            return Result<bool>.Failure(_localizedStrings.NotAvailableGroup);
+
+        // Get the students to be added to the group
+        var students = await _context.Set<Student>().Where(s => studentIds.Contains(s.Id)).ToListAsync();
+        group.UpdateStudents(students);
+
+        return Result<bool>.Success(true);
+    }
+
     private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group, Guid tenantId) 
     {
         var existGroup = await GetAsync(g => g.Name == group.Name && g.TenantId == tenantId);
@@ -76,4 +97,5 @@ public class GroupRepository : Repository<Group>, IGroupRepository
 
         return Result<bool>.Success(true);
     }
+
 }

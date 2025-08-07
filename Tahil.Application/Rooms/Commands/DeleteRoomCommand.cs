@@ -2,11 +2,11 @@
 
 public record DeleteRoomCommand(int Id) : ICommand<Result<bool>>;
 
-public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository groupRepository) : ICommandHandler<DeleteRoomCommand, Result<bool>>
+public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork, IRoomRepository groupRepository, IApplicationContext applicationContext) : ICommandHandler<DeleteRoomCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteRoomCommand request, CancellationToken cancellationToken)
     {
-        var deleteResult = await groupRepository.DeleteRoomAsync(request.Id);
+        var deleteResult = await groupRepository.DeleteRoomAsync(request.Id, applicationContext.TenantId);
         if (deleteResult.IsSuccess)
         {
             var result = await unitOfWork.SaveChangesAsync();

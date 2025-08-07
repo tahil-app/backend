@@ -12,7 +12,7 @@ public class RoomRepository : Repository<Room>, IRoomRepository
 
     public async Task<Result<bool>> AddRoomAsync(Room room, Guid tenantId)
     {
-        var result = await CheckDuplicateRoomNameAsync(room);
+        var result = await CheckDuplicateRoomNameAsync(room, tenantId);
 
         if (result.IsSuccess)
         {
@@ -24,9 +24,9 @@ public class RoomRepository : Repository<Room>, IRoomRepository
         return result;
     }
 
-    public async Task<Result<bool>> DeleteRoomAsync(int id)
+    public async Task<Result<bool>> DeleteRoomAsync(int id, Guid tenantId)
     {
-        var room = await GetAsync(r => r.Id == id, [r => r.Schedules, r => r.Sessions]);
+        var room = await GetAsync(r => r.Id == id && r.TenantId == tenantId, [r => r.Schedules, r => r.Sessions]);
 
         if (room is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableRoom);
@@ -43,9 +43,9 @@ public class RoomRepository : Repository<Room>, IRoomRepository
         return Result<bool>.Success(true);
     }
 
-    private async Task<Result<bool>> CheckDuplicateRoomNameAsync(Room room) 
+    private async Task<Result<bool>> CheckDuplicateRoomNameAsync(Room room, Guid tenantId) 
     {
-        var existRoom = await GetAsync(r => r.Name == room.Name);
+        var existRoom = await GetAsync(r => r.Name == room.Name && r.TenantId == tenantId);
 
         // Check if room name is duplicated
         if (existRoom is not null && existRoom.Name == room.Name)
@@ -53,4 +53,5 @@ public class RoomRepository : Repository<Room>, IRoomRepository
 
         return Result<bool>.Success(true);
     }
+
 }
