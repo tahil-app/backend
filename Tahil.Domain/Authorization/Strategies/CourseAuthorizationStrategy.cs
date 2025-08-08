@@ -1,5 +1,3 @@
-using Tahil.Domain.Repositories;
-
 namespace Tahil.Domain.Authorization.Strategies;
 
 public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : IEntityAuthorizationStrategy
@@ -8,110 +6,64 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
 
     public async Task<bool> CanAccessAsync(AuthorizationContext authorizationContext)
     {
-        var canAccess = false;
-        switch (authorizationContext.AuthorizationOperation)
+        return authorizationContext.AuthorizationOperation switch
         {
-            case AuthorizationOperation.ViewDetail:
-                canAccess = await CanViewCourseDetail(authorizationContext);
-                break;
+            AuthorizationOperation.ViewDetail => await CanViewCourseDetailAsync(authorizationContext),
 
-            case AuthorizationOperation.ViewAll:
-                canAccess = CanViewAll(authorizationContext);
-                break;
+            AuthorizationOperation.ViewAll => CanViewAll(authorizationContext),
 
-            case AuthorizationOperation.ViewPaged:
-                canAccess = CanViewPaged(authorizationContext);
-                break;
+            AuthorizationOperation.ViewPaged => CanViewPaged(authorizationContext),
 
-            case AuthorizationOperation.Create:
-                canAccess = CanCreateCourse(authorizationContext);
-                break;
+            AuthorizationOperation.Create => CanCreateCourse(authorizationContext),
 
-            case AuthorizationOperation.UpdateWithId:
-            case AuthorizationOperation.UpdateWithEntity:
-                canAccess = await CanUpdateCourse(authorizationContext);
-                break;
+            AuthorizationOperation.UpdateWithId or 
+            AuthorizationOperation.UpdateWithEntity => await CanUpdateCourseAsync(authorizationContext),
 
-            case AuthorizationOperation.Delete:
-                canAccess = await CanDeleteCourse(authorizationContext);
-                break;
+            AuthorizationOperation.Delete => await CanDeleteCourseAsync(authorizationContext),
 
-            case AuthorizationOperation.Activate:
-            case AuthorizationOperation.DeActivate:
-                canAccess = await CanActivateOrDeActivateCourse(authorizationContext);
-                break;
-        }
+            AuthorizationOperation.Activate or AuthorizationOperation.DeActivate => await CanActivateOrDeActivateCourseAsync(authorizationContext),
 
-        return canAccess;
+            _ => false
+        };
     }
 
-    private async Task<bool> CanViewCourseDetail(AuthorizationContext authorizationContext)
+    private async Task<bool> CanViewCourseDetailAsync(AuthorizationContext context)
     {
-        // Admin and Employee can access any course
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        // Teacher can only access courses they are assigned to
-        if (authorizationContext.IsTeacher)
-        {
-            var course = await courseRepository.GetAsync(g =>
-            g.Id == authorizationContext.EntityId &&
-            g.TenantId == authorizationContext.UserTenantId);
-            return course != null;
-        }
-
-        return false;
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return courseExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
-    private bool CanViewAll(AuthorizationContext authorizationContext)
+    private static bool CanViewAll(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee || authorizationContext.IsTeacher)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
-    private bool CanViewPaged(AuthorizationContext authorizationContext)
+    private static bool CanViewPaged(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeAccess;
     }
 
-    private bool CanCreateCourse(AuthorizationContext authorizationContext)
+    private static bool CanCreateCourse(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanUpdateCourse(AuthorizationContext authorizationContext)
+    private async Task<bool> CanUpdateCourseAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        var course = await courseRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return course != null;
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return courseExist && context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanDeleteCourse(AuthorizationContext authorizationContext)
+    private async Task<bool> CanDeleteCourseAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin)
-            return true;
-
-        var course = await courseRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return course != null;
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return courseExist && context.IsAdmin;
     }
 
-    private async Task<bool> CanActivateOrDeActivateCourse(AuthorizationContext authorizationContext)
+    private async Task<bool> CanActivateOrDeActivateCourseAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin)
-            return true;
-
-        var course = await courseRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return course != null;
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return courseExist && context.IsAdmin;
     }
 
 }

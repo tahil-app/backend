@@ -1,14 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Text.Json;
 using Tahil.API.Authorization.Requirements;
+using Tahil.Domain.Authorization;
 using Tahil.Domain.Authorization.Services;
-using Tahil.Domain.Enums;
 
 namespace Tahil.API.Authorization.Handlers;
 
 public class ResourceAuthorizationHandler(
     IResourceAuthorizationService resourceAuthorizationService,
-    IHttpContextAccessor httpContextAccessor)
+    IHttpContextAccessor httpContextAccessor,
+    IApplicationContext applicationContext)
     : AuthorizationHandler<ResourceAuthorizationRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ResourceAuthorizationRequirement requirement)
@@ -30,19 +32,15 @@ public class ResourceAuthorizationHandler(
             return;
         }
 
-        // Extract resource ID from route
-        var resourceId = ExtractResourceIdFromRoute(httpContext);
-        if (resourceId == null && requirement.Operation.RequireId())
-        {
-            context.Fail();
-            return;
-        }
+        // Extract resource ID if property is specified
+        var resourceId = await ExtractResourceId(httpContext, requirement);
 
-        if (requirement.Operation == AuthorizationOperation.UpdateWithEntity)
-            resourceId = ExtractEntityIdFromUpdate(httpContext);
+        // Create authorization context
+        var user = await applicationContext.GetUserAsync();
+        var authorizationContext = AuthorizationContext.Create(requirement.EntityType, user, requirement.Operation, resourceId, requirement.MetaDate);
 
         // Check if user can access the resource
-        var canAccess = await resourceAuthorizationService.CanAccessEntityAsync(requirement.EntityType, requirement.Operation, resourceId);
+        var canAccess = await resourceAuthorizationService.CanAccessEntityAsync(authorizationContext);
 
         if (canAccess)
         {
@@ -54,58 +52,111 @@ public class ResourceAuthorizationHandler(
         }
     }
 
-    private int? ExtractResourceIdFromRoute(HttpContext httpContext)
+    private async Task<int?> ExtractResourceId(HttpContext httpContext, ResourceAuthorizationRequirement requirement)
     {
-        // Try to get the ID from route values
-        if (httpContext.Request.RouteValues.TryGetValue("id", out var idValue))
-        {
-            if (int.TryParse(idValue?.ToString(), out var id))
-                return id;
-        }
+        var property = requirement.Property ?? "id";
 
-        // Try to get from query string
-        if (httpContext.Request.Query.TryGetValue("id", out var queryId))
-        {
-            if (int.TryParse(queryId.ToString(), out var id))
-                return id;
-        }
+        // Try route first
+        var resourceId = ExtractFromRoute(httpContext, property);
+        if (resourceId != null) return resourceId;
+
+        // Try query string
+        resourceId = ExtractFromQuery(httpContext, property);
+        if (resourceId != null) return resourceId;
+
+        // Try body
+        resourceId = await ExtractFromBodyAsync(httpContext, property);
+        if (resourceId != null) return resourceId;
 
         return null;
     }
 
-    private int? ExtractEntityIdFromUpdate(HttpContext httpContext)
+    private int? ExtractFromRoute(HttpContext httpContext, string property)
     {
-        // Try to get the ID from request body for update operations
-        if (httpContext.Request.Method == "PUT" || httpContext.Request.Method == "PATCH")
+        if (httpContext.Request.RouteValues.TryGetValue(property, out var value))
         {
-            // Enable buffering to read the request body multiple times
-            httpContext.Request.EnableBuffering();
-            
-            // Try to read the request body to extract the ID
-            using var reader = new StreamReader(httpContext.Request.Body, leaveOpen: true);
-            var bodyContent = reader.ReadToEndAsync().Result;
-            
-            // Reset the position so the body can be read again by the actual handler
-            httpContext.Request.Body.Position = 0;
-            
-            // Try to parse JSON and extract the ID field
-            try
+            if (int.TryParse(value?.ToString(), out var id))
+                return id;
+        }
+        return null;
+    }
+
+    private int? ExtractFromQuery(HttpContext httpContext, string property)
+    {
+        if (httpContext.Request.Query.TryGetValue(property, out var value))
+        {
+            if (int.TryParse(value.ToString(), out var id))
+                return id;
+        }
+        return null;
+    }
+
+    public async Task<int?> ExtractFromBodyAsync(HttpContext context, string property)
+    {
+        try
+        {
+            var contentType = context.Request.ContentType?.ToLowerInvariant();
+
+            var possibleNames = new[] { property, "id", "Id", "ID", "entityId", "EntityId" }.Distinct();
+
+            // 1️⃣ Handle JSON body
+            if (contentType != null && contentType.Contains("application/json"))
             {
-                var jsonDoc = System.Text.Json.JsonDocument.Parse(bodyContent);
-                if (jsonDoc.RootElement.TryGetProperty("id", out var idElement) && 
-                    idElement.ValueKind == System.Text.Json.JsonValueKind.Number)
+                context.Request.EnableBuffering();
+
+                if (context.Request.Body.CanSeek)
+                    context.Request.Body.Position = 0;
+
+                using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+                var body = await reader.ReadToEndAsync();
+
+                context.Request.Body.Position = 0;
+
+                if (!string.IsNullOrWhiteSpace(body))
                 {
-                    if (int.TryParse(idElement.GetInt32().ToString(), out var id))
-                        return id;
+                    using var doc = JsonDocument.Parse(body);
+                    var root = doc.RootElement;
+
+                    foreach (var name in possibleNames)
+                    {
+                        if (root.TryGetProperty(name, out var element))
+                        {
+                            if (element.ValueKind == JsonValueKind.Number && element.TryGetInt32(out var num))
+                                return num;
+
+                            if (element.ValueKind == JsonValueKind.String && int.TryParse(element.GetString(), out num))
+                                return num;
+                        }
+                    }
                 }
             }
-            catch
+
+            // 2️⃣ Handle Form body (x-www-form-urlencoded or multipart/form-data)
+            if (contentType != null && (contentType.Contains("application/x-www-form-urlencoded") || contentType.Contains("multipart/form-data")))
             {
-                // If JSON parsing fails, return null
-                return null;
+                // Ensure the form is read
+                if (!context.Request.HasFormContentType)
+                    return null;
+
+                var form = await context.Request.ReadFormAsync();
+
+                foreach (var name in possibleNames)
+                {
+                    if (form.TryGetValue(name, out var value))
+                    {
+                        if (int.TryParse(value.ToString(), out var num))
+                            return num;
+                    }
+                }
             }
+        }
+        catch
+        {
+            // Log error or ignore silently
         }
 
         return null;
+
     }
+
 }

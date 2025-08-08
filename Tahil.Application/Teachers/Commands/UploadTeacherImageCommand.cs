@@ -8,12 +8,13 @@ public class UploadTeacherLogoCommandHandler(
     IUnitOfWork unitOfWork,
     IUploadService uploadService,
     ITeacherRepository teacherRepository, 
+    IApplicationContext applicationContext,
     LocalizedStrings locale)
     : ICommandHandler<UploadTeacherImageCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UploadTeacherImageCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId);
+        var teacher = await teacherRepository.GetAsync(r => r.User.TenantId == applicationContext.TenantId && r.Id == request.AttachmentModel.UserId);
         if (teacher is null)
             return Result<bool>.Failure(locale.NotAvailableTeacher);
 

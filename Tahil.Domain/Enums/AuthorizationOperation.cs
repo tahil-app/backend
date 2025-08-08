@@ -6,22 +6,8 @@ public enum AuthorizationOperation
     ViewAll,
     ViewPaged,
     Create,
-    UpdateWithEntity,
-    UpdateWithId,
+    Update,
     Delete,
     Activate,
-    DeActivate
-}
-
-public static class AuthorizationOperationHelper 
-{
-    public static bool RequireId(this AuthorizationOperation operation) => operation switch
-    {
-        AuthorizationOperation.ViewDetail => true,
-        AuthorizationOperation.UpdateWithId => true,
-        AuthorizationOperation.Delete => true,
-        AuthorizationOperation.Activate => true,
-        AuthorizationOperation.DeActivate => true,
-        _ => false
-    };
+    Deactivate
 }

@@ -2,20 +2,17 @@
 
 namespace Tahil.Domain.Authorization.Services;
 
-public class ResourceAuthorizationService(IEnumerable<IEntityAuthorizationStrategy> strategies, IApplicationContext applicationContext) 
+public class ResourceAuthorizationService(IEnumerable<IEntityAuthorizationStrategy> strategies) 
     : IResourceAuthorizationService
 {
 
-    public async Task<bool> CanAccessEntityAsync(EntityType entityType, AuthorizationOperation operation, int? resourceId)
+    public async Task<bool> CanAccessEntityAsync(AuthorizationContext authorizationContext)
     {
-
-        var strategy = strategies.FirstOrDefault(s => s.Type == entityType);
+        var strategy = strategies.FirstOrDefault(s => s.Type == authorizationContext.EntityType);
 
         if (strategy == null)
             return false;
 
-        var user = await applicationContext.GetUserAsync();
-
-        return await strategy.CanAccessAsync(AuthorizationContext.CreateFunctionalityOverID(entityType, user, operation, resourceId));
+        return await strategy.CanAccessAsync(authorizationContext);
     }
 }

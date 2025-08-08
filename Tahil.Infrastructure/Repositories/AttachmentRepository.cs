@@ -24,9 +24,9 @@ public class AttachmentRepository : Repository<Attachment>, IAttachmentRepositor
         return attachment;
     }
 
-    public async Task<Result<Attachment>> RemoveAttachment(int attachmentId) 
+    public async Task<Result<Attachment>> RemoveAttachment(int attachmentId, Guid tenantId) 
     {
-        var attachment = await GetAsync(r => r.Id == attachmentId);
+        var attachment = await GetAsync(r => r.Id == attachmentId && r.TenantId == tenantId);
         if (attachment is null)
             return Result<Attachment>.Failure(_localizedStrings.NotFoundAttachment);
 
@@ -34,4 +34,13 @@ public class AttachmentRepository : Repository<Attachment>, IAttachmentRepositor
 
         return Result<Attachment>.Success(attachment);
     }
+
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.TenantId == tenantId.Value);
+    }
+
 }

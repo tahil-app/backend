@@ -15,7 +15,9 @@ public class UploadTeacherAttachmetCommandHandler(
 {
     public async Task<Result<bool>> Handle(UploadTeacherAttachmetCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId, [r => r.TeacherAttachments]);
+        var teacher = await teacherRepository.GetAsync(r => r.User.TenantId == applicationContext.TenantId && 
+            r.Id == request.AttachmentModel.UserId, [r => r.TeacherAttachments]);
+
         if (teacher is null)
             return Result<bool>.Failure(locale.NotAvailableTeacher);
 

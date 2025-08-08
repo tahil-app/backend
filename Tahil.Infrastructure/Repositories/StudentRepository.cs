@@ -11,9 +11,9 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         _localizedStrings = localizedStrings;
     }
 
-    public async Task<StudentDto> GetStudentAsync(int id)
+    public async Task<StudentDto> GetStudentAsync(int id, Guid tenantId)
     {
-        var query = _dbSet.Where(r => r.User.IsActive && r.Id == id)
+        var query = _dbSet.Where(r => r.User.IsActive && r.Id == id && r.User.TenantId == tenantId)
             .Select(r => new StudentDto
             {
                 Id = r.Id,
@@ -44,18 +44,18 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         return await query.FirstOrDefaultAsync() ?? new();
     }
 
-    public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName)
+    public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName, Guid tenantId)
     {
         return await _dbSet
             .SelectMany(r => r.StudentAttachments)
-            .Where(a => a.Attachment.FileName == attachmentName)
+            .Where(a => a.Attachment.FileName == attachmentName && a.Attachment.TenantId == tenantId)
             .Select(a => a.DisplayName)
             .FirstOrDefaultAsync() ?? string.Empty;
     }
 
     public async Task<Result<bool>> AddStudentAsync(Student student, Guid tenantId)
     {
-        var result = await CheckDuplicateStudentAsync(student);
+        var result = await CheckDuplicateStudentAsync(student, tenantId);
 
         if (result.IsSuccess)
         {
@@ -67,9 +67,9 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         return result;
     }
 
-    public async Task<Result<bool>> DeleteStudentAsync(int id)
+    public async Task<Result<bool>> DeleteStudentAsync(int id, Guid tenantId)
     {
-        var student = await GetAsync(s => s.Id == id, [s => s.StudentGroups, s => s.StudentAttachments]);
+        var student = await GetAsync(s => s.Id == id && s.User.TenantId == tenantId, [s => s.StudentGroups, s => s.StudentAttachments]);
 
         if (student is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableStudent);
@@ -86,9 +86,17 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         return Result<bool>.Success(true);
     }
 
-    private async Task<Result<bool>> CheckDuplicateStudentAsync(Student student) 
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
     {
-        var existStudent = await GetAsync(s => s.User.Email.Value == student.User.Email.Value || s.User.PhoneNumber == student.User.PhoneNumber);
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.User.TenantId == tenantId.Value);
+    }
+
+    private async Task<Result<bool>> CheckDuplicateStudentAsync(Student student, Guid tenantId) 
+    {
+        var existStudent = await GetAsync(s => (s.User.Email.Value == student.User.Email.Value || s.User.PhoneNumber == student.User.PhoneNumber) && s.User.TenantId == tenantId);
 
         // Check if email is duplicated
         if (existStudent is not null && existStudent.User.Email.Value == student.User.Email.Value)

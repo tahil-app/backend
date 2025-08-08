@@ -1,8 +1,5 @@
 ﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
-using Tahil.Common.Contracts;
 using Tahil.Domain.Dtos;
-using Tahil.Domain.Entities;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -90,12 +87,20 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return Result<bool>.Success(true);
     }
 
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(g => g.Id == id && g.TenantId == tenantId);
+    }
+
     private async Task<Result<bool>> CheckDuplicateGroupNameAsync(Group group, Guid tenantId) 
     {
-        var existGroup = await GetAsync(g => g.Name == group.Name && g.TenantId == tenantId);
+        var existGroup = await _dbSet.AnyAsync(g => g.Name == group.Name && g.TenantId == tenantId);
 
         // Check if group name is duplicated
-        if (existGroup is not null && existGroup.Name == group.Name)
+        if (existGroup)
             return Result<bool>.Failure(_localizedStrings.DuplicatedGroup);
 
         return Result<bool>.Success(true);

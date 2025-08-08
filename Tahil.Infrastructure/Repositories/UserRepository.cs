@@ -12,7 +12,7 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public async Task<Result<bool>> AddUserAsync(User user, Guid tenantId)
     {
-        var result = await CheckDuplicateUserAsync(user);
+        var result = await CheckDuplicateUserAsync(user, tenantId);
 
         if (result.IsSuccess)
         {
@@ -25,9 +25,9 @@ public class UserRepository : Repository<User>, IUserRepository
         return result;
     }
 
-    public async Task<Result<bool>> DeleteUserAsync(int id)
+    public async Task<Result<bool>> DeleteUserAsync(int id, Guid tenantId)
     {
-        var user = await GetAsync(u => u.Id == id);
+        var user = await GetAsync(u => u.Id == id && u.TenantId == tenantId);
 
         if (user is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableUser);
@@ -44,9 +44,9 @@ public class UserRepository : Repository<User>, IUserRepository
         return Result<bool>.Success(true);
     }
 
-    private async Task<Result<bool>> CheckDuplicateUserAsync(User user) 
+    private async Task<Result<bool>> CheckDuplicateUserAsync(User user, Guid tenantId) 
     {
-        var existUser = await GetAsync(u => u.Email.Value == user.Email.Value || u.PhoneNumber == user.PhoneNumber);
+        var existUser = await GetAsync(u => (u.Email.Value == user.Email.Value || u.PhoneNumber == user.PhoneNumber) && u.TenantId == tenantId);
 
         // Check if email is duplicated
         if (existUser is not null && existUser.Email.Value == user.Email.Value)

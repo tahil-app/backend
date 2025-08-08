@@ -5,9 +5,15 @@ namespace Tahil.API.Authorization;
 
 public static class AuthorizationExtensions
 {
-    public static RouteHandlerBuilder RequireAccess(this RouteHandlerBuilder builder, EntityType entityType, AuthorizationOperation authorizationOperation)
+    public static RouteHandlerBuilder RequireAccess(
+        this RouteHandlerBuilder builder, 
+        EntityType type, 
+        AuthorizationOperation operation, 
+        string? property = null,
+        string? metaData = null)
     {
-        return builder.RequireAuthorization(policy => 
-            policy.AddRequirements(new ResourceAuthorizationRequirement(entityType, authorizationOperation)));
+        return builder.RequireAuthorization(policy =>
+            policy.AddRequirements(new ResourceAuthorizationRequirement(type, operation, property, metaData)));
     }
+
 }

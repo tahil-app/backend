@@ -4,34 +4,31 @@ public class AuthorizationContext
 {
     private AuthorizationContext() { }
 
-    public int? EntityId { get; set; }
-    public BaseDto? DTO { get; set; }
+    public int? EntityId { get; private set; }
+    public required EntityType EntityType { get; init; }
+    public required AuthorizationOperation AuthorizationOperation { get; init; }
+    public required User User { get; init; }
+    public string? MetaData { get; init; }
 
-    public required EntityType EntityType { get; set; }
-    public required AuthorizationOperation AuthorizationOperation { get; set; }
-    public required User User { get; set; }
-
-    public int UserId => User.Id;
     public Guid? UserTenantId => User.TenantId;
     public bool IsAdmin => User.Role == UserRole.Admin;
     public bool IsEmployee => User.Role == UserRole.Employee;
     public bool IsTeacher => User.Role == UserRole.Teacher;
     public bool IsStudent => User.Role == UserRole.Student;
 
+    public bool HasAdminOrEmployeeAccess => IsAdmin || IsEmployee;
+    public bool HasAdminOrEmployeeOrTeacherAccess => IsAdmin || IsEmployee || IsTeacher;
 
-    public static AuthorizationContext CreateFunctionalityOverID(EntityType entityType, User user, AuthorizationOperation operation, int? id)
+    public static AuthorizationContext Create(EntityType entityType, User user, AuthorizationOperation operation, int? entityId = null, string? metaData = null)
     {
-        if (id == 0)
-        {
-            throw new ArgumentException("Id must be greater than 0");
-        }
-
-        return new AuthorizationContext()
+        return new AuthorizationContext
         {
             EntityType = entityType,
             AuthorizationOperation = operation,
-            EntityId = id,
-            User = user
+            EntityId = entityId,
+            User = user,
+            MetaData = metaData
         };
     }
+    
 }

@@ -8,12 +8,13 @@ public class UploadEmployeeLogoCommandHandler(
     IUnitOfWork unitOfWork,
     IUploadService uploadService,
     IUserRepository userRepository,
-    LocalizedStrings locale)
+    LocalizedStrings locale,
+    IApplicationContext applicationContext)
     : ICommandHandler<UploadEmployeeImageCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UploadEmployeeImageCommand request, CancellationToken cancellationToken)
     {
-        var employee = await userRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId);
+        var employee = await userRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId && r.TenantId == applicationContext.TenantId);
         if (employee is null)
             return Result<bool>.Failure(locale.NotAvailableEmployee);
 

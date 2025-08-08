@@ -43,12 +43,20 @@ public class RoomRepository : Repository<Room>, IRoomRepository
         return Result<bool>.Success(true);
     }
 
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.TenantId == tenantId.Value);
+    }
+
     private async Task<Result<bool>> CheckDuplicateRoomNameAsync(Room room, Guid tenantId) 
     {
-        var existRoom = await GetAsync(r => r.Name == room.Name && r.TenantId == tenantId);
+        var existRoom = await _dbSet.AnyAsync(r => r.Name == room.Name && r.TenantId == tenantId);
 
         // Check if room name is duplicated
-        if (existRoom is not null && existRoom.Name == room.Name)
+        if (existRoom)
             return Result<bool>.Failure(_localizedStrings.DuplicatedRoom);
 
         return Result<bool>.Success(true);

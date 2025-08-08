@@ -6,87 +6,56 @@ public class RoomAuthorizationStrategy(IRoomRepository roomRepository) : IEntity
 
     public async Task<bool> CanAccessAsync(AuthorizationContext authorizationContext)
     {
-        var canAccess = false;
-        switch (authorizationContext.AuthorizationOperation)
+        return authorizationContext.AuthorizationOperation switch
         {
-            case AuthorizationOperation.ViewAll:
-                canAccess = CanViewAll(authorizationContext);
-                break;
+            AuthorizationOperation.ViewAll => CanViewAll(authorizationContext),
 
-            case AuthorizationOperation.ViewPaged:
-                canAccess = CanViewPaged(authorizationContext);
-                break;
+            AuthorizationOperation.ViewPaged => CanViewPaged(authorizationContext),
 
-            case AuthorizationOperation.Create:
-                canAccess = CanCreateRoom(authorizationContext);
-                break;
+            AuthorizationOperation.Create => CanCreateRoom(authorizationContext),
 
-            case AuthorizationOperation.UpdateWithEntity:
-                canAccess = await CanUpdateRoom(authorizationContext);
-                break;
+            AuthorizationOperation.UpdateWithEntity => await CanUpdateRoomAsync(authorizationContext),
 
-            case AuthorizationOperation.Delete:
-                canAccess = await CanDeleteRoom(authorizationContext);
-                break;
-            
-            case AuthorizationOperation.Activate:
-            case AuthorizationOperation.DeActivate:
-                canAccess = await CanActivateOrDeActivateRoom(authorizationContext);
-                break;
-        }
+            AuthorizationOperation.Delete => await CanDeleteRoomAsync(authorizationContext),
 
-        return canAccess;
+            AuthorizationOperation.Activate or 
+            AuthorizationOperation.DeActivate => await CanActivateOrDeActivateRoomAsync(authorizationContext),
+
+            _ => false
+        };
     }
 
-    private bool CanViewAll(AuthorizationContext authorizationContext)
+    private static bool CanViewAll(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee || authorizationContext.IsTeacher)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeAccess;
     }
 
-    private bool CanViewPaged(AuthorizationContext authorizationContext)
+    private static bool CanViewPaged(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeAccess;
     }
 
-    private bool CanCreateRoom(AuthorizationContext authorizationContext)
+    private static bool CanCreateRoom(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        return false;
+        return context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanUpdateRoom(AuthorizationContext authorizationContext)
+    private async Task<bool> CanUpdateRoomAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin || authorizationContext.IsEmployee)
-            return true;
-
-        var room = await roomRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return room != null;
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return roomExist && context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanDeleteRoom(AuthorizationContext authorizationContext)
+    private async Task<bool> CanDeleteRoomAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin)
-            return true;
-
-        var room = await roomRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return room != null;
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return roomExist && context.IsAdmin;
     }
 
-    private async Task<bool> CanActivateOrDeActivateRoom(AuthorizationContext authorizationContext)
+    private async Task<bool> CanActivateOrDeActivateRoomAsync(AuthorizationContext context)
     {
-        if (authorizationContext.IsAdmin)
-            return true;
-
-        var room = await roomRepository.GetAsync(g => g.Id == authorizationContext.EntityId && g.TenantId == authorizationContext.UserTenantId);
-        return room != null;
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return roomExist && context.IsAdmin;
     }
 
 }

@@ -2,11 +2,11 @@
 
 public record ActivateTeacherCommand(int Id) : ICommand<Result<bool>>;
 
-public class ActivateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherRepository teacherRepository, LocalizedStrings locale) : ICommandHandler<ActivateTeacherCommand, Result<bool>>
+public class ActivateTeacherCommandHandler(IUnitOfWork unitOfWork, ITeacherRepository teacherRepository, LocalizedStrings locale, IApplicationContext applicationContext) : ICommandHandler<ActivateTeacherCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(ActivateTeacherCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.Id == request.Id);
+        var teacher = await teacherRepository.GetAsync(r => r.Id == request.Id && r.User.TenantId == applicationContext.TenantId);
         if (teacher is null)
             return Result<bool>.Failure(locale.NotAvailableTeacher);
 

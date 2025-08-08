@@ -1,4 +1,6 @@
-﻿using Tahil.Domain.Dtos;
+﻿using Mapster;
+using MediatR;
+using Tahil.Domain.Dtos;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -11,9 +13,9 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
         _localizedStrings = localizedStrings;
     }
 
-    public async Task<TeacherDto> GetTeacherAsync(int id)
+    public async Task<TeacherDto> GetTeacherAsync(int id, Guid tenantId)
     {
-        var query = _dbSet.Where(r => r.User.IsActive && r.Id == id)
+        var query = _dbSet.Where(r => r.User.IsActive && r.Id == id && r.User.TenantId == tenantId)
             .Select(r => new TeacherDto
             {
                 Id = r.Id,
@@ -28,7 +30,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                 Experience = r.Experience,
                 Qualification = r.Qualification,
                 ImagePath = r.User.ImagePath,
-                Courses = r.TeacherCourses.Select(cr => new CourseDto 
+                Courses = r.TeacherCourses.Select(cr => new CourseDto
                 {
                     Id = cr.Course.Id,
                     Name = cr.Course.Name
@@ -45,18 +47,18 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
         return await query.FirstOrDefaultAsync() ?? new();
     }
 
-    public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName)
+    public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName, Guid tenantId)
     {
         return await _dbSet
             .SelectMany(r => r.TeacherAttachments)
-            .Where(a => a.Attachment.FileName == attachmentName)
+            .Where(a => a.Attachment.FileName == attachmentName && a.Attachment.TenantId == tenantId)
             .Select(a => a.DisplayName)
             .FirstOrDefaultAsync() ?? string.Empty;
     }
 
     public async Task<Result<bool>> AddTeacherAsync(Teacher teacher, Guid tenantId)
     {
-        var result = await CheckDuplicateTeacherAsync(teacher);
+        var result = await CheckDuplicateTeacherAsync(teacher.Id, teacher.User.Email.Value, teacher.User.PhoneNumber, teacher.User.Password, tenantId);
 
         if (result.IsSuccess)
         {
@@ -68,9 +70,35 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
         return result;
     }
 
-    public async Task<Result<bool>> DeleteTeacherAsync(int id)
+    public async Task<Result<bool>> UpdateTeacherAsync(TeacherDto teacherDto, Guid tenantId)
     {
-        var teacher = await GetAsync(t => t.Id == id, [t => t.TeacherCourses, t => t.TeacherAttachments]);
+        var teacher = await GetAsync(r => r.Id == teacherDto.Id && r.User.TenantId == tenantId, [r => r.User, r => r.TeacherCourses]);
+        if (teacher is null)
+            return Result<bool>.Failure(_localizedStrings.NotAvailableTeacher);
+
+
+        if (teacher.User.Email.Value != teacherDto.Email || teacher.User.PhoneNumber != teacherDto.PhoneNumber) 
+        {
+            var existTeacher = await CheckDuplicateTeacherAsync(teacherDto.Id, teacherDto.Email, teacherDto.PhoneNumber, teacherDto.Password, tenantId);
+            if (!existTeacher.IsSuccess)
+                return existTeacher;
+        }
+
+
+        teacher.Update(teacherDto);
+
+        if (teacherDto.Password is not null && !string.IsNullOrEmpty(teacherDto.Password))
+            teacher.User.UpdatePassword(teacherDto.Password);
+
+        if (teacherDto.Courses is not null)
+            teacher.UpdateCourses(teacherDto.Courses.Adapt<List<Course>>());
+
+        return Result<bool>.Success(true);
+    }
+
+    public async Task<Result<bool>> DeleteTeacherAsync(int id, Guid tenantId)
+    {
+        var teacher = await GetAsync(t => t.Id == id && t.User.TenantId == tenantId, [t => t.TeacherCourses, t => t.TeacherAttachments]);
 
         if (teacher is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableTeacher);
@@ -87,16 +115,24 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
         return Result<bool>.Success(true);
     }
 
-    private async Task<Result<bool>> CheckDuplicateTeacherAsync(Teacher teacher) 
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
     {
-        var existTeacher = await GetAsync(t => t.User.Email.Value == teacher.User.Email.Value || t.User.PhoneNumber == teacher.User.PhoneNumber);
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.User.TenantId == tenantId.Value);
+    }
+
+    private async Task<Result<bool>> CheckDuplicateTeacherAsync(int teacherId, string email, string phone, string password, Guid tenantId)
+    {
+        var existTeacher = await GetAsync(t => t.User.TenantId == tenantId && t.User.Email.Value == email || t.User.PhoneNumber == phone, [r => r.User]);
 
         // Check if email is duplicated
-        if (existTeacher is not null && existTeacher.User.Email.Value == teacher.User.Email.Value)
+        if (existTeacher is not null && existTeacher.User.Email.Value == email && (existTeacher.Id != teacherId || teacherId == 0))
             return Result<bool>.Failure(_localizedStrings.DuplicatedEmail);
 
         // Check if phone number is duplicated
-        if (existTeacher is not null && existTeacher.User.PhoneNumber == teacher.User.PhoneNumber)
+        if (existTeacher is not null && existTeacher.User.PhoneNumber == phone && (existTeacher.Id != teacherId || teacherId == 0))
             return Result<bool>.Failure(_localizedStrings.DuplicatedPhoneNumber);
 
         return Result<bool>.Success(true);

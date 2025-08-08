@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Tahil.Domain.Dtos;
+﻿using Tahil.Domain.Dtos;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -84,12 +83,20 @@ public class CourseRepository : Repository<Course>, ICourseRepository
         return Result<bool>.Success(true);
     }
 
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.TenantId == tenantId.Value);
+    }
+
     private async Task<Result<bool>> CheckDuplicateCourseNameAsync(Course course, Guid tenantId) 
     {
-        var existCourse = await GetAsync(u => u.Name == course.Name && u.TenantId == tenantId);
+        var existCourse = await _dbSet.AnyAsync(u => u.Name == course.Name && u.TenantId == tenantId);
 
         // Check if course name is duplicated
-        if (existCourse is not null && existCourse.Name == course.Name)
+        if (existCourse)
             return Result<bool>.Failure(_localizedStrings.DuplicatedCourse);
 
         return Result<bool>.Success(true);

@@ -7,17 +7,20 @@ public class DeleteTeacherAttachmentCommandHandler(
     IUploadService uploadService, 
     ITeacherRepository teacherRepository,
     IAttachmentRepository attachmentRepository,
+    IApplicationContext applicationContext,
     LocalizedStrings locale) : ICommandHandler<DeleteTeacherAttachmentCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteTeacherAttachmentCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await teacherRepository.GetAsync(r => r.TeacherAttachments.Any(a => a.AttachmentId == request.AttachmentId), [r => r.TeacherAttachments]);
+        var teacher = await teacherRepository.GetAsync(r => r.User.TenantId == applicationContext.TenantId && 
+            r.TeacherAttachments.Any(a => a.AttachmentId == request.AttachmentId), [r => r.TeacherAttachments]);
+
         if (teacher is null)
             return Result<bool>.Failure(locale.NotAvailableAttachment);
 
         teacher.RemoveTeacherAttachment(request.AttachmentId);
         
-        var deletedAttach = await attachmentRepository.RemoveAttachment(request.AttachmentId);
+        var deletedAttach = await attachmentRepository.RemoveAttachment(request.AttachmentId, applicationContext.TenantId);
 
         var result = await unitOfWork.SaveChangesAsync();
         if (result) 
