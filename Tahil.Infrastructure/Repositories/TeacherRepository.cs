@@ -23,8 +23,8 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                 Email = r.User.Email.Value,
                 PhoneNumber = r.User.PhoneNumber,
                 IsActive = r.User.IsActive,
-                BirthDate = r.User.BirthDate.HasValue ? r.User.BirthDate.Value : default,
-                JoinedDate = r.User.JoinedDate.HasValue ? r.User.JoinedDate.Value : default,
+                BirthDate = r.User.BirthDate,
+                JoinedDate = r.User.JoinedDate,
                 Gender = r.User.Gender,
                 Role = r.User.Role,
                 Experience = r.Experience,
@@ -34,6 +34,11 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                 {
                     Id = cr.Course.Id,
                     Name = cr.Course.Name
+                }).ToList(),
+                Groups = r.Groups.Select(gr => new GroupDto 
+                {
+                    Id = gr.Id,
+                    Name = gr.Name
                 }).ToList(),
                 Attachments = r.TeacherAttachments.Select(at => new AttachmentDto
                 {
@@ -72,7 +77,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
 
     public async Task<Result<bool>> UpdateTeacherAsync(TeacherDto teacherDto, Guid tenantId)
     {
-        var teacher = await GetAsync(r => r.Id == teacherDto.Id && r.User.TenantId == tenantId, [r => r.User, r => r.TeacherCourses]);
+        var teacher = await GetAsync(r => r.Id == teacherDto.Id && r.User.TenantId == tenantId, [r => r.User, r => r.TeacherCourses, r => r.Groups]);
         if (teacher is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableTeacher);
 

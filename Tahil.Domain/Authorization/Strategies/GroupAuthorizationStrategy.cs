@@ -8,26 +8,20 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
     {
         return authorizationContext.AuthorizationOperation switch
         {
-            AuthorizationOperation.ViewDetail => await CanViewGroupDetailAsync(authorizationContext),
-
+            AuthorizationOperation.ViewDetail => await CanViewDetailAsync(authorizationContext),
             AuthorizationOperation.ViewAll => CanViewAll(authorizationContext),
-
             AuthorizationOperation.ViewPaged => CanViewPaged(authorizationContext),
-
             AuthorizationOperation.Create => CanCreateGroup(authorizationContext),
-
-            AuthorizationOperation.UpdateWithId or 
-            AuthorizationOperation.UpdateWithEntity => await CanUpdateGroupAsync(authorizationContext),
-
-            AuthorizationOperation.Delete => await CanDeleteGroupAsync(authorizationContext),
+            AuthorizationOperation.Update => await CanUpdateAsync(authorizationContext),
+            AuthorizationOperation.Delete => await CanDeleteAsync(authorizationContext),
             _ => false
         };
     }
 
-    private async Task<bool> CanViewGroupDetailAsync(AuthorizationContext context)
+    private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
         var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-        return groupExist && context.HasAdminOrEmployeeAccess;
+        return groupExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
     private static bool CanViewAll(AuthorizationContext context)
@@ -45,13 +39,13 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         return context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanUpdateGroupAsync(AuthorizationContext context)
+    private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
         var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return groupExist && context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanDeleteGroupAsync(AuthorizationContext context)
+    private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
         var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return groupExist && context.IsAdmin;

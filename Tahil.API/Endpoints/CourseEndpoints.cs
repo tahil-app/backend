@@ -47,7 +47,7 @@ public class CourseEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateCourseCommand(model));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Course, AuthorizationOperation.UpdateWithEntity);
+        }).RequireAccess(EntityType.Course, AuthorizationOperation.Update);
 
         courses.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
@@ -79,7 +79,7 @@ public class CourseEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateCourseTeachersCommand(id, teacherIds));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Course, AuthorizationOperation.UpdateWithId);
+        }).RequireAccess(EntityType.Course, AuthorizationOperation.Update);
 
         #endregion
 

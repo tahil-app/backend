@@ -41,7 +41,7 @@ public class RoomEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateRoomCommand(model));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Room, AuthorizationOperation.UpdateWithEntity);
+        }).RequireAccess(EntityType.Room, AuthorizationOperation.Update);
 
         rooms.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {

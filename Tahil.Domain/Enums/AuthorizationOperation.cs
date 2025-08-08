@@ -9,5 +9,5 @@ public enum AuthorizationOperation
     Update,
     Delete,
     Activate,
-    Deactivate
+    DeActivate
 }

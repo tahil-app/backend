@@ -75,7 +75,7 @@ public class TeacherEndpoints : ICarterModule
         {
             var result = await mediator.Send(new DeActivateTeacherCommand(id));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Teacher, AuthorizationOperation.Deactivate);
+        }).RequireAccess(EntityType.Teacher, AuthorizationOperation.DeActivate);
 
         #endregion
 

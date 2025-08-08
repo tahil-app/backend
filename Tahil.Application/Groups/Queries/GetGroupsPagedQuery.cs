@@ -9,7 +9,6 @@ public class GetGroupsPagedQueryHandler(IGroupRepository groupRepository, IAppli
 {
     public async Task<Result<PagedList<GroupDto>>> Handle(GetGroupsPagedQuery request, CancellationToken cancellationToken)
     {
-
         Expression<Func<Group, bool>> filter = applicationContext.UserRole == UserRole.Teacher
             ? group => group.TeacherId == applicationContext.UserId && group.TenantId == applicationContext.TenantId
             : group => group.TenantId == applicationContext.TenantId;
@@ -21,14 +20,14 @@ public class GetGroupsPagedQueryHandler(IGroupRepository groupRepository, IAppli
             r => r.Teacher!
         };
 
-        if (applicationContext.UserRole == UserRole.Teacher)
-        {
-            includes = new Expression<Func<Group, object>>[]
-            {
-                r => r.StudentGroups,
-                r => r.Course!,
-            };
-        }
+        //if (applicationContext.UserRole == UserRole.Teacher)
+        //{
+        //    includes = new Expression<Func<Group, object>>[]
+        //    {
+        //        r => r.StudentGroups,
+        //        r => r.Course!,
+        //    };
+        //}
 
         var groups = await groupRepository.GetPagedAsync(
             queryParams: request.QueryParams,

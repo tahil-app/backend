@@ -31,7 +31,7 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetGroupsPagedQuery(queryParams));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
+        });//.RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
 
         #endregion
 
@@ -47,7 +47,7 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateGroupCommand(model));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Group, AuthorizationOperation.UpdateWithEntity);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.Update);
 
         groups.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
         {
@@ -63,7 +63,7 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateGroupStudentsCommand(id, studentIds));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Group, AuthorizationOperation.UpdateWithId);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.Update);
 
         #endregion
 

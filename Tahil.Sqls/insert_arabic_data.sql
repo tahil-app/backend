@@ -25,11 +25,11 @@ INSERT INTO course (name, description, is_active, tenant_id) VALUES
 -- 3. INSERT USERS for TEACHERS (5 teachers in Arabic)
 -- =====================================================
 INSERT INTO "user" (name, email, phone_number, password, role, gender, joined_date, birth_date, image_path, tenant_id, is_active) VALUES
-('أحمد محمد علي', 'ahmed.ali@tahil.edu', '+966501234567', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 1, '2024-01-15', '1985-03-20', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('فاطمة عبدالله حسن', 'fatima.hassan@tahil.edu', '+966502345678', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 2, '2024-02-01', '1988-07-12', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('محمد سعيد الكاظمي', 'mohammed.kadhim@tahil.edu', '+966503456789', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 1, '2024-01-20', '1982-11-05', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('زينب محمود أحمد', 'zainab.ahmed@tahil.edu', '+966504567890', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 2, '2024-02-10', '1987-09-18', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('علي رضا الموسوي', 'ali.mousawi@tahil.edu', '+966505678901', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 1, '2024-01-25', '1984-12-30', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true);
+('أحمد محمد علي', 'ahmed.ali@tahil.edu', '+966501234567', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 3, 1, '2024-01-15', '1985-03-20', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('فاطمة عبدالله حسن', 'fatima.hassan@tahil.edu', '+966502345678', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 3, 2, '2024-02-01', '1988-07-12', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('محمد سعيد الكاظمي', 'mohammed.kadhim@tahil.edu', '+966503456789', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 3, 1, '2024-01-20', '1982-11-05', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('زينب محمود أحمد', 'zainab.ahmed@tahil.edu', '+966504567890', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 3, 2, '2024-02-10', '1987-09-18', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('علي رضا الموسوي', 'ali.mousawi@tahil.edu', '+966505678901', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 3, 1, '2024-01-25', '1984-12-30', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true);
 
 -- =====================================================
 -- 4. INSERT TEACHERS (5 teachers with qualifications)
@@ -45,11 +45,11 @@ INSERT INTO teacher (qualification, experience, user_id) VALUES
 -- 5. INSERT USERS for STUDENTS (5 students in Arabic)
 -- =====================================================
 INSERT INTO "user" (name, email, phone_number, password, role, gender, joined_date, birth_date, image_path, tenant_id, is_active) VALUES
-('حسن أحمد محمد', 'hassan.mohammed@student.tahil.edu', '+966506789012', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 1, '2024-09-01', '2008-05-15', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('مريم علي حسن', 'maryam.hassan@student.tahil.edu', '+966507890123', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 2, '2024-09-01', '2009-08-22', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('عبدالله محمد رضا', 'abdullah.rida@student.tahil.edu', '+966508901234', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 1, '2024-09-01', '2007-12-10', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('زهرة أحمد علي', 'zahra.ali@student.tahil.edu', '+966509012345', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 2, '2024-09-01', '2008-03-25', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
-('محمد علي كاظم', 'mohammed.kazim@student.tahil.edu', '+966500123456', '$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 1, '2024-09-01', '2009-01-08', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true);
+('حسن أحمد محمد', 'hassan.mohammed@student.tahil.edu', '+966506789012', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 4, 1, '2024-09-01', '2008-05-15', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('مريم علي حسن', 'maryam.hassan@student.tahil.edu', '+966507890123', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 4, 2, '2024-09-01', '2009-08-22', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('عبدالله محمد رضا', 'abdullah.rida@student.tahil.edu', '+966508901234', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 4, 1, '2024-09-01', '2007-12-10', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('زهرة أحمد علي', 'zahra.ali@student.tahil.edu', '+966509012345', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 4, 2, '2024-09-01', '2008-03-25', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true),
+('محمد علي كاظم', 'mohammed.kazim@student.tahil.edu', '+966500123456', '$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K', 4, 1, '2024-09-01', '2009-01-08', NULL, '6AF39530-F6E0-4298-A890-FB5C50310C7C', true);
 
 -- =====================================================
 -- 6. INSERT STUDENTS (5 students with qualifications)

@@ -1,5 +1,4 @@
 ﻿using Tahil.Application.Auth.Models;
-using Tahil.Domain.Localization;
 
 namespace Tahil.Application.Auth.Queries;
 
@@ -9,15 +8,18 @@ public class LoginQueryHandler(IUserRepository userRepository, ITokenService tok
 {
     public async Task<Result<LoginResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        request.LoginModel.EmailOrPhone = "0000";
-        request.LoginModel.Password = "admin";
-
         var user = await userRepository.GetAsync(
             r => r.IsActive && r.Email.Value == request.LoginModel.EmailOrPhone || r.PhoneNumber == request.LoginModel.EmailOrPhone,
             includes: [r => r.Student!, r => r.Teacher!]);
 
         if (user is null || !PasswordHasher.Verify(request.LoginModel.Password, user.Password))
             return Result<LoginResult>.Failure(locale.InvalidCredentials);
+
+        if (user.Role == UserRole.Teacher)
+            user.Id = user.Teacher!.Id;
+
+        if (user.Role == UserRole.Student)
+            user.Id = user.Student!.Id;
 
         var authModel = new LoginResult();
         authModel.User = user.Adapt<UserDto>();

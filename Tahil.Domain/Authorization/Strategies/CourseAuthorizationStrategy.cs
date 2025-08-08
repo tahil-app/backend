@@ -8,26 +8,19 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
     {
         return authorizationContext.AuthorizationOperation switch
         {
-            AuthorizationOperation.ViewDetail => await CanViewCourseDetailAsync(authorizationContext),
-
+            AuthorizationOperation.ViewDetail => await CanViewDetailAsync(authorizationContext),
             AuthorizationOperation.ViewAll => CanViewAll(authorizationContext),
-
             AuthorizationOperation.ViewPaged => CanViewPaged(authorizationContext),
-
-            AuthorizationOperation.Create => CanCreateCourse(authorizationContext),
-
-            AuthorizationOperation.UpdateWithId or 
-            AuthorizationOperation.UpdateWithEntity => await CanUpdateCourseAsync(authorizationContext),
-
-            AuthorizationOperation.Delete => await CanDeleteCourseAsync(authorizationContext),
-
-            AuthorizationOperation.Activate or AuthorizationOperation.DeActivate => await CanActivateOrDeActivateCourseAsync(authorizationContext),
-
+            AuthorizationOperation.Create => CanCreate(authorizationContext),
+            AuthorizationOperation.Update => await CanUpdateAsync(authorizationContext),
+            AuthorizationOperation.Delete => await CanDeleteAsync(authorizationContext),
+            AuthorizationOperation.Activate or 
+            AuthorizationOperation.DeActivate => await CanActivateOrDeActivateAsync(authorizationContext),
             _ => false
         };
     }
 
-    private async Task<bool> CanViewCourseDetailAsync(AuthorizationContext context)
+    private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
         var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return courseExist && context.HasAdminOrEmployeeOrTeacherAccess;
@@ -35,7 +28,7 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
 
     private static bool CanViewAll(AuthorizationContext context)
     {
-        return context.HasAdminOrEmployeeOrTeacherAccess;
+        return context.HasAdminOrEmployeeAccess;
     }
 
     private static bool CanViewPaged(AuthorizationContext context)
@@ -43,24 +36,24 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
         return context.HasAdminOrEmployeeAccess;
     }
 
-    private static bool CanCreateCourse(AuthorizationContext context)
+    private static bool CanCreate(AuthorizationContext context)
     {
         return context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanUpdateCourseAsync(AuthorizationContext context)
+    private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
         var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return courseExist && context.HasAdminOrEmployeeAccess;
     }
 
-    private async Task<bool> CanDeleteCourseAsync(AuthorizationContext context)
+    private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
         var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return courseExist && context.IsAdmin;
     }
 
-    private async Task<bool> CanActivateOrDeActivateCourseAsync(AuthorizationContext context)
+    private async Task<bool> CanActivateOrDeActivateAsync(AuthorizationContext context)
     {
         var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         return courseExist && context.IsAdmin;
