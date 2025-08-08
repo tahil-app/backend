@@ -1,12 +1,12 @@
 namespace Tahil.Domain.Authorization.Strategies;
 
-public class TeacherAuthorizationStrategy(
-    ITeacherRepository teacherRepository,
+public class StudentAuthorizationStrategy(
+    IStudentRepository studentRepository,
     IAttachmentRepository attachmentRepository,
-    ICourseRepository courseRepository) 
+    IGroupRepository groupRepository) 
     : IEntityAuthorizationStrategy
 {
-    public EntityType Type => EntityType.Teacher;
+    public EntityType Type => EntityType.Student;
 
     public async Task<bool> CanAccessAsync(AuthorizationContext context)
     {
@@ -26,8 +26,8 @@ public class TeacherAuthorizationStrategy(
 
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-        return teacherExist && context.HasAdminOrEmployeeOrTeacherAccess;
+        var studentExist = await studentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return studentExist && context.HasAnyAccess;
     }
     
     private bool CanViewAll(AuthorizationContext context)
@@ -52,30 +52,30 @@ public class TeacherAuthorizationStrategy(
             return await attachmentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         }
 
-        if (context.MetaData == "course" && context.HasAdminOrEmployeeOrTeacherAccess)
+        if (context.MetaData == "group" && context.HasAdminOrEmployeeOrTeacherAccess)
         {
-            return await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+            return await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         }
 
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-        return teacherExist && context.HasAdminOrEmployeeOrTeacherAccess;
+        var studentExist = await studentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return studentExist && context.HasAnyAccess;
     }
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        if (context.MetaData == "attachment" && context.HasAdminOrEmployeeOrTeacherAccess)
+        if (context.MetaData == "attachment" && (context.HasAdminOrEmployeeAccess || context.IsStudent))
         {
             return await attachmentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
         }
 
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-        return teacherExist && context.IsAdmin;
+        var studentExist = await studentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return studentExist && context.IsAdmin;
     }
 
     private async Task<bool> CanActivateOrDeActivateAsync(AuthorizationContext context)
     {
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-        return teacherExist && context.IsAdmin;
+        var studentExist = await studentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return studentExist && context.IsAdmin;
     }
 
-}
+} 

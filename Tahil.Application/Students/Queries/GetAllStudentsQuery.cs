@@ -2,13 +2,10 @@
 
 public record GetAllStudentsQuery() : IQuery<Result<List<StudentDto>>>;
 
-public class GetAllStudentsQueryHandler(IStudentRepository studentRepository, IApplicationContext applicationContext) : IQueryHandler<GetAllStudentsQuery, Result<List<StudentDto>>>
+public class GetAllStudentsQueryHandler(ILookupRepository lookupRepository, IApplicationContext applicationContext) : IQueryHandler<GetAllStudentsQuery, Result<List<StudentDto>>>
 {
     public async Task<Result<List<StudentDto>>> Handle(GetAllStudentsQuery request, CancellationToken cancellationToken)
     {
-        var students = await studentRepository.GetAllReadOnlyAsync(r => r.User.IsActive && r.User.TenantId == applicationContext.TenantId);
-        var activeStudents = students.Adapt<List<StudentDto>>();
-
-        return Result.Success(activeStudents);
+        return await lookupRepository.GetStudentsAsync(applicationContext.TenantId);
     }
 }

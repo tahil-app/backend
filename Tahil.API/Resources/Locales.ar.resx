@@ -255,6 +255,9 @@
   <data name="StudentQualificationTooLong" xml:space="preserve">
     <value>مؤهلات الطالب لا يمكن أن تتجاوز 200 حرف</value>
   </data>
+  <data name="StudentExperienceTooLong" xml:space="preserve">
+    <value>خبرة الطالب لا يمكن أن تتجاوز 500 حرف</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>المعلم</value>
   </data>

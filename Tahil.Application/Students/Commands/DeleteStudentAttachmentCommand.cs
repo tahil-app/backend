@@ -12,7 +12,8 @@ public class DeleteStudentAttachmentCommandHandler(
 {
     public async Task<Result<bool>> Handle(DeleteStudentAttachmentCommand request, CancellationToken cancellationToken)
     {
-        var student = await studentRepository.GetAsync(r => r.StudentAttachments.Any(a => a.AttachmentId == request.AttachmentId), [r => r.StudentAttachments]);
+        var student = await studentRepository.GetAsync(r => r.User.TenantId == applicationContext.TenantId && 
+            r.StudentAttachments.Any(a => a.AttachmentId == request.AttachmentId), [r => r.StudentAttachments]);
         if (student is null)
             return Result<bool>.Failure(locale.NotAvailableAttachment);
 

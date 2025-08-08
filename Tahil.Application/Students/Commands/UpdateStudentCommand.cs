@@ -5,11 +5,11 @@ namespace Tahil.Application.Students.Commands;
 
 public record UpdateStudentCommand(StudentDto Student) : ICommand<Result<bool>>, IStudentCommand;
 
-public class UpdateStudentCommandHandler(IUnitOfWork unitOfWork, IStudentRepository studentRepository, LocalizedStrings locale) : ICommandHandler<UpdateStudentCommand, Result<bool>>
+public class UpdateStudentCommandHandler(IUnitOfWork unitOfWork, IStudentRepository studentRepository, LocalizedStrings locale, IApplicationContext applicationContext) : ICommandHandler<UpdateStudentCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
     {
-        var student = await studentRepository.GetAsync(r => r.Id == request.Student.Id, [r => r.StudentGroups]);
+        var student = await studentRepository.GetAsync(r => r.Id == request.Student.Id && r.User.TenantId == applicationContext.TenantId, [r => r.StudentGroups]);
         if (student is null)
             return Result<bool>.Failure(locale.NotAvailableStudent);
 

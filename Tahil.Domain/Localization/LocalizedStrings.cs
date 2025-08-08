@@ -55,6 +55,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string StudentNameTooLong => loc[nameof(StudentNameTooLong)];
     public string StudentNameTooShort => loc[nameof(StudentNameTooShort)];
     public string StudentQualificationTooLong => loc[nameof(StudentQualificationTooLong)];
+    public string StudentExperienceTooLong => loc[nameof(StudentExperienceTooLong)];
     public string DuplicatedStudent => Duplicate(Student);
     public string NotAvailableStudent => NotAvailable(Student);
     public string RequiredStudent => Required(Student);

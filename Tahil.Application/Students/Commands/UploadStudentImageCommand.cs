@@ -7,13 +7,14 @@ public record UploadStudentImageCommand(UserAttachmentModel AttachmentModel) : I
 public class UploadStudentLogoCommandHandler(
     IUnitOfWork unitOfWork,
     IUploadService uploadService,
-    IStudentRepository studentRepository,
+    IStudentRepository studentRepository, 
+    IApplicationContext applicationContext,
     LocalizedStrings locale)
     : ICommandHandler<UploadStudentImageCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(UploadStudentImageCommand request, CancellationToken cancellationToken)
     {
-        var student = await studentRepository.GetAsync(r => r.Id == request.AttachmentModel.UserId);
+        var student = await studentRepository.GetAsync(r => r.User.TenantId == applicationContext.TenantId && r.Id == request.AttachmentModel.UserId);
         if (student is null)
             return Result<bool>.Failure(locale.NotAvailableStudent);
 

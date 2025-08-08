@@ -255,6 +255,9 @@
   <data name="StudentQualificationTooLong" xml:space="preserve">
     <value>Student qualification cannot exceed 200 characters</value>
   </data>
+  <data name="StudentExperienceTooLong" xml:space="preserve">
+    <value>Student experience cannot exceed 500 characters</value>
+  </data>
   <data name="Teacher" xml:space="preserve">
     <value>Teacher</value>
   </data>

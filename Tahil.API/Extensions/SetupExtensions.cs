@@ -89,6 +89,7 @@ public static class SetupExtensions
         services.AddScoped<IEntityAuthorizationStrategy, CourseAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, RoomAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, TeacherAuthorizationStrategy>();
+        services.AddScoped<IEntityAuthorizationStrategy, StudentAuthorizationStrategy>();
         
         return services;
     }

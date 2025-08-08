@@ -36,8 +36,7 @@ public class ResourceAuthorizationHandler(
         var resourceId = await ExtractResourceId(httpContext, requirement);
 
         // Create authorization context
-        var user = await applicationContext.GetUserAsync();
-        var authorizationContext = AuthorizationContext.Create(requirement.EntityType, user, requirement.Operation, resourceId, requirement.MetaDate);
+        var authorizationContext = AuthorizationContext.Create(requirement.EntityType, applicationContext.TenantId, applicationContext.UserRole, requirement.Operation, resourceId, requirement.MetaDate);
 
         // Check if user can access the resource
         var canAccess = await resourceAuthorizationService.CanAccessEntityAsync(authorizationContext);
