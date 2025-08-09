@@ -132,6 +132,12 @@
   <data name="ConflictBusyTime" xml:space="preserve">
     <value>هذا الوقت غير متاح , اختر وقت اخر</value>
   </data>
+  <data name="RoomIsBusy" xml:space="preserve">
+    <value>الحلقة مشغولة في هذا الوقت</value>
+  </data>
+  <data name="GroupIsBusy" xml:space="preserve">
+    <value>المجموعة مشغولة في هذا الوقت</value>
+  </data>
   <data name="Course" xml:space="preserve">
     <value>الدورة</value>
   </data>
@@ -195,7 +201,22 @@
   <data name="IsRequired" xml:space="preserve">
     <value>مطلوب</value>
   </data>
-  <data name="LessonSchedule" xml:space="preserve">
+  <data name="RequiredGroup" xml:space="preserve">
+    <value>المجموعة مطلوبة</value>
+  </data>
+  <data name="RequiredRoom" xml:space="preserve">
+    <value>الحلقة مطلوبة</value>
+  </data>
+  <data name="RequiredDay" xml:space="preserve">
+    <value>اليوم مطلوب</value>
+  </data>
+  <data name="RequiredStartTime" xml:space="preserve">
+    <value>وقت البداية مطلوب</value>
+  </data>
+  <data name="RequiredEndTime" xml:space="preserve">
+    <value>وقت الانتهاء مطلوب</value>
+  </data>
+  <data name="ClassSchedule" xml:space="preserve">
     <value>جدول التوزيع الرئيسي</value>
   </data>
   <data name="MustBePositive" xml:space="preserve">
@@ -234,6 +255,12 @@
   <data name="StartAndEndDatesValidation" xml:space="preserve">
     <value>تاريخ البداية يجب ان يكون اقل او يساوى تاريخ الانتهاء</value>
   </data>
+  <data name="StartTimeMustBeBeforeEndTime" xml:space="preserve">
+    <value>وقت البداية يجب أن يكون قبل وقت الانتهاء</value>
+  </data>
+  <data name="StartDateMustBeBeforeEndDate" xml:space="preserve">
+    <value>تاريخ البداية يجب أن يكون قبل تاريخ الانتهاء</value>
+  </data>
   <data name="StartDate" xml:space="preserve">
     <value>وقت البداية</value>
   </data>
@@ -266,6 +293,9 @@
   </data>
   <data name="TeacherHasAttachments" xml:space="preserve">
     <value>المعلم له مرفقات، لا يمكن حذفه</value>
+  </data>
+  <data name="TeacherHasAnotherSchedule" xml:space="preserve">
+    <value>المعلم لديه جدول آخر في هذا الوقت</value>
   </data>
   <data name="TeacherNameTooLong" xml:space="preserve">
     <value>اسم المعلم لا يمكن أن يتجاوز 100 حرف</value>

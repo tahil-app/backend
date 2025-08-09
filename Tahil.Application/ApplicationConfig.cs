@@ -1,7 +1,6 @@
 ﻿using Tahil.Application.Auth.Mappings;
 using Tahil.Application.Courses.Mappings;
 using Tahil.Application.Groups.Mappings;
-using Tahil.Application.LessonSchedules.Mappings;
 using Tahil.Application.Rooms.Mappings;
 using Tahil.Application.Students.Mappings;
 using Tahil.Application.Teachers.Mappings;
@@ -18,6 +17,5 @@ public class ApplicationConfig
         TeacherMapping.RegisterMappings();
         StudentMapping.RegisterMappings();
         GroupMapping.RegisterMappings();
-        LessonScheduleMapping.RegisterMappings();
     }
 }

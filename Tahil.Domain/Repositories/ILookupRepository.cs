@@ -7,5 +7,5 @@ public interface ILookupRepository
     Task<Result<List<CourseDto>>> GetCoursesAsync(Guid tenantId);
     Task<Result<List<TeacherDto>>> GetTeachersAsync(Guid tenantId);
     Task<Result<List<StudentDto>>> GetStudentsAsync(Guid tenantId);
-    Task<LessonScheduleLookupsDto> GetLessonScheduleLookupsAsync();
+    Task<ClassScheduleLookupsDto> GetClassScheduleAsync(Guid tenantId);
 }

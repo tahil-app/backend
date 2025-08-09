@@ -1,10 +1,10 @@
 ﻿namespace Tahil.Infrastructure.EntityConfigurations;
 
-public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedule>
+public class ClassScheduleConfiguration : IEntityTypeConfiguration<ClassSchedule>
 {
-    public void Configure(EntityTypeBuilder<LessonSchedule> builder)
+    public void Configure(EntityTypeBuilder<ClassSchedule> builder)
     {
-        builder.ToTable("lesson_schedule");
+        builder.ToTable("class_schedule");
 
         builder.HasKey(p => p.Id);
 
@@ -15,20 +15,9 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
             .HasColumnName("room_id")
             .IsRequired();
 
-        builder.Property(p => p.CourseId)
-            .HasColumnName("course_id")
-            .IsRequired();
-
-        builder.Property(p => p.TeacherId)
-            .HasColumnName("teacher_id")
-            .IsRequired();
-
         builder.Property(p => p.GroupId)
             .HasColumnName("group_id")
             .IsRequired();
-
-        builder.Property(p => p.ReferenceId)
-            .HasColumnName("reference");
 
         builder.Property(p => p.Day)
             .HasColumnName("day");
@@ -39,14 +28,14 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
         builder.Property(p => p.EndTime)
             .HasColumnName("end_time");
 
+        builder.Property(p => p.Status)
+            .HasColumnName("status");
+
         builder.Property(p => p.StartDate)
             .HasColumnName("start_date");
 
         builder.Property(p => p.EndDate)
             .HasColumnName("end_date");
-
-        builder.Property(p => p.Status)
-            .HasColumnName("status");
 
         builder.Property(p => p.CreatedAt)
             .HasColumnName("created_at")
@@ -62,25 +51,22 @@ public class LessonScheduleConfiguration : IEntityTypeConfiguration<LessonSchedu
         builder.Property(p => p.UpdatedBy)
             .HasColumnName("updated_by");
 
+        builder.Property(p => p.TenantId)
+            .HasColumnName("tenant_id");
+
+
         // Navigation properties
+        builder.HasOne(r => r.Tenant)
+            .WithMany(r => r.Schedules)
+            .HasForeignKey(r => r.TenantId);
+
         builder.HasOne(p => p.Room)
             .WithMany(r => r.Schedules)
             .HasForeignKey(p => p.RoomId);
-
-        builder.HasOne(p => p.Course)
-            .WithMany(r => r.Schedules)
-            .HasForeignKey(p => p.CourseId);
-
-        builder.HasOne(p => p.Teacher)
-            .WithMany(r => r.Schedules)
-            .HasForeignKey(p => p.TeacherId);
 
         builder.HasOne(p => p.Group)
             .WithMany(r => r.Schedules)
             .HasForeignKey(p => p.GroupId);
 
-        builder.HasOne(p => p.Reference)
-            .WithMany(r => r.Schedules)
-            .HasForeignKey(p => p.ReferenceId);
     }
 }

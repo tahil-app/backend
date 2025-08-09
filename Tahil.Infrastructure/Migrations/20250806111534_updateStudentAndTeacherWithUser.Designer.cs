@@ -136,7 +136,7 @@ namespace Tahil.Infrastructure.Migrations
                     b.ToTable("group", (string)null);
                 });
 
-            modelBuilder.Entity("Tahil.Domain.Entities.LessonSchedule", b =>
+            modelBuilder.Entity("Tahil.Domain.Entities.ClassSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -658,7 +658,7 @@ namespace Tahil.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("Tahil.Domain.Entities.LessonSchedule", b =>
+            modelBuilder.Entity("Tahil.Domain.Entities.ClassSchedule", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.Course", "Course")
                         .WithMany("Schedules")
@@ -672,7 +672,7 @@ namespace Tahil.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tahil.Domain.Entities.LessonSchedule", "Reference")
+                    b.HasOne("Tahil.Domain.Entities.ClassSchedule", "Reference")
                         .WithMany("Schedules")
                         .HasForeignKey("ReferenceId");
 
@@ -719,7 +719,7 @@ namespace Tahil.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tahil.Domain.Entities.LessonSchedule", "Schedule")
+                    b.HasOne("Tahil.Domain.Entities.ClassSchedule", "Schedule")
                         .WithMany("Sessions")
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -908,7 +908,7 @@ namespace Tahil.Infrastructure.Migrations
                     b.Navigation("StudentGroups");
                 });
 
-            modelBuilder.Entity("Tahil.Domain.Entities.LessonSchedule", b =>
+            modelBuilder.Entity("Tahil.Domain.Entities.ClassSchedule", b =>
                 {
                     b.Navigation("Schedules");
 

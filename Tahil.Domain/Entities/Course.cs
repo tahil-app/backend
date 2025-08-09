@@ -10,8 +10,8 @@ public class Course : Base
     public Tenant? Tenant { get; set; }
 
     public ICollection<Group> Groups { get; set; } = new List<Group>();
-    public ICollection<LessonSchedule> Schedules { get; set; } = new List<LessonSchedule>();
-    public ICollection<LessonSession> Sessions { get; set; } = new List<LessonSession>();
+    public ICollection<ClassSchedule> Schedules { get; set; } = new List<ClassSchedule>();
+    public ICollection<ClassSession> Sessions { get; set; } = new List<ClassSession>();
     public ICollection<TeacherCourse> TeacherCourses { get; set; } = new List<TeacherCourse>();
     public void Validate()
     {

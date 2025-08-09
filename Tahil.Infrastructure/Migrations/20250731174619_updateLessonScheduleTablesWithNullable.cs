@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Tahil.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updateLessonScheduleTablesWithNullable : Migration
+    public partial class updateClassScheduleTablesWithNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

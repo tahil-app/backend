@@ -1,6 +1,6 @@
 ﻿namespace Tahil.Domain.Entities;
 
-public class LessonSession : Base
+public class ClassSession : Base
 {
     public int RoomId { get; set; }
     public int CourseId { get; set; }
@@ -22,5 +22,5 @@ public class LessonSession : Base
     public Course? Course { get; set; }
     public Teacher? Teacher { get; set; }
     public Group? Group { get; set; }
-    public LessonSchedule? Schedule { get; set; }
+    public ClassSchedule? Schedule { get; set; }
 }

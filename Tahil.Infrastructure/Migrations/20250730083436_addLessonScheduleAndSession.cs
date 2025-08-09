@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Tahil.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addLessonScheduleAndSession : Migration
+    public partial class addClassScheduleAndSession : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

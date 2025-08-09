@@ -4,10 +4,10 @@ using Z.EntityFramework.Plus;
 
 namespace Tahil.Infrastructure.Repositories;
 
-public class LookupRepository : Repository<LessonSchedule>, ILookupRepository
+public class LookupRepository : Repository<ClassSchedule>, ILookupRepository
 {
     private readonly BEContext _context;
-    public LookupRepository(BEContext context) : base(context.Set<LessonSchedule>())
+    public LookupRepository(BEContext context) : base(context.Set<ClassSchedule>())
     {
         _context = context;
     }
@@ -53,32 +53,17 @@ public class LookupRepository : Repository<LessonSchedule>, ILookupRepository
         return Result<List<StudentDto>>.Success(students);
     }   
 
-    public async Task<LessonScheduleLookupsDto> GetLessonScheduleLookupsAsync()
+    public async Task<ClassScheduleLookupsDto> GetClassScheduleAsync(Guid tenantId)
     {
-        var roomsQuery = _context.Set<Room>().Where(r => r.IsActive).Future();
-        var coursesQuery = _context.Set<Course>().Where(r => r.IsActive).Future();
-        var groupsQuery = _context.Set<Group>().Future();
-        var teachersQuery = _context.Set<Teacher>().Include(r => r.TeacherCourses).Where(r => r.User.IsActive && r.TeacherCourses.Any()).Future();
+        var roomsQuery = _context.Set<Room>().Where(r => r.IsActive).Select(r => new RoomDto { Id = r.Id, Name = r.Name }).Future();
+        var groupsQuery = _context.Set<Group>().Select(r => new GroupDto { Id = r.Id, Name = r.Name }).Future();
 
-        var courses = await coursesQuery.ToListAsync();
-        var teachers = teachersQuery.ToList();
-        var courseTeachers = new List<CourseTeachers>();
+        var rooms = await roomsQuery.ToListAsync();
 
-        courses.ForEach(crs => 
+        var lookups = new ClassScheduleLookupsDto
         {
-            courseTeachers.Add(new CourseTeachers
-            { 
-                Course = crs.Adapt<CourseDto>(), 
-                Teachers = teachers.Where(r => r.TeacherCourses.Any(t => t.CourseId == crs.Id)).Adapt<List<TeacherDto>>()
-            });
-        });
-
-
-        var lookups = new LessonScheduleLookupsDto
-        {
-            Rooms = roomsQuery.ToList().Adapt<List<RoomDto>>(),
-            Groups = groupsQuery.ToList().Adapt<List<GroupDto>>(),
-            CourseTeachers = courseTeachers
+            Rooms = rooms,
+            Groups = groupsQuery.ToList()
         };
 
         return lookups;

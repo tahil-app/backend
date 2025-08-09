@@ -83,11 +83,12 @@ public class LocalizedStrings(ILocalizationService loc)
     public string RequiredEmployee => Required(Employee);
     #endregion
 
-    #region Lesson Schedule
-    public string LessonSchedule => loc[nameof(LessonSchedule)];
-    public string NotAvailableLessonSchedule => NotAvailable(LessonSchedule);
-    public string RequiredLessonSchedule => Required(LessonSchedule);
-    public string NotFoundLessonSchedule => NotFound(LessonSchedule);
+    #region Class Schedule
+    public string ClassSchedule => loc[nameof(ClassSchedule)];
+    public string TeacherHasAnotherSchedule => loc[nameof(TeacherHasAnotherSchedule)];
+    public string NotAvailableClassSchedule => NotAvailable(ClassSchedule);
+    public string RequiredClassSchedule => Required(ClassSchedule);
+    public string NotFoundClassSchedule => NotFound(ClassSchedule);
     #endregion
 
     #region Shared
@@ -99,9 +100,16 @@ public class LocalizedStrings(ILocalizationService loc)
     public string StartDate => loc[nameof(StartDate)];
     public string EndDate => loc[nameof(EndDate)];
     public string ConflictBusyTime => loc[nameof(ConflictBusyTime)];
+    public string RoomIsBusy => loc[nameof(RoomIsBusy)];
+    public string GroupIsBusy => loc[nameof(GroupIsBusy)];
     public string CannotBeNull => loc[nameof(CannotBeNull)];
     public string MustBePositive => loc[nameof(MustBePositive)];
     public string InvalidEmailFormat => loc[nameof(InvalidEmailFormat)];
+    public string RequiredDay => loc[nameof(RequiredDay)];
+    public string RequiredStartTime => loc[nameof(RequiredStartTime)];
+    public string RequiredEndTime => loc[nameof(RequiredEndTime)];
+    public string StartTimeMustBeBeforeEndTime => loc[nameof(StartTimeMustBeBeforeEndTime)];
+    public string StartDateMustBeBeforeEndDate => loc[nameof(StartDateMustBeBeforeEndDate)];
     public string StartAndEndDatesValidation => loc[nameof(StartAndEndDatesValidation)];
     #endregion
 

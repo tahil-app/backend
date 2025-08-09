@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tahil.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Tahil.Infrastructure.Data;
 namespace Tahil.Infrastructure.Migrations
 {
     [DbContext(typeof(BEContext))]
-    partial class BEContextModelSnapshot : ModelSnapshot
+    [Migration("20250809122616_addClassSchedule")]
+    partial class addClassSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -866,7 +869,7 @@ namespace Tahil.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("user", (string)null);
+                            b1.ToTable("user");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

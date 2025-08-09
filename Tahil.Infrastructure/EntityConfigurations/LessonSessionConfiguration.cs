@@ -1,8 +1,8 @@
 ﻿namespace Tahil.Infrastructure.EntityConfigurations;
 
-public class LessonSessionConfiguration : IEntityTypeConfiguration<LessonSession>
+public class LessonSessionConfiguration : IEntityTypeConfiguration<ClassSession>
 {
-    public void Configure(EntityTypeBuilder<LessonSession> builder)
+    public void Configure(EntityTypeBuilder<ClassSession> builder)
     {
         builder.ToTable("lesson_session");
 

@@ -1,11 +1,10 @@
 ﻿namespace Tahil.Domain.Enums;
 
-public enum LessonScheduleStatus
+public enum ClassScheduleStatus
 {
     New,
     Active,
     Paused,
     Completed,
-    Canceled,
-    Archived
+    Canceled
 }

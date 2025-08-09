@@ -64,7 +64,7 @@ public static class SetupExtensions
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
-        services.AddScoped<ILessonScheduleRepository, LessonScheduleRepository>();
+        services.AddScoped<IClassScheduleRepository, ClassScheduleRepository>();
         services.AddScoped<ILookupRepository, LookupRepository>();
 
         return services;

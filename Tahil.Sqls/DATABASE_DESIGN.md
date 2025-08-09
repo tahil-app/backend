@@ -131,9 +131,9 @@ CREATE TABLE StudentGroups (
 );
 ```
 
-#### 10. LessonSchedules Table
+#### 10. ClassSchedules Table
 ```sql
-CREATE TABLE LessonSchedules (
+CREATE TABLE ClassSchedules (
     Id INT PRIMARY KEY IDENTITY(1,1),
     CourseId INT NOT NULL,
     TeacherId INT NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE LessonSchedules (
     StartTime TIME NOT NULL,
     EndTime TIME NOT NULL,
     DayOfWeek INT NOT NULL, -- DayOfWeek enum
-    Status INT NOT NULL DEFAULT 0, -- LessonScheduleStatus enum
+    Status INT NOT NULL DEFAULT 0, -- ClassScheduleStatus enum
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     UpdatedAt DATETIME2 NULL,
     
@@ -157,7 +157,7 @@ CREATE TABLE LessonSchedules (
 ```sql
 CREATE TABLE LessonSessions (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    LessonScheduleId INT NOT NULL,
+    ClassScheduleId INT NOT NULL,
     CourseId INT NOT NULL,
     TeacherId INT NOT NULL,
     RoomId INT NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE LessonSessions (
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     UpdatedAt DATETIME2 NULL,
     
-    FOREIGN KEY (LessonScheduleId) REFERENCES LessonSchedules(Id),
+    FOREIGN KEY (ClassScheduleId) REFERENCES ClassSchedules(Id),
     FOREIGN KEY (CourseId) REFERENCES Courses(Id),
     FOREIGN KEY (TeacherId) REFERENCES Teachers(Id),
     FOREIGN KEY (RoomId) REFERENCES Rooms(Id),
@@ -232,7 +232,7 @@ CREATE TABLE StudentAttachments (
 - `Male = 1`
 - `Female = 2`
 
-### LessonScheduleStatus
+### ClassScheduleStatus
 - `Inactive = 0`
 - `Active = 1`
 
@@ -256,15 +256,15 @@ CREATE TABLE StudentAttachments (
 - **Tenant → Users**: One tenant can have multiple users
 - **Tenant → Teachers**: One tenant can have multiple teachers
 - **Tenant → Students**: One tenant can have multiple students
-- **Course → LessonSchedules**: One course can have multiple lesson schedules
+- **Course → ClassSchedules**: One course can have multiple lesson schedules
 - **Course → LessonSessions**: One course can have multiple lesson sessions
-- **Teacher → LessonSchedules**: One teacher can have multiple lesson schedules
+- **Teacher → ClassSchedules**: One teacher can have multiple lesson schedules
 - **Teacher → LessonSessions**: One teacher can have multiple lesson sessions
-- **Room → LessonSchedules**: One room can have multiple lesson schedules
+- **Room → ClassSchedules**: One room can have multiple lesson schedules
 - **Room → LessonSessions**: One room can have multiple lesson sessions
-- **Group → LessonSchedules**: One group can have multiple lesson schedules
+- **Group → ClassSchedules**: One group can have multiple lesson schedules
 - **Group → LessonSessions**: One group can have multiple lesson sessions
-- **LessonSchedule → LessonSessions**: One lesson schedule can have multiple sessions
+- **ClassSchedule → LessonSessions**: One lesson schedule can have multiple sessions
 
 ### Many-to-Many Relationships
 - **Teachers ↔ Courses**: Through TeacherCourses table
@@ -295,15 +295,15 @@ CREATE INDEX IX_Students_Email ON Students(Email);
 CREATE INDEX IX_Students_PhoneNumber ON Students(PhoneNumber);
 CREATE INDEX IX_Students_TenantId ON Students(TenantId);
 
--- LessonSchedules table
-CREATE INDEX IX_LessonSchedules_CourseId ON LessonSchedules(CourseId);
-CREATE INDEX IX_LessonSchedules_TeacherId ON LessonSchedules(TeacherId);
-CREATE INDEX IX_LessonSchedules_RoomId ON LessonSchedules(RoomId);
-CREATE INDEX IX_LessonSchedules_GroupId ON LessonSchedules(GroupId);
-CREATE INDEX IX_LessonSchedules_DayOfWeek ON LessonSchedules(DayOfWeek);
+-- ClassSchedules table
+CREATE INDEX IX_ClassSchedules_CourseId ON ClassSchedules(CourseId);
+CREATE INDEX IX_ClassSchedules_TeacherId ON ClassSchedules(TeacherId);
+CREATE INDEX IX_ClassSchedules_RoomId ON ClassSchedules(RoomId);
+CREATE INDEX IX_ClassSchedules_GroupId ON ClassSchedules(GroupId);
+CREATE INDEX IX_ClassSchedules_DayOfWeek ON ClassSchedules(DayOfWeek);
 
 -- LessonSessions table
-CREATE INDEX IX_LessonSessions_LessonScheduleId ON LessonSessions(LessonScheduleId);
+CREATE INDEX IX_LessonSessions_ClassScheduleId ON LessonSessions(ClassScheduleId);
 CREATE INDEX IX_LessonSessions_CourseId ON LessonSessions(CourseId);
 CREATE INDEX IX_LessonSessions_TeacherId ON LessonSessions(TeacherId);
 CREATE INDEX IX_LessonSessions_RoomId ON LessonSessions(RoomId);
@@ -321,13 +321,13 @@ ALTER TABLE Teachers ADD CONSTRAINT CK_Teachers_Email CHECK (Email IS NULL OR Em
 ALTER TABLE Students ADD CONSTRAINT CK_Students_Email CHECK (Email IS NULL OR Email LIKE '%_@_%._%');
 
 -- Time validation for lesson schedules
-ALTER TABLE LessonSchedules ADD CONSTRAINT CK_LessonSchedules_Time CHECK (StartTime < EndTime);
+ALTER TABLE ClassSchedules ADD CONSTRAINT CK_ClassSchedules_Time CHECK (StartTime < EndTime);
 
 -- Time validation for lesson sessions
 ALTER TABLE LessonSessions ADD CONSTRAINT CK_LessonSessions_Time CHECK (StartTime < EndTime);
 
 -- Day of week validation
-ALTER TABLE LessonSchedules ADD CONSTRAINT CK_LessonSchedules_DayOfWeek CHECK (DayOfWeek >= 0 AND DayOfWeek <= 6);
+ALTER TABLE ClassSchedules ADD CONSTRAINT CK_ClassSchedules_DayOfWeek CHECK (DayOfWeek >= 0 AND DayOfWeek <= 6);
 ```
 
 ### Unique Constraints

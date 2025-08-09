@@ -5,7 +5,7 @@
 namespace Tahil.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updateLessonScheduleTables : Migration
+    public partial class updateClassScheduleTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
