@@ -29,17 +29,17 @@ public class CourseRepository : Repository<Course>, ICourseRepository
 
     public async Task<Result<bool>> DeleteCourseAsync(int id, Guid tenantId)
     {
-        var course = await GetAsync(c => c.Id == id && c.TenantId == tenantId, [c => c.Schedules, c => c.Sessions, c => c.TeacherCourses]);
+        var course = await GetAsync(c => c.Id == id && c.TenantId == tenantId, [c => c.TeacherCourses]);
 
         if (course is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableCourse);
 
         // Check if course has child relationships
-        if (course.Schedules.Any())
-            return Result<bool>.Failure(_localizedStrings.CourseHasSchedules);
+        //if (course.Schedules.Any())
+        //    return Result<bool>.Failure(_localizedStrings.CourseHasSchedules);
 
-        if (course.Sessions.Any())
-            return Result<bool>.Failure(_localizedStrings.CourseHasSessions);
+        //if (course.Sessions.Any())
+        //    return Result<bool>.Failure(_localizedStrings.CourseHasSessions);
 
         if (course.TeacherCourses.Any())
             return Result<bool>.Failure(_localizedStrings.CourseHasTeachers);

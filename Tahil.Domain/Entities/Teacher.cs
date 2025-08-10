@@ -10,7 +10,6 @@ public class Teacher : Base
 
     public ICollection<Group> Groups { get; set; } = new List<Group>();
     public ICollection<TeacherAttachment> TeacherAttachments { get; set; } = new List<TeacherAttachment>();
-    public ICollection<ClassSchedule> Schedules { get; set; } = new List<ClassSchedule>();
     public ICollection<ClassSession> Sessions { get; set; } = new List<ClassSession>();
     public ICollection<TeacherCourse> TeacherCourses { get; set; } = new List<TeacherCourse>();
 

@@ -22,6 +22,9 @@ public class ClassScheduleConfiguration : IEntityTypeConfiguration<ClassSchedule
         builder.Property(p => p.Day)
             .HasColumnName("day");
 
+        builder.Property(p => p.Color)
+            .HasColumnName("color");
+
         builder.Property(p => p.StartTime)
             .HasColumnName("start_time");
 

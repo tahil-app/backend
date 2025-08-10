@@ -19,6 +19,7 @@ public static class ClassScheduleMapping
         {
             RoomId = model.RoomId,
             GroupId = model.GroupId,
+            Color = model.Color,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Day = model.Day,

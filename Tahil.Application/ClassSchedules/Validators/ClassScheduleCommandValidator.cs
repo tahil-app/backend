@@ -22,6 +22,7 @@ public abstract class ClassScheduleCommandValidator<T> : AbstractValidator<T>
         RuleFor(x => x.Schedule.Day).NotNull().WithMessage(locale.RequiredDay);
         RuleFor(x => x.Schedule.StartTime).NotNull().WithMessage(locale.RequiredStartTime);
         RuleFor(x => x.Schedule.EndTime).NotNull().WithMessage(locale.RequiredEndTime);
+        RuleFor(x => x.Schedule.StartDate).NotNull().WithMessage(locale.RequiredStartDate);
 
         RuleFor(x => x.Schedule)
             .Must(x => x.StartTime == null || x.EndTime == null || x.StartTime < x.EndTime)

@@ -1,4 +1,5 @@
 ﻿using Tahil.Common.Helpers;
+using Tahil.Domain.Dtos;
 using Tahil.Domain.Enums;
 using Tahil.Domain.Localization;
 using Tahil.Domain.Services;
@@ -18,6 +19,48 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         groupDbSet = context.Set<Group>();
         _localizedStrings = localizedStrings;
         _applicationContext = applicationContext;
+    }
+
+    public async Task<List<ClassScheduleDto>> GetMonthySchedulesAsync(int month, int year)
+    {
+        var monthStart = new DateOnly(year, month, 1);
+        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+        Expression<Func<ClassSchedule, bool>> expression = r =>
+            r.TenantId == _applicationContext.TenantId &&
+            r.StartDate <= monthEnd &&
+            (r.EndDate == null || r.EndDate >= monthStart);
+
+        if (_applicationContext.UserRole == UserRole.Teacher)
+            expression = r =>
+                r.TenantId == _applicationContext.TenantId &&
+                r.Group!.TeacherId == _applicationContext.UserId &&
+                r.StartDate <= monthEnd &&
+                (r.EndDate == null || r.EndDate >= monthStart);
+
+        if (_applicationContext.UserRole == UserRole.Student)
+            expression = r =>
+                r.TenantId == _applicationContext.TenantId &&
+                r.Group!.StudentGroups.Any(r => r.StudentId == _applicationContext.UserId) &&
+                r.StartDate <= monthEnd &&
+                (r.EndDate == null || r.EndDate >= monthStart);
+
+        return await _dbSet.Where(expression).Select(r => new ClassScheduleDto
+        {
+            Id = r.Id,
+            Day = r.Day,
+            GroupId = r.GroupId,
+            StartDate = r.StartDate,
+            EndDate = r.EndDate,
+            StartTime = r.StartTime,
+            EndTime = r.EndTime,
+            Status = r.Status,
+            Color = r.Color,
+            GroupName = r.Group!.Name,
+            CourseName = r.Group.Course!.Name,
+            RoomName = r.Room!.Name,
+            TeacherName = r.Group.Teacher!.User.Name
+        }).AsNoTracking().ToListAsync();
     }
 
     public async Task<Result<bool>> AddScheduleAsync(ClassSchedule schedule, Guid tenatId)
@@ -134,7 +177,7 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         {
             return Result<bool>.Failure(_localizedStrings.GroupIsBusy);
         }
-        else if(conflict != null)
+        else if (conflict != null)
         {
             return Result<bool>.Failure(_localizedStrings.ConflictBusyTime);
         }
@@ -154,4 +197,6 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         if (sessions.Any())
             sessionDbSet.RemoveRange(sessions);
     }
+
+
 }

@@ -60,9 +60,9 @@ public class LessonSessionConfiguration : IEntityTypeConfiguration<ClassSession>
             .WithMany(p => p.Sessions)
             .HasForeignKey(p => p.RoomId);
 
-        builder.HasOne(p => p.Course)
-            .WithMany(p => p.Sessions)
-            .HasForeignKey(p => p.CourseId);
+        //builder.HasOne(p => p.Course)
+        //    .WithMany(p => p.Sessions)
+        //    .HasForeignKey(p => p.CourseId);
 
         builder.HasOne(p => p.Teacher)
             .WithMany(p => p.Sessions)
@@ -72,8 +72,8 @@ public class LessonSessionConfiguration : IEntityTypeConfiguration<ClassSession>
             .WithMany(p => p.Sessions)
             .HasForeignKey(p => p.GroupId);
 
-        builder.HasOne(p => p.Schedule)
-            .WithMany(s => s.Sessions)
-            .HasForeignKey(p => p.ScheduleId);
+        //builder.HasOne(p => p.Schedule)
+        //    .WithMany(s => s.Sessions)
+        //    .HasForeignKey(p => p.ScheduleId);
     }
 }

@@ -22,5 +22,5 @@ public class ClassSession : Base
     public Course? Course { get; set; }
     public Teacher? Teacher { get; set; }
     public Group? Group { get; set; }
-    public ClassSchedule? Schedule { get; set; }
+    //public ClassSchedule? Schedule { get; set; }
 }

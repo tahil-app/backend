@@ -22,11 +22,11 @@ public class ClassScheduleEndpoints : ICarterModule
             return Results.Ok(result);
         });//.RequireAuthorization(Policies.AdminOnly);
 
-        //schedules.MapPost("/paged", async ([FromBody] QueryParams queryParams, [FromServices] IMediator mediator) =>
-        //{
-        //    var result = await mediator.Send(new GetClassSchedulesPagedQuery(queryParams));
-        //    return Results.Ok(result);
-        //});//.RequireAuthorization(Policies.AdminOnly);
+        schedules.MapGet("monthly/{month:int}/{year:int}", async (int month, int year, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetMonthlyClassSchedulesQuery(month, year));
+            return Results.Ok(result);
+        });//.RequireAuthorization(Policies.AdminOnly);
 
         schedules.MapPost("/create", async (ClassScheduleDto model, [FromServices] IMediator mediator) =>
         {

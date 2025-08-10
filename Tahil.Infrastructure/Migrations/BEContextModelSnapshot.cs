@@ -68,11 +68,9 @@ namespace Tahil.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClassScheduleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Color")
+                        .HasColumnType("text")
+                        .HasColumnName("color");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone")
@@ -103,7 +101,7 @@ namespace Tahil.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("room_id");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 
@@ -114,9 +112,6 @@ namespace Tahil.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
-
-                    b.Property<int?>("TeacherId")
-                        .HasColumnType("integer");
 
                     b.Property<Guid?>("TenantId")
                         .HasColumnType("uuid")
@@ -133,15 +128,9 @@ namespace Tahil.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassScheduleId");
-
-                    b.HasIndex("CourseId");
-
                     b.HasIndex("GroupId");
 
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("TeacherId");
 
                     b.HasIndex("TenantId");
 
@@ -215,8 +204,6 @@ namespace Tahil.Infrastructure.Migrations
                     b.HasIndex("GroupId");
 
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("ScheduleId");
 
                     b.HasIndex("TeacherId");
 
@@ -623,14 +610,6 @@ namespace Tahil.Infrastructure.Migrations
 
             modelBuilder.Entity("Tahil.Domain.Entities.ClassSchedule", b =>
                 {
-                    b.HasOne("Tahil.Domain.Entities.ClassSchedule", null)
-                        .WithMany("Schedules")
-                        .HasForeignKey("ClassScheduleId");
-
-                    b.HasOne("Tahil.Domain.Entities.Course", null)
-                        .WithMany("Schedules")
-                        .HasForeignKey("CourseId");
-
                     b.HasOne("Tahil.Domain.Entities.Group", "Group")
                         .WithMany("Schedules")
                         .HasForeignKey("GroupId")
@@ -642,10 +621,6 @@ namespace Tahil.Infrastructure.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Tahil.Domain.Entities.Teacher", null)
-                        .WithMany("Schedules")
-                        .HasForeignKey("TeacherId");
 
                     b.HasOne("Tahil.Domain.Entities.Tenant", "Tenant")
                         .WithMany("Schedules")
@@ -661,7 +636,7 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.ClassSession", b =>
                 {
                     b.HasOne("Tahil.Domain.Entities.Course", "Course")
-                        .WithMany("Sessions")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -678,12 +653,6 @@ namespace Tahil.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tahil.Domain.Entities.ClassSchedule", "Schedule")
-                        .WithMany("Sessions")
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Tahil.Domain.Entities.Teacher", "Teacher")
                         .WithMany("Sessions")
                         .HasForeignKey("TeacherId")
@@ -695,8 +664,6 @@ namespace Tahil.Infrastructure.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("Room");
-
-                    b.Navigation("Schedule");
 
                     b.Navigation("Teacher");
                 });
@@ -866,7 +833,7 @@ namespace Tahil.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("user", (string)null);
+                            b1.ToTable("user");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
@@ -885,20 +852,9 @@ namespace Tahil.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("Tahil.Domain.Entities.ClassSchedule", b =>
-                {
-                    b.Navigation("Schedules");
-
-                    b.Navigation("Sessions");
-                });
-
             modelBuilder.Entity("Tahil.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Groups");
-
-                    b.Navigation("Schedules");
-
-                    b.Navigation("Sessions");
 
                     b.Navigation("TeacherCourses");
                 });
@@ -929,8 +885,6 @@ namespace Tahil.Infrastructure.Migrations
             modelBuilder.Entity("Tahil.Domain.Entities.Teacher", b =>
                 {
                     b.Navigation("Groups");
-
-                    b.Navigation("Schedules");
 
                     b.Navigation("Sessions");
 
