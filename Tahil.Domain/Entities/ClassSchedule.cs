@@ -26,18 +26,18 @@ public class ClassSchedule : Base
     public Group? Group { get; set; }
     public Tenant? Tenant { get; set; }
 
-    public void Update(ClassScheduleDto scheduleDto, string userName)
+    public void Update(ClassSchedule schedule, string userName)
     {
-        RoomId = scheduleDto.RoomId;
-        GroupId = scheduleDto.GroupId;
-        Color = scheduleDto.Color;
+        RoomId = schedule.RoomId;
+        GroupId = schedule.GroupId;
+        Color = schedule.Color;
         
-        Day = scheduleDto.Day;
-        StartTime = scheduleDto.StartTime;
-        EndTime = scheduleDto.EndTime;
+        Day = schedule.Day;
+        StartTime = schedule.StartTime;
+        EndTime = schedule.EndTime;
         
-        StartDate = scheduleDto.StartDate;
-        EndDate = scheduleDto.EndDate;
+        StartDate = schedule.StartDate;
+        EndDate = schedule.EndDate;
         
         UpdatedAt = Date.Now;
         UpdatedBy = userName;

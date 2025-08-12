@@ -50,6 +50,7 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
             Id = r.Id,
             Day = r.Day,
             GroupId = r.GroupId,
+            RoomId = r.RoomId,
             StartDate = r.StartDate,
             EndDate = r.EndDate,
             StartTime = r.StartTime,
@@ -89,29 +90,30 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         if (!conflictResult.IsSuccess)
             return conflictResult;
 
+        var scheduleToUpdate = await GetAsync(r => r.Id == schedule.Id);
+        if(scheduleToUpdate == null)
+            return Result<bool>.Failure(_localizedStrings.NotFoundClassSchedule);
+
+        scheduleToUpdate?.Update(schedule, _applicationContext.UserName);
+
         //var hasSessions = await lessonSessionDbSet.AnyAsync(r => r.ScheduleId == schedule.Id);
         //if (hasSessions)
         //{
         //    var oldSchedule = await GetAsync(r => r.Id == schedule.Id);
-        //    oldSchedule!.Status = ClassScheduleStatus.Archived;
 
         //    await RemoveComingSessionsAsync(oldSchedule);
 
         //    Update(oldSchedule);
         //}
 
-        //schedule.ReferenceId = schedule.Id;
-        //schedule.CreatedAt = Date.Now;
-        //schedule.Id = 0;
-
-        //Add(schedule);
-
         return Result<bool>.Success(true);
     }
 
     public async Task<Result<bool>> DeleteScheduleAsync(int id, Guid tenatId)
     {
-        //var oldSchedule = await GetAsync(r => r.Id == id);
+        var scheduleToDelete = await GetAsync(r => r.Id == id && r.TenantId == tenatId);
+        if (scheduleToDelete == null)
+            return Result<bool>.Failure(_localizedStrings.NotFoundClassSchedule);
 
         //var hasSessions = await lessonSessionDbSet.AnyAsync(r => r.ScheduleId == id);
         //if (hasSessions)
@@ -124,10 +126,18 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         //}
         //else
         //{
-        //    HardDelete(oldSchedule!);
+        HardDelete(scheduleToDelete);
         //}
 
         return Result<bool>.Success(true);
+    }
+
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.TenantId == tenantId.Value);
     }
 
     private async Task<Result<bool>> CheckConflictAsync(ClassSchedule schedule)

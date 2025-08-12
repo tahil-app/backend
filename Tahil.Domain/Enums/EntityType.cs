@@ -6,5 +6,6 @@ public enum EntityType
     Course,
     Room,
     Student,
-    Teacher
+    Teacher,
+    ClassSchedule
 }

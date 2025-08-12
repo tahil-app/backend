@@ -17,6 +17,7 @@ public static class ClassScheduleMapping
     {
         return new ClassSchedule
         {
+            Id = model.Id,
             RoomId = model.RoomId,
             GroupId = model.GroupId,
             Color = model.Color,
