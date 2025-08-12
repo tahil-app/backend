@@ -26,6 +26,8 @@ public class ClassSchedule : Base
     public Group? Group { get; set; }
     public Tenant? Tenant { get; set; }
 
+    public ICollection<ClassSession> Sessions { get; set; } = new List<ClassSession>();
+
     public void Update(ClassSchedule schedule, string userName)
     {
         RoomId = schedule.RoomId;

@@ -14,4 +14,6 @@ public class Tenant
     public ICollection<Group> Groups { get; set; } = new List<Group>();
     public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
     public ICollection<ClassSchedule> Schedules { get; set; } = new List<ClassSchedule>();
+    public ICollection<ClassSession> Sessions { get; set; } = new List<ClassSession>();
+
 }

@@ -4,5 +4,5 @@ public enum LessonSessionStatus
 {
     Scheduled,
     Completed,
-    Canceled
+    Cancelled
 }

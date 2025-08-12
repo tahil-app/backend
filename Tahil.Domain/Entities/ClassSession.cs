@@ -2,25 +2,24 @@
 
 public class ClassSession : Base
 {
-    public int RoomId { get; set; }
-    public int CourseId { get; set; }
-    public int TeacherId { get; set; }
-    public int GroupId { get; set; }
-    public int ScheduleId { get; set; }
-
     public DateOnly Date { get; set; }
-    public string Note { get; set; } = default!;
+    public int ScheduleId { get; set; }
     public LessonSessionStatus Status { get; set; }
+    public Guid? TenantId { get; set; }
 
+    public int? OverrideTeacherId { get; set; }
+    public int? OverrideRoomId { get; set; }
+    public TimeOnly? OverrideStartTime { get; set; }
+    public TimeOnly? OverrideEndTime { get; set; }
+    
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
     public string CreatedBy { get; set; } = default!;
     public string UpdatedBy { get; set; } = default!;
 
-    public Room? Room { get; set; }
-    public Course? Course { get; set; }
-    public Teacher? Teacher { get; set; }
-    public Group? Group { get; set; }
-    //public ClassSchedule? Schedule { get; set; }
+    public Room? OverrideRoom { get; set; }
+    public Teacher? OverrideTeacher { get; set; }
+    public Tenant? Tenant { get; set; }
+    public ClassSchedule? Schedule { get; set; }
 }
