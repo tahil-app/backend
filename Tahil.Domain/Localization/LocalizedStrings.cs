@@ -43,6 +43,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string RequiredCourse => Required(Course);
     public string CourseHasSchedules => loc[nameof(CourseHasSchedules)];
     public string CourseHasSessions => loc[nameof(CourseHasSessions)];
+    public string CourseHasGroups => loc[nameof(CourseHasGroups)];
     public string CourseHasTeachers => loc[nameof(CourseHasTeachers)];
     public string CourseNameTooLong => loc[nameof(CourseNameTooLong)];
     public string CourseNameTooShort => loc[nameof(CourseNameTooShort)];
@@ -87,6 +88,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string ClassSchedule => loc[nameof(ClassSchedule)];
     public string TeacherHasAnotherSchedule => loc[nameof(TeacherHasAnotherSchedule)];
     public string NotAvailableClassSchedule => NotAvailable(ClassSchedule);
+    public string ScheduleHasSessions => NotAvailable(ScheduleHasSessions);
     public string RequiredClassSchedule => Required(ClassSchedule);
     public string NotFoundClassSchedule => NotFound(ClassSchedule);
     #endregion

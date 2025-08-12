@@ -14,7 +14,6 @@ public class Group : Base
 
     public ICollection<StudentGroup> StudentGroups { get; set; } = new List<StudentGroup>();
     public ICollection<ClassSchedule> Schedules { get; set; } = new List<ClassSchedule>();
-    public ICollection<ClassSession> Sessions { get; set; } = new List<ClassSession>();
 
     public void Validate()
     {

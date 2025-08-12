@@ -150,6 +150,9 @@
   <data name="CourseHasTeachers" xml:space="preserve">
     <value>Course has teachers, cannot delete</value>
   </data>
+  <data name="CourseHasGroups" xml:space="preserve">
+    <value>Course has groups, cannot delete</value>
+  </data>
   <data name="CourseNameTooLong" xml:space="preserve">
     <value>Course name cannot exceed 100 characters</value>
   </data>
@@ -218,6 +221,9 @@
   </data>
   <data name="ClassSchedule" xml:space="preserve">
     <value>Lesson Schedule</value>
+  </data>
+  <data name="ScheduleHasSessions" xml:space="preserve">
+    <value>Schedule has sessions, cannot delete</value>
   </data>
   <data name="MustBePositive" xml:space="preserve">
     <value>must be greater than zero</value>

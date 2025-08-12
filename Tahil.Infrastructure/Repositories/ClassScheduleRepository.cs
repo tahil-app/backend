@@ -91,43 +91,24 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
             return conflictResult;
 
         var scheduleToUpdate = await GetAsync(r => r.Id == schedule.Id);
-        if(scheduleToUpdate == null)
+        if (scheduleToUpdate == null)
             return Result<bool>.Failure(_localizedStrings.NotFoundClassSchedule);
 
         scheduleToUpdate?.Update(schedule, _applicationContext.UserName);
-
-        //var hasSessions = await lessonSessionDbSet.AnyAsync(r => r.ScheduleId == schedule.Id);
-        //if (hasSessions)
-        //{
-        //    var oldSchedule = await GetAsync(r => r.Id == schedule.Id);
-
-        //    await RemoveComingSessionsAsync(oldSchedule);
-
-        //    Update(oldSchedule);
-        //}
 
         return Result<bool>.Success(true);
     }
 
     public async Task<Result<bool>> DeleteScheduleAsync(int id, Guid tenatId)
     {
-        var scheduleToDelete = await GetAsync(r => r.Id == id && r.TenantId == tenatId);
+        var scheduleToDelete = await GetAsync(r => r.Id == id && r.TenantId == tenatId, [s => s.Sessions]);
         if (scheduleToDelete == null)
             return Result<bool>.Failure(_localizedStrings.NotFoundClassSchedule);
 
-        //var hasSessions = await lessonSessionDbSet.AnyAsync(r => r.ScheduleId == id);
-        //if (hasSessions)
-        //{
-        //    oldSchedule!.Status = ClassScheduleStatus.Canceled;
+        if (scheduleToDelete.Sessions.Any())
+            return Result<bool>.Failure(_localizedStrings.ScheduleHasSessions);
 
-        //    await RemoveComingSessionsAsync(oldSchedule);
-
-        //    Update(oldSchedule);
-        //}
-        //else
-        //{
         HardDelete(scheduleToDelete);
-        //}
 
         return Result<bool>.Success(true);
     }

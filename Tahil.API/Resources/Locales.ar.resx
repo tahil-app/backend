@@ -150,6 +150,9 @@
   <data name="CourseHasTeachers" xml:space="preserve">
     <value>الدورة لها معلمين، لا يمكن حذفها</value>
   </data>
+  <data name="CourseHasGroups" xml:space="preserve">
+    <value>الدورة لها مجموعات، لا يمكن حذفها</value>
+  </data>
   <data name="CourseNameTooLong" xml:space="preserve">
     <value>اسم الدورة لا يمكن أن يتجاوز 100 حرف</value>
   </data>
@@ -218,6 +221,9 @@
   </data>
   <data name="ClassSchedule" xml:space="preserve">
     <value>جدول التوزيع الرئيسي</value>
+  </data>
+  <data name="ScheduleHasSessions" xml:space="preserve">
+    <value>الجدول له جلسات، لا يمكن حذفه</value>
   </data>
   <data name="MustBePositive" xml:space="preserve">
     <value>يجب ان تكون القيمة اكبر من 0</value>

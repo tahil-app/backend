@@ -30,7 +30,7 @@ public class GroupRepository : Repository<Group>, IGroupRepository
 
     public async Task<Result<bool>> DeleteGroupAsync(int id, Guid tenantId)
     {
-        var group = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.StudentGroups, g => g.Schedules, g => g.Sessions]);
+        var group = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.StudentGroups, g => g.Schedules]);
 
         if (group is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableGroup);
@@ -41,9 +41,6 @@ public class GroupRepository : Repository<Group>, IGroupRepository
 
         if (group.Schedules.Any())
             return Result<bool>.Failure(_localizedStrings.GroupHasSchedules);
-
-        if (group.Sessions.Any())
-            return Result<bool>.Failure(_localizedStrings.GroupHasSessions);
 
         // If no child relationships exist, proceed with deletion
         HardDelete(group);
