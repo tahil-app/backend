@@ -7,5 +7,7 @@ public enum EntityType
     Room,
     Student,
     Teacher,
-    ClassSchedule
+    ClassSchedule,
+    ClassSession,
+    BackgroundJob
 }

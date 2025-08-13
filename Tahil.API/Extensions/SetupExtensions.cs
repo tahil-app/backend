@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Tahil.API.Authorization.Handlers;
 using Tahil.API.Filters;
+using Tahil.API.Jobs;
 using Tahil.Application;
 using Tahil.Common.Behaviors;
 using Tahil.Domain.Authorization.Services;
@@ -64,8 +66,9 @@ public static class SetupExtensions
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
-        services.AddScoped<IClassScheduleRepository, ClassScheduleRepository>();
         services.AddScoped<ILookupRepository, LookupRepository>();
+        services.AddScoped<IClassScheduleRepository, ClassScheduleRepository>();
+        services.AddScoped<IClassSessionRepository, ClassSessionRepository>();
 
         return services;
     }
@@ -91,7 +94,22 @@ public static class SetupExtensions
         services.AddScoped<IEntityAuthorizationStrategy, TeacherAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, StudentAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, ClassScheduleAuthorizationStrategy>();
+        services.AddScoped<IEntityAuthorizationStrategy, BackgroundJobAuthorizationStrategy>();
         
+        return services;
+    }
+
+    public static IServiceCollection AddQuartaz(this IServiceCollection services) 
+    {
+        // Background job services
+        services.AddQuartz(q =>
+        {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+        });
+
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        services.AddHostedService<QuartzSchedulerService>();
+
         return services;
     }
 

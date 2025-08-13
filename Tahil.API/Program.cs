@@ -26,6 +26,7 @@ builder.Services.AddValidationModule();
 
 builder.Services.AddEndpointsApiExplorer(); // Required for Minimal APIs
 builder.Services.AddSwagger();
+builder.Services.AddQuartaz();
 
 builder.Services.AddJwtAuthentication();
 builder.Services.AddAuthorizationPolicies();

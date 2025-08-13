@@ -51,6 +51,11 @@ public class ClassSessionConfiguration : IEntityTypeConfiguration<ClassSession>
         builder.Property(p => p.TenantId)
             .HasColumnName("tenant_id");
 
+        // Add unique constraint to prevent duplicate sessions for the same schedule and date
+        builder.HasIndex(p => new { p.Date, p.ScheduleId })
+            .IsUnique()
+            .HasDatabaseName("IX_class_session_date_schedule_unique");
+
         // Navigation properties
         builder.HasOne(r => r.Tenant)
             .WithMany(r => r.Sessions)

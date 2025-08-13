@@ -7,7 +7,7 @@ public static class TenantSeeding
         modelBuilder.Entity<Tenant>().HasData(
             new Tenant
             { 
-                Id = new Guid("6AF39530-F6E0-4298-A890-FB5C50310C7C"),
+                Id = Tenants.DarAlfor2an,
                 Name = "دار الفرقان",
                 IsActive = true
             }

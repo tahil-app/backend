@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Tahil.Domain.Consts;
 using Tahil.Domain.Entities;
 
 namespace Tahil.Application.Services;
@@ -41,7 +42,7 @@ public class ApplicationContext : IApplicationContext
             ClaimsPrincipal claimuser = _httpContextAccessor.HttpContext.User;
             var tenantId = claimuser.Claims.FirstOrDefault(c => c.Type == "TenantId")?.Value;
             var result = Guid.TryParse(tenantId, out Guid convertedTenantId);
-            return result ? convertedTenantId : new Guid("6AF39530-F6E0-4298-A890-FB5C50310C7C");
+            return result ? convertedTenantId : Tenants.DarAlfor2an;
         }
     }
 

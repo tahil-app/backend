@@ -11,7 +11,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
             AuthorizationOperation.ViewDetail => await CanViewDetailAsync(authorizationContext),
             AuthorizationOperation.ViewAll => CanViewAll(authorizationContext),
             AuthorizationOperation.ViewPaged => CanViewPaged(authorizationContext),
-            AuthorizationOperation.Create => CanCreateGroup(authorizationContext),
+            AuthorizationOperation.Create => CanCreate(authorizationContext),
             AuthorizationOperation.Update => await CanUpdateAsync(authorizationContext),
             AuthorizationOperation.Delete => await CanDeleteAsync(authorizationContext),
             _ => false
@@ -34,7 +34,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
         return context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
-    private static bool CanCreateGroup(AuthorizationContext context)
+    private static bool CanCreate(AuthorizationContext context)
     {
         return context.HasAdminOrEmployeeAccess;
     }
