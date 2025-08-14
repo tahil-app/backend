@@ -1,6 +1,7 @@
 ﻿using Tahil.API.Authorization;
 using Tahil.Application.ClassSessions.Commands;
 using Tahil.Application.ClassSessions.Queries;
+using Tahil.Domain.Dtos;
 using Tahil.Domain.Enums;
 
 namespace Tahil.API.Endpoints;
@@ -19,6 +20,12 @@ public class ClassSessionEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.ViewAll);
 
+        sessions.MapGet("/lookups/{courseId:int}", async (int courseId, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetClassSessionLookupQuery(courseId));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.ViewAll);
+
         #endregion
 
         #region Refresh Sessions
@@ -28,6 +35,22 @@ public class ClassSessionEndpoints : ICarterModule
             var result = await mediator.Send(new RefreshSessionsCommand());
             return Results.Ok(result);
         }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.ViewAll);
+
+        #endregion
+
+        #region Update
+
+        sessions.MapPut("/update", async (ClassSessionDto model, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new UpdateClassSessionCommand(model));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Update);
+
+        sessions.MapPut("/update-status/{id:int}/{status:int}", async (int id, ClassSessionStatus status , [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new UpdateClassSessionStatusCommand(id, status));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Update);
 
         #endregion
     }

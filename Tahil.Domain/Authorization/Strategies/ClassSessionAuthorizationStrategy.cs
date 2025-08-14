@@ -12,7 +12,7 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
             AuthorizationOperation.ViewAll => CanViewAll(context),
             AuthorizationOperation.ViewPaged => CanViewPaged(context),
             AuthorizationOperation.Create => CanCreate(context),
-            //AuthorizationOperation.Update => await CanUpdateAsync(context),
+            AuthorizationOperation.Update => await CanUpdateAsync(context),
             _ => false
         };
     }
@@ -32,10 +32,10 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
         return context.HasAdminOrEmployeeAccess;
     }
 
-    //private async Task<bool> CanUpdateAsync(AuthorizationContext context)
-    //{
-    //    var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
-    //    return classSessionExist && context.HasAdminOrEmployeeAccess;
-    //}
+    private async Task<bool> CanUpdateAsync(AuthorizationContext context)
+    {
+        var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        return classSessionExist && context.HasAdminOrEmployeeAccess;
+    }
 
 } 

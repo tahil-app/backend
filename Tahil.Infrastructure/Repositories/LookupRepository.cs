@@ -43,15 +43,15 @@ public class LookupRepository : Repository<ClassSchedule>, ILookupRepository
             .Select(r => new TeacherDto { Id = r.Id, Name = r.User.Name }).ToListAsync();
 
         return Result<List<TeacherDto>>.Success(teachers);
-    }   
-    
+    }
+
     public async Task<Result<List<StudentDto>>> GetStudentsAsync(Guid tenantId)
     {
         var students = await _context.Set<Student>().Where(r => r.User.TenantId == tenantId && r.User.IsActive)
             .Select(r => new StudentDto { Id = r.Id, Name = r.User.Name }).ToListAsync();
 
         return Result<List<StudentDto>>.Success(students);
-    }   
+    }
 
     public async Task<ClassScheduleLookupsDto> GetClassScheduleAsync(Guid tenantId)
     {
@@ -64,6 +64,22 @@ public class LookupRepository : Repository<ClassSchedule>, ILookupRepository
         {
             Rooms = rooms,
             Groups = groupsQuery.ToList()
+        };
+
+        return lookups;
+    }
+
+    public async Task<ClassSessionLookupsDto> GetClassSessionAsync(Guid tenantId, int courseId)
+    {
+        var roomsQuery = _context.Set<Room>().Where(r => r.IsActive).Select(r => new RoomDto { Id = r.Id, Name = r.Name }).Future();
+        var teachersQuery = _context.Set<Teacher>().Where(r => r.TeacherCourses.Any(t => t.CourseId == courseId)).Select(r => new TeacherDto { Id = r.Id, Name = r.User.Name }).Future();
+
+        var rooms = await roomsQuery.ToListAsync();
+
+        var lookups = new ClassSessionLookupsDto
+        {
+            Rooms = rooms,
+            Teachers = teachersQuery.ToList()
         };
 
         return lookups;

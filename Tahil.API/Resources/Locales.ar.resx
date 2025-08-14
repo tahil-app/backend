@@ -222,6 +222,9 @@
   <data name="ClassSchedule" xml:space="preserve">
     <value>جدول التوزيع الرئيسي</value>
   </data>
+  <data name="ClassSession" xml:space="preserve">
+    <value>جلسة الدرس</value>
+  </data>
   <data name="ScheduleHasSessions" xml:space="preserve">
     <value>الجدول له جلسات، لا يمكن حذفه</value>
   </data>

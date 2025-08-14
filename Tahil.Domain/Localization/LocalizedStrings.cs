@@ -93,6 +93,11 @@ public class LocalizedStrings(ILocalizationService loc)
     public string NotFoundClassSchedule => NotFound(loc[nameof(ClassSchedule)]);
     #endregion
 
+    #region Class Schedule
+    public string ClassSession => loc[nameof(ClassSession)];
+    public string NotAvailableClassSession => NotAvailable(loc[nameof(ClassSession)]);
+    #endregion
+
     #region Shared
     public string Name => loc[nameof(Name)];
     public string User => loc[nameof(User)];

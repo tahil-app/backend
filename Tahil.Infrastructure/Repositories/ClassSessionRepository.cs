@@ -52,7 +52,7 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
                 CreatedBy = userName,
                 UpdatedAt = Date.Now,
                 UpdatedBy = userName,
-                Status = LessonSessionStatus.Scheduled,
+                Status = ClassSessionStatus.Scheduled,
                 Date = nextDate,
                 TenantId = schedule.TenantId,
                 StartTime = schedule.StartTime,
@@ -78,34 +78,45 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
 
 
         var query = _dbSet.Include(r => r.Schedule).ThenInclude(r => r.Group).ThenInclude(g => g.Course).AsQueryable();
-        query = query.Include(r => r.Schedule).ThenInclude(r => r.Group).ThenInclude(g => g.Teacher).AsQueryable();
+        query = query.Include(r => r.Schedule).ThenInclude(r => r.Group).AsQueryable();
         query = query.Include(r => r.Schedule).ThenInclude(r => r.Room).AsQueryable();
+        query = query.Include(r => r.Teacher).AsQueryable();
 
         if (userRole == UserRole.Teacher)
-            query = query.Where(r => r.TeacherId == userId && r.Status == LessonSessionStatus.Scheduled);
+            query = query.Where(r => r.TeacherId == userId && r.Status == ClassSessionStatus.Scheduled);
 
         if (userRole == UserRole.Student)
             query = query.Where(r => r.Schedule!.Group!.StudentGroups.Any(s => s.StudentId == userId));
 
-        var sessions = await query.Where(r => r.TenantId == _applicationContext.TenantId).ToListAsync();
 
-        var sessionDtos = sessions.Select(s => new ClassSessionDto
-        {
-            Id = s.Id,
-            Date = s.Date,
-            ScheduleId = s.ScheduleId,
-            Status = s.Status,
-            RoomId = s.RoomId!.Value,
-            RoomName = s.Room!.Name,
-            StartTime = s.StartTime!.Value,
-            EndTime = s.EndTime!.Value,
-            CourseName = s.Schedule!.Group!.Course!.Name,
-            GroupName = s.Schedule.Group.Name,
-            TeacherId = s.TeacherId!.Value,
-            TeacherName = s.Teacher!.User.Name,
-            NumberOfStudents = s.Schedule.Group.StudentGroups.Count
-        }).ToList();
+        var sessionDtos = await query.Where(r => r.TenantId == _applicationContext.TenantId)
+                .Select(s => new ClassSessionDto
+                {
+                    Id = s.Id,
+                    Date = s.Date,
+                    ScheduleId = s.ScheduleId,
+                    Status = s.Status,
+                    RoomId = s.RoomId!.Value,
+                    RoomName = s.Room!.Name,
+                    StartTime = s.StartTime!.Value,
+                    EndTime = s.EndTime!.Value,
+                    CourseId = s.Schedule!.Group!.Course!.Id,
+                    CourseName = s.Schedule!.Group!.Course!.Name,
+                    GroupName = s.Schedule.Group.Name,
+                    TeacherId = s.TeacherId!.Value,
+                    TeacherName = s.Teacher!.User.Name,
+                    NumberOfStudents = s.Schedule.Group.StudentGroups.Count
+                }).ToListAsync();
 
         return Result.Success(sessionDtos);
     }
+
+    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    {
+        if (!id.HasValue || !tenantId.HasValue)
+            return false;
+
+        return await _dbSet.AnyAsync(c => c.Id == id.Value && c.TenantId == tenantId.Value);
+    }
+
 }

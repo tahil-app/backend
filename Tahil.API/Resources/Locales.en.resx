@@ -222,6 +222,9 @@
   <data name="ClassSchedule" xml:space="preserve">
     <value>Lesson Schedule</value>
   </data>
+  <data name="ClassSession" xml:space="preserve">
+    <value>Class Session</value>
+  </data>
   <data name="ScheduleHasSessions" xml:space="preserve">
     <value>Schedule has sessions, cannot delete</value>
   </data>

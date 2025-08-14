@@ -1,6 +1,6 @@
 ﻿namespace Tahil.Domain.Enums;
 
-public enum LessonSessionStatus
+public enum ClassSessionStatus
 {
     Scheduled,
     Completed,
