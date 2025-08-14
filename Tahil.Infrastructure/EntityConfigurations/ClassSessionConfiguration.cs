@@ -22,17 +22,17 @@ public class ClassSessionConfiguration : IEntityTypeConfiguration<ClassSession>
             .HasColumnName("schedule_id")
             .IsRequired();
 
-        builder.Property(p => p.OverrideRoomId)
-            .HasColumnName("override_room_id");
+        builder.Property(p => p.RoomId)
+            .HasColumnName("room_id");
 
-        builder.Property(p => p.OverrideTeacherId)
-            .HasColumnName("override_teacher_id");
+        builder.Property(p => p.TeacherId)
+            .HasColumnName("teacher_id");
 
-        builder.Property(p => p.OverrideStartTime)
-            .HasColumnName("override_start_time");
+        builder.Property(p => p.StartTime)
+            .HasColumnName("start_time");
 
-        builder.Property(p => p.OverrideEndTime)
-            .HasColumnName("override_end_time");
+        builder.Property(p => p.EndTime)
+            .HasColumnName("end_time");
 
         builder.Property(p => p.CreatedAt)
             .HasColumnName("created_at")
@@ -61,13 +61,13 @@ public class ClassSessionConfiguration : IEntityTypeConfiguration<ClassSession>
             .WithMany(r => r.Sessions)
             .HasForeignKey(r => r.TenantId);
 
-        builder.HasOne(p => p.OverrideRoom)
+        builder.HasOne(p => p.Room)
             .WithMany(p => p.Sessions)
-            .HasForeignKey(p => p.OverrideRoomId);
+            .HasForeignKey(p => p.RoomId);
 
-        builder.HasOne(p => p.OverrideTeacher)
+        builder.HasOne(p => p.Teacher)
             .WithMany(p => p.Sessions)
-            .HasForeignKey(p => p.OverrideTeacherId);
+            .HasForeignKey(p => p.TeacherId);
 
         builder.HasOne(p => p.Schedule)
             .WithMany(s => s.Sessions)

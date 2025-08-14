@@ -1,5 +1,6 @@
 using Quartz;
 using Tahil.API.Authorization;
+using Tahil.Common.Contracts;
 using Tahil.Domain.Enums;
 
 namespace Tahil.API.Endpoints;
@@ -10,7 +11,7 @@ public class BackgroundJobEndpoints : ICarterModule
     {
         var jobs = app.MapGroup("/jobs");
 
-        jobs.MapPost("/trigger-class-session-generation", async ([FromServices] ISchedulerFactory schedulerFactory) =>
+        jobs.MapPost("/refresh-sessions", async ([FromServices] ISchedulerFactory schedulerFactory) =>
         {
             try
             {
@@ -19,13 +20,14 @@ public class BackgroundJobEndpoints : ICarterModule
                 
                 // Trigger the job immediately
                 await scheduler.TriggerJob(jobKey);
-                
-                return Results.Ok(new { message = "Class session generation job triggered successfully" });
+
+                return Result<bool>.Success(true);
             }
             catch (Exception ex)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Result<bool>.Failure(ex.Message);
             }
+
         }).RequireAccess(EntityType.BackgroundJob, AuthorizationOperation.Update);
     }
 } 

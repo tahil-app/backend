@@ -88,9 +88,9 @@ public class LocalizedStrings(ILocalizationService loc)
     public string ClassSchedule => loc[nameof(ClassSchedule)];
     public string TeacherHasAnotherSchedule => loc[nameof(TeacherHasAnotherSchedule)];
     public string NotAvailableClassSchedule => NotAvailable(ClassSchedule);
-    public string ScheduleHasSessions => NotAvailable(ScheduleHasSessions);
-    public string RequiredClassSchedule => Required(ClassSchedule);
-    public string NotFoundClassSchedule => NotFound(ClassSchedule);
+    public string ScheduleHasSessions => NotAvailable(loc[nameof(ScheduleHasSessions)]);
+    public string RequiredClassSchedule => Required(loc[nameof(ClassSchedule)]);
+    public string NotFoundClassSchedule => NotFound(loc[nameof(ClassSchedule)]);
     #endregion
 
     #region Shared
