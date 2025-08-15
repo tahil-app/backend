@@ -71,7 +71,7 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
         return Result.Success(true);
     }
 
-    public async Task<Result<List<ClassSessionDto>>> GetClassSessionsAsync()
+    public async Task<Result<List<ClassSessionDto>>> GetClassSessionsAsync(SessionSearchCriteriaDto sessionSearchCriteria)
     {
         var userId = _applicationContext.UserId;
         var userRole = _applicationContext.UserRole;
@@ -88,6 +88,33 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
         if (userRole == UserRole.Student)
             query = query.Where(r => r.Schedule!.Group!.StudentGroups.Any(s => s.StudentId == userId));
 
+        #region Apply Search Criteria
+
+        if (sessionSearchCriteria.CourseId.HasValue)
+            query = query.Where(r => r.Schedule!.Group!.CourseId == sessionSearchCriteria.CourseId);
+
+        if (sessionSearchCriteria.GroupId.HasValue)
+            query = query.Where(r => r.Schedule!.GroupId == sessionSearchCriteria.GroupId);
+
+        if (sessionSearchCriteria.RoomId.HasValue)
+            query = query.Where(r => r.RoomId == sessionSearchCriteria.RoomId);
+
+        if (sessionSearchCriteria.Status.HasValue)
+            query = query.Where(r => r.Status == sessionSearchCriteria.Status);
+
+        if (sessionSearchCriteria.StartDate.HasValue)
+            query = query.Where(r => r.Date >= sessionSearchCriteria.StartDate);
+        
+        if (sessionSearchCriteria.EndDate.HasValue)
+            query = query.Where(r => r.Date <= sessionSearchCriteria.EndDate);
+        
+        if (sessionSearchCriteria.StartTime.HasValue)
+            query = query.Where(r => r.StartTime >= sessionSearchCriteria.StartTime);
+        
+        if (sessionSearchCriteria.EndTime.HasValue)
+            query = query.Where(r => r.EndTime <= sessionSearchCriteria.EndTime);
+
+        #endregion
 
         var sessionDtos = await query.Where(r => r.TenantId == _applicationContext.TenantId)
                 .Select(s => new ClassSessionDto

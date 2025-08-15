@@ -1,5 +1,5 @@
-﻿using Mapster;
-using Tahil.Domain.Dtos;
+﻿using Tahil.Domain.Dtos;
+using Tahil.Domain.Enums;
 using Z.EntityFramework.Plus;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -69,17 +69,39 @@ public class LookupRepository : Repository<ClassSchedule>, ILookupRepository
         return lookups;
     }
 
-    public async Task<ClassSessionLookupsDto> GetClassSessionAsync(Guid tenantId, int courseId)
+    public async Task<ClassSessionLookupsDto> GetClassSessionAsync(Guid tenantId, int courseId,int userId, UserRole userRole)
     {
-        var roomsQuery = _context.Set<Room>().Where(r => r.IsActive).Select(r => new RoomDto { Id = r.Id, Name = r.Name }).Future();
-        var teachersQuery = _context.Set<Teacher>().Where(r => r.TeacherCourses.Any(t => t.CourseId == courseId)).Select(r => new TeacherDto { Id = r.Id, Name = r.User.Name }).Future();
+        var roomsQuery = _context.Set<Room>().Where(r => r.IsActive && r.TenantId == tenantId).AsQueryable();
+        var teachersQuery = _context.Set<Teacher>().Where(r => r.User.TenantId == tenantId && r.User.IsActive && r.TeacherCourses.Any(t => t.CourseId == courseId)).AsQueryable();
+        var coursesQuery = _context.Set<Course>().Where(c => c.IsActive).AsQueryable();
+        var groupsQuery = _context.Set<Group>().AsQueryable();
 
-        var rooms = await roomsQuery.ToListAsync();
+        if (userRole == UserRole.Teacher)
+        {
+            roomsQuery = roomsQuery.Where(r => r.Sessions.Any(s => s.TeacherId == userId));
+            coursesQuery = coursesQuery.Where(r => r.TeacherCourses.Any(t => t.TeacherId == userId));
+            groupsQuery = groupsQuery.Where(r => r.TeacherId == userId);
+        }
+        else if(userRole == UserRole.Student)
+        {
+            roomsQuery = roomsQuery.Where(r => r.Sessions.Any(s => s.Schedule!.Group!.StudentGroups.Any(s => s.StudentId == userId)));
+            coursesQuery = coursesQuery.Where(r => r.Groups.Any(t => t.StudentGroups.Any(s => s.StudentId == userId)));
+            groupsQuery = groupsQuery.Where(r => r.StudentGroups.Any(s => s.StudentId == userId));
+        }
+
+        var roomsFuture = roomsQuery.Select(r => new RoomDto { Id = r.Id, Name = r.Name }).Future();
+        var teachersFuture = courseId != 0 ? teachersQuery.Select(r => new TeacherDto { Id = r.Id, Name = r.User.Name }).Future() : null;
+        var coursesFuture = courseId == 0 ? coursesQuery.Select(r => new CourseDto { Id = r.Id, Name = r.Name }).Future() : null;
+        var groupsFuture = courseId == 0 ? groupsQuery.Select(r => new GroupDto { Id = r.Id, Name = r.Name }).Future() : null;
+
+        var rooms = await roomsFuture.ToListAsync();
 
         var lookups = new ClassSessionLookupsDto
         {
             Rooms = rooms,
-            Teachers = teachersQuery.ToList()
+            Teachers = teachersFuture is not null ? teachersFuture.ToList() : new(),
+            Courses = coursesFuture is not null ? coursesFuture.ToList() : new(),
+            Groups = groupsFuture is not null ? groupsFuture.ToList() : new(),
         };
 
         return lookups;

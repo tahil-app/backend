@@ -6,7 +6,7 @@ public class GetClassSessionLookupQueryHandler(ILookupRepository lookupRepositor
 {
     public async Task<Result<ClassSessionLookupsDto>> Handle(GetClassSessionLookupQuery request, CancellationToken cancellationToken)
     {
-        var lookupsDto = await lookupRepository.GetClassSessionAsync(applicationContext.TenantId, request.CourseId);
+        var lookupsDto = await lookupRepository.GetClassSessionAsync(applicationContext.TenantId, request.CourseId, applicationContext.UserId, applicationContext.UserRole);
         return Result.Success(lookupsDto);
     }
 }

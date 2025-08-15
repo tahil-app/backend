@@ -14,9 +14,9 @@ public class ClassSessionEndpoints : ICarterModule
 
         #region Get Sessions
 
-        sessions.MapGet("/user", async ([FromServices] IMediator mediator) =>
+        sessions.MapPost("/user", async (SessionSearchCriteriaDto searchCriteriaDto, [FromServices] IMediator mediator) =>
         {
-            var result = await mediator.Send(new GetUserSessionsQuery());
+            var result = await mediator.Send(new GetUserSessionsQuery(searchCriteriaDto));
             return Results.Ok(result);
         }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.ViewAll);
 
