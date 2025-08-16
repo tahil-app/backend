@@ -35,13 +35,13 @@ public class ClassScheduleAuthorizationStrategy(IClassScheduleRepository classSc
 
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
-        var classScheduleExist = await classScheduleRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var classScheduleExist = await classScheduleRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return classScheduleExist && context.HasAdminOrEmployeeAccess;
     }
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        var classScheduleExist = await classScheduleRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var classScheduleExist = await classScheduleRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return classScheduleExist && context.IsAdmin;
     }
 

@@ -69,6 +69,7 @@ public static class SetupExtensions
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<IClassScheduleRepository, ClassScheduleRepository>();
         services.AddScoped<IClassSessionRepository, ClassSessionRepository>();
+        services.AddScoped<IStudentAttendnceRepository, StudentAttendnceRepository>();
 
         return services;
     }
@@ -96,6 +97,7 @@ public static class SetupExtensions
         services.AddScoped<IEntityAuthorizationStrategy, ClassScheduleAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, ClassSessionAuthorizationStrategy>();
         services.AddScoped<IEntityAuthorizationStrategy, BackgroundJobAuthorizationStrategy>();
+        services.AddScoped<IEntityAuthorizationStrategy, StudentAttendanceAuthorizationStrategy>();
         
         return services;
     }

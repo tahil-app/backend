@@ -9,5 +9,6 @@ public enum EntityType
     Teacher,
     ClassSchedule,
     ClassSession,
-    BackgroundJob
+    BackgroundJob,
+    StudentAttendance
 }

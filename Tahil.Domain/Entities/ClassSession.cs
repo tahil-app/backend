@@ -25,6 +25,8 @@ public class ClassSession : Base
     public Tenant? Tenant { get; set; }
     public ClassSchedule? Schedule { get; set; }
 
+    public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();
+
     public void Update(ClassSessionDto sessionDto, string userName) 
     {
         RoomId = sessionDto.RoomId;
@@ -44,4 +46,29 @@ public class ClassSession : Base
         UpdatedBy = userName;
         UpdatedAt = DateHelper.Date.Now;
     }
+
+    public void UpdateStudentAttendance(List<StudentAttendance> studentAttendances, string userName)
+    {
+        var studentAttendancesToUpdate = StudentAttendances.Where(sg => studentAttendances.Any(s => sg.Id == s.Id)).ToList();
+        foreach (var attendance in studentAttendancesToUpdate)
+        {
+            var attendanceDto = studentAttendances.FirstOrDefault(r => r.Id == attendance.Id)!;
+            attendanceDto.UpdatedAt = DateHelper.Date.Now;
+            attendanceDto.UpdatedBy = userName;
+
+            attendance.Update(attendanceDto);
+        }
+
+        var newStudentAttendances = studentAttendances.Where(s => !StudentAttendances.Any(sg => sg.StudentId == s.StudentId)).ToList();
+        foreach (var attendance in newStudentAttendances)
+        {
+            attendance.CreatedBy = userName;
+            attendance.UpdatedBy = userName;
+            attendance.CreatedAt = DateHelper.Date.Now;
+            attendance.UpdatedAt = DateHelper.Date.Now;
+
+            StudentAttendances.Add(attendance);
+        }
+    }
+
 }

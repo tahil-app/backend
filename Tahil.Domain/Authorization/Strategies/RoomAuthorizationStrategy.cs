@@ -36,19 +36,19 @@ public class RoomAuthorizationStrategy(IRoomRepository roomRepository) : IEntity
 
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
-        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return roomExist && context.HasAdminOrEmployeeAccess;
     }
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return roomExist && context.IsAdmin;
     }
 
     private async Task<bool> CanActivateOrDeActivateAsync(AuthorizationContext context)
     {
-        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var roomExist = await roomRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return roomExist && context.IsAdmin;
     }
 

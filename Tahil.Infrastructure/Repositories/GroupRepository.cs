@@ -84,11 +84,8 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return Result<bool>.Success(true);
     }
 
-    public async Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId)
+    public async Task<bool> ExistsInTenantAsync(int id, Guid tenantId)
     {
-        if (!id.HasValue || !tenantId.HasValue)
-            return false;
-
         return await _dbSet.AnyAsync(g => g.Id == id && g.TenantId == tenantId);
     }
 

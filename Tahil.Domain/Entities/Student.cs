@@ -9,6 +9,7 @@ public class Student : Base
 
     public ICollection<StudentAttachment> StudentAttachments { get; set; } = new List<StudentAttachment>();
     public ICollection<StudentGroup> StudentGroups { get; set; } = new List<StudentGroup>();
+    public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();
 
     public void Activate() => User.IsActive = true;
     public void DeActivate() => User.IsActive = false;

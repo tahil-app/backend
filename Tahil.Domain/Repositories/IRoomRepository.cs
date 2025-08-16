@@ -4,5 +4,5 @@ public interface IRoomRepository : IRepository<Room>
 {
     Task<Result<bool>> AddRoomAsync(Room room, Guid tenantId);
     Task<Result<bool>> DeleteRoomAsync(int id, Guid tenantId);
-    Task<bool> ExistsInTenantAsync(int? id, Guid? tenantId);
+    Task<bool> ExistsInTenantAsync(int id, Guid tenantId);
 }

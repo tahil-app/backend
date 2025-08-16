@@ -34,7 +34,7 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
 
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
-        var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return classSessionExist && context.HasAdminOrEmployeeAccess;
     }
 

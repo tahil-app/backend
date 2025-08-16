@@ -22,7 +22,7 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
 
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
-        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return courseExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
@@ -43,19 +43,19 @@ public class CourseAuthorizationStrategy(ICourseRepository courseRepository) : I
 
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
-        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return courseExist && context.HasAdminOrEmployeeAccess;
     }
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return courseExist && context.IsAdmin;
     }
 
     private async Task<bool> CanActivateOrDeActivateAsync(AuthorizationContext context)
     {
-        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var courseExist = await courseRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return courseExist && context.IsAdmin;
     }
 

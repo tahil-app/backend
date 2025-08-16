@@ -20,7 +20,7 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
 
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
-        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return groupExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
@@ -41,13 +41,13 @@ public class GroupAuthorizationStrategy(IGroupRepository groupRepository) : IEnt
 
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
-        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return groupExist && context.HasAdminOrEmployeeAccess;
     }
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var groupExist = await groupRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return groupExist && context.IsAdmin;
     }
 

@@ -26,7 +26,7 @@ public class TeacherAuthorizationStrategy(
 
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return teacherExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
     
@@ -49,15 +49,15 @@ public class TeacherAuthorizationStrategy(
     {
         if (context.MetaData == "attachment" && context.HasAdminOrEmployeeOrTeacherAccess)
         {
-            return await attachmentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+            return await attachmentRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         }
 
         if (context.MetaData == "course" && context.HasAdminOrEmployeeOrTeacherAccess)
         {
-            return await courseRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+            return await courseRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         }
 
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return teacherExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
 
@@ -65,16 +65,16 @@ public class TeacherAuthorizationStrategy(
     {
         if (context.MetaData == "attachment" && context.HasAdminOrEmployeeOrTeacherAccess)
         {
-            return await attachmentRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+            return await attachmentRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         }
 
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return teacherExist && context.IsAdmin;
     }
 
     private async Task<bool> CanActivateOrDeActivateAsync(AuthorizationContext context)
     {
-        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId, context.UserTenantId);
+        var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
         return teacherExist && context.IsAdmin;
     }
 

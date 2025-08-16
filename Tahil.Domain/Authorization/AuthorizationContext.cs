@@ -9,7 +9,7 @@ public class AuthorizationContext
     public required AuthorizationOperation AuthorizationOperation { get; init; }
     public string? MetaData { get; init; }
 
-    public Guid? UserTenantId { get; init; }
+    public Guid UserTenantId { get; init; }
     public bool IsAdmin { get; init; }
     public bool IsEmployee { get; init; }
     public bool IsTeacher { get; init; }

@@ -95,8 +95,11 @@ public class ResourceAuthorizationHandler(
         try
         {
             var contentType = context.Request.ContentType?.ToLowerInvariant();
+            Console.WriteLine($"Content-Type: {contentType}");
+            Console.WriteLine($"Looking for property: {property}");
 
-            var possibleNames = new[] { property, "id", "Id", "ID", "entityId", "EntityId" }.Distinct();
+            var possibleNames = new[] { property, property.ToLowerInvariant(), property.ToUpperInvariant(), "id", "Id", "ID", "entityId", "EntityId" }.Distinct();
+            Console.WriteLine($"Possible names: {string.Join(", ", possibleNames)}");
 
             // 1️⃣ Handle JSON body
             if (contentType != null && contentType.Contains("application/json"))
@@ -116,15 +119,58 @@ public class ResourceAuthorizationHandler(
                     using var doc = JsonDocument.Parse(body);
                     var root = doc.RootElement;
 
+                    // Handle array/list case first (direct array of objects)
+                    if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
+                    {
+                        var firstElement = root[0];
+                        
+                        foreach (var name in possibleNames)
+                        {
+                            if (firstElement.TryGetProperty(name, out var element))
+                            {
+                                if (element.ValueKind == JsonValueKind.Number && element.TryGetInt32(out var num))
+                                {
+                                    return num;
+                                }
+
+                                if (element.ValueKind == JsonValueKind.String && int.TryParse(element.GetString(), out num))
+                                {
+                                    return num;
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle nested array case (object with array property)
                     foreach (var name in possibleNames)
                     {
                         if (root.TryGetProperty(name, out var element))
                         {
-                            if (element.ValueKind == JsonValueKind.Number && element.TryGetInt32(out var num))
-                                return num;
+                            // If the property is an array, get the first element
+                            if (element.ValueKind == JsonValueKind.Array && element.GetArrayLength() > 0)
+                            {
+                                var firstArrayElement = element[0];
+                                foreach (var nestedName in possibleNames)
+                                {
+                                    if (firstArrayElement.TryGetProperty(nestedName, out var nestedElement))
+                                    {
+                                        if (nestedElement.ValueKind == JsonValueKind.Number && nestedElement.TryGetInt32(out var num))
+                                            return num;
 
-                            if (element.ValueKind == JsonValueKind.String && int.TryParse(element.GetString(), out num))
+                                        if (nestedElement.ValueKind == JsonValueKind.String && int.TryParse(nestedElement.GetString(), out num))
+                                            return num;
+                                    }
+                                }
+                            }
+                            // If the property is a direct value
+                            else if (element.ValueKind == JsonValueKind.Number && element.TryGetInt32(out var num))
+                            {
                                 return num;
+                            }
+                            else if (element.ValueKind == JsonValueKind.String && int.TryParse(element.GetString(), out num))
+                            {
+                                return num;
+                            }
                         }
                     }
                 }
@@ -149,11 +195,12 @@ public class ResourceAuthorizationHandler(
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Log error or ignore silently
+            Console.WriteLine($"Exception in ExtractFromBodyAsync: {ex.Message}");
         }
 
+        Console.WriteLine("No value found, returning null");
         return null;
 
     }
