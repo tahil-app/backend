@@ -38,7 +38,7 @@ public class ClassSessionEndpoints : ICarterModule
 
         #endregion
 
-        #region Update
+        #region Update / Status
 
         sessions.MapPut("/update", async (ClassSessionDto model, [FromServices] IMediator mediator) =>
         {
@@ -50,7 +50,7 @@ public class ClassSessionEndpoints : ICarterModule
         {
             var result = await mediator.Send(new UpdateClassSessionStatusCommand(id, status));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Update);
+        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Update, metaData: "status");
 
         #endregion
     }

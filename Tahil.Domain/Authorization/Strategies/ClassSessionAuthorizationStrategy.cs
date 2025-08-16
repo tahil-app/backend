@@ -1,6 +1,6 @@
 namespace Tahil.Domain.Authorization.Strategies;
 
-public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSessionRepository) 
+public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSessionRepository)
     : IEntityAuthorizationStrategy
 {
     public EntityType Type => EntityType.ClassSession;
@@ -21,7 +21,7 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
     {
         return context.HasAnyAccess;
     }
-    
+
     private bool CanViewPaged(AuthorizationContext context)
     {
         return context.HasAnyAccess;
@@ -35,7 +35,7 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
     private async Task<bool> CanUpdateAsync(AuthorizationContext context)
     {
         var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
-        return classSessionExist && context.HasAdminOrEmployeeAccess;
+        return classSessionExist && (context.MetaData == "status" ? context.HasAdminOrEmployeeOrTeacherAccess : context.HasAdminOrEmployeeAccess);
     }
 
-} 
+}

@@ -8,6 +8,7 @@ public class StudentAttendanceDisplay
     public DateOnly? SessionDate { get; set; }
     public TimeOnly? StartTime { get; set; }
     public TimeOnly? EndTime { get; set; }
+    public ClassSessionStatus? SessionStatus { get; set; }
 
     public List<StudentAttendanceDto> Attendances { get; set; } = new();
 }

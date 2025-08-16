@@ -192,6 +192,9 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>حدث خطأ فى انشاء الرمز</value>
   </data>
+  <data name="InvalidStatus" xml:space="preserve">
+    <value>الحالة غير صحيحة</value>
+  </data>
   <data name="IsDuplicated" xml:space="preserve">
     <value>مكرر</value>
   </data>
@@ -335,5 +338,8 @@
   </data>
   <data name="EmployeeNameTooShort" xml:space="preserve">
     <value>اسم الموظف يجب أن يكون على الأقل 2 أحرف</value>
+  </data>
+  <data name="CannotCompleteSessionWithIncompleteAttendance" xml:space="preserve">
+    <value>لا يمكن إكمال الجلسة عندما يكون لدى الطلاب حالة حضور غير مكتملة</value>
   </data>
 </root>

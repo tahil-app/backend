@@ -21,6 +21,7 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
                 r.Date,
                 r.StartTime,
                 r.EndTime,
+                r.Status,
                 RoomName = r.Room!.Name,
                 GroupName = r.Schedule!.Group!.Name,
                 CourseName = r.Schedule!.Group!.Course!.Name,
@@ -79,6 +80,7 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
             SessionDate = session.Date,
             StartTime = session.StartTime,
             EndTime = session.EndTime,
+            SessionStatus = session.Status,
             Attendances = existingAttendances.OrderBy(r => r.StudentName).ToList()
         };
 

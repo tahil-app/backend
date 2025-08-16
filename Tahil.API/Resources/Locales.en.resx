@@ -192,6 +192,9 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>Invalid refresh token</value>
   </data>
+  <data name="InvalidStatus" xml:space="preserve">
+    <value>Invalid status</value>
+  </data>
   <data name="IsDuplicated" xml:space="preserve">
     <value>is duplicated</value>
   </data>
@@ -335,5 +338,8 @@
   </data>
   <data name="EmployeeNameTooShort" xml:space="preserve">
     <value>Employee name must be at least 2 characters</value>
+  </data>
+  <data name="CannotCompleteSessionWithIncompleteAttendance" xml:space="preserve">
+    <value>Cannot complete session when students have no attendance status</value>
   </data>
 </root>

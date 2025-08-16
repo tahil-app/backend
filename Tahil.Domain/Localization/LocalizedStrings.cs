@@ -96,6 +96,7 @@ public class LocalizedStrings(ILocalizationService loc)
     #region Class Schedule
     public string ClassSession => loc[nameof(ClassSession)];
     public string NotAvailableClassSession => NotAvailable(loc[nameof(ClassSession)]);
+    public string CannotCompleteSessionWithIncompleteAttendance => loc[nameof(CannotCompleteSessionWithIncompleteAttendance)];
     #endregion
 
     #region Shared
@@ -112,6 +113,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string CannotBeNull => loc[nameof(CannotBeNull)];
     public string MustBePositive => loc[nameof(MustBePositive)];
     public string InvalidEmailFormat => loc[nameof(InvalidEmailFormat)];
+    public string InvalidStatus => loc[nameof(InvalidStatus)];
     public string RequiredDay => loc[nameof(RequiredDay)];
     public string RequiredStartTime => loc[nameof(RequiredStartTime)];
     public string RequiredEndTime => loc[nameof(RequiredEndTime)];

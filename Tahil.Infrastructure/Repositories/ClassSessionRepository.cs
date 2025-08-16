@@ -85,7 +85,7 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
         query = query.Include(r => r.Teacher).AsQueryable();
 
         if (userRole == UserRole.Teacher)
-            query = query.Where(r => r.TeacherId == userId && r.Status == ClassSessionStatus.Scheduled);
+            query = query.Where(r => r.TeacherId == userId);
 
         if (userRole == UserRole.Student)
             query = query.Where(r => r.Schedule!.Group!.StudentGroups.Any(s => s.StudentId == userId));
@@ -145,4 +145,8 @@ public class ClassSessionRepository : Repository<ClassSession>, IClassSessionRep
         return await _dbSet.AnyAsync(c => c.Id == id && c.TenantId == _applicationContext.TenantId);
     }
 
+    public async Task<bool> HasIncompleteAttendancesAsync(int sessionId, Guid tenantId)
+    {
+        return await _dbSet.AnyAsync(r => r.Id == sessionId && r.TenantId == tenantId && (!r.StudentAttendances.Any() || r.StudentAttendances.Any(r => r.Status == AttendanceStatus.None)));
+    }
 }
