@@ -1,5 +1,3 @@
-using Tahil.Domain.Repositories;
-
 namespace Tahil.Domain.Authorization.Strategies;
 
 public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSessionRepository)
@@ -43,7 +41,7 @@ public class ClassSessionAuthorizationStrategy(IClassSessionRepository classSess
 
     private async Task<bool> CanDeleteAsync(AuthorizationContext context)
     {
-        var studentExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
-        return studentExist && context.IsAdmin;
+        var classSessionExist = await classSessionRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
+        return classSessionExist && context.IsAdmin;
     }
 }
