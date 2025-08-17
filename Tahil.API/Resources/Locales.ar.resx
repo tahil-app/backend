@@ -229,7 +229,7 @@
     <value>جلسة الدرس</value>
   </data>
   <data name="ScheduleHasSessions" xml:space="preserve">
-    <value>الجدول له جلسات، لا يمكن حذفه</value>
+    <value> الجدول له جلسات، لا يمكن حذفه</value>
   </data>
   <data name="MustBePositive" xml:space="preserve">
     <value>يجب ان تكون القيمة اكبر من 0</value>
@@ -341,5 +341,11 @@
   </data>
   <data name="CannotCompleteSessionWithIncompleteAttendance" xml:space="preserve">
     <value>لا يمكن إكمال الجلسة عندما يكون لدى الطلاب حالة حضور غير مكتملة</value>
+  </data>
+  <data name="ScheduleHasSessionBeforeEndDate" xml:space="preserve">
+    <value>الجدول له جلسات قبل تاريخ الانتهاء، لا يمكن تعديل تاريخ الانتهاء</value>
+  </data>
+  <data name="ScheduleHasSessionAfterStartDate" xml:space="preserve">
+    <value>الجدول له جلسات بعد تاريخ البداية، لا يمكن تعديل تاريخ البداية</value>
   </data>
 </root>

@@ -1,7 +1,9 @@
 ﻿using Tahil.API.Authorization;
 using Tahil.Application.ClassSessions.Commands;
 using Tahil.Application.ClassSessions.Queries;
+using Tahil.Application.Students.Commands;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Entities;
 using Tahil.Domain.Enums;
 
 namespace Tahil.API.Endpoints;
@@ -38,7 +40,7 @@ public class ClassSessionEndpoints : ICarterModule
 
         #endregion
 
-        #region Update / Status
+        #region Update / Status / Delete
 
         sessions.MapPut("/update", async (ClassSessionDto model, [FromServices] IMediator mediator) =>
         {
@@ -51,6 +53,12 @@ public class ClassSessionEndpoints : ICarterModule
             var result = await mediator.Send(new UpdateClassSessionStatusCommand(id, status));
             return Results.Ok(result);
         }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Update, metaData: "status");
+
+        sessions.MapDelete("/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var user = await mediator.Send(new DeleteSessionCommand(id));
+            return Results.Ok(user);
+        }).RequireAccess(EntityType.ClassSession, AuthorizationOperation.Delete);
 
         #endregion
     }

@@ -90,10 +90,16 @@ public class ClassScheduleRepository : Repository<ClassSchedule>, IClassSchedule
         if (!conflictResult.IsSuccess)
             return conflictResult;
 
-        var scheduleToUpdate = await GetAsync(r => r.Id == schedule.Id);
+        var scheduleToUpdate = await GetAsync(r => r.Id == schedule.Id, [s => s.Sessions]);
         if (scheduleToUpdate == null)
             return Result<bool>.Failure(_localizedStrings.NotFoundClassSchedule);
 
+        if (scheduleToUpdate.Sessions.Any(s => s.Date <= schedule.StartDate))
+            return Result<bool>.Failure(_localizedStrings.ScheduleHasSessionAfterStartDate);
+
+        if (scheduleToUpdate.Sessions.Any(s => s.Date > schedule.EndDate))
+            return Result<bool>.Failure(_localizedStrings.ScheduleHasSessionBeforeEndDate);
+            
         scheduleToUpdate?.Update(schedule, _applicationContext.UserName);
 
         return Result<bool>.Success(true);

@@ -342,4 +342,10 @@
   <data name="CannotCompleteSessionWithIncompleteAttendance" xml:space="preserve">
     <value>Cannot complete session when students have no attendance status</value>
   </data>
+  <data name="ScheduleHasSessionBeforeEndDate" xml:space="preserve">
+    <value>Schedule has sessions before end date, cannot update end date</value>
+  </data>
+  <data name="ScheduleHasSessionAfterStartDate" xml:space="preserve">
+    <value>Schedule has sessions after start date, cannot update start date</value>
+  </data>
 </root>
