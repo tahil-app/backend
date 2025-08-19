@@ -27,10 +27,22 @@ public class StudentRepository : Repository<Student>, IStudentRepository
                 Role = r.User.Role,
                 Qualification = r.Qualification,
                 ImagePath = r.User.ImagePath,
-                Groups = r.StudentGroups.Select(g => new GroupDto 
+                Code = $"S_{r.Id}",
+                DailySchedules = r.StudentGroups.SelectMany(r => r.Group.Schedules).Select(r => new DailyScheduleDto
                 {
-                    Id = g.Group.Id,
-                    Name = g.Group.Name
+                    Day = r.Day,
+                    StartTime = r.StartTime,
+                    EndTime = r.EndTime,
+                    RoomName = r.Room!.Name,
+                    GroupName = r.Group!.Name,
+                    CourseName = r.Group!.Course!.Name,
+                    TeacherName = r.Group!.Teacher!.User!.Name,
+                }).OrderBy(r => r.StartTime).ToList(),
+                Feedbacks = r.StudentAttendances.Where(r => !string.IsNullOrEmpty(r.Note)).Select(s => new FeedbackDto
+                {
+                    Name = s.CreatedBy,
+                    Comment = s.Note,
+                    Date = s.CreatedAt.ToString()
                 }).ToList(),
                 Attachments = r.StudentAttachments.Select(at => new AttachmentDto
                 {
@@ -91,7 +103,7 @@ public class StudentRepository : Repository<Student>, IStudentRepository
         return await _dbSet.AnyAsync(c => c.Id == id && c.User.TenantId == tenantId);
     }
 
-    private async Task<Result<bool>> CheckDuplicateStudentAsync(Student student, Guid tenantId) 
+    private async Task<Result<bool>> CheckDuplicateStudentAsync(Student student, Guid tenantId)
     {
         var existStudent = await GetAsync(s => (s.User.Email.Value == student.User.Email.Value || s.User.PhoneNumber == student.User.PhoneNumber) && s.User.TenantId == tenantId);
 

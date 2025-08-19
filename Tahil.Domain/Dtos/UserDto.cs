@@ -12,4 +12,5 @@ public class UserDto : BaseDto
     public DateOnly? BirthDate { get; set; }
     public bool IsActive { get; set; }
     public string? ImagePath { get; set; }
+    public string? Code { get; set; }
 }

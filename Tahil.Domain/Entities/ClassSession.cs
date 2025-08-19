@@ -47,16 +47,16 @@ public class ClassSession : Base
         UpdatedAt = DateHelper.Date.Now;
     }
 
-    public void UpdateStudentAttendance(List<StudentAttendance> studentAttendances, string userName)
+    public void UpdateStudentAttendance(List<StudentAttendance> studentAttendances, string userName, Guid tenantId)
     {
         var studentAttendancesToUpdate = StudentAttendances.Where(sg => studentAttendances.Any(s => sg.Id == s.Id)).ToList();
         foreach (var attendance in studentAttendancesToUpdate)
         {
             var attendanceDto = studentAttendances.FirstOrDefault(r => r.Id == attendance.Id)!;
-            attendanceDto.UpdatedAt = DateHelper.Date.Now;
-            attendanceDto.UpdatedBy = userName;
-
+            
             attendance.Update(attendanceDto);
+            attendance.UpdatedAt = DateHelper.Date.Now;
+            attendance.UpdatedBy = userName;
         }
 
         var newStudentAttendances = studentAttendances.Where(s => !StudentAttendances.Any(sg => sg.StudentId == s.StudentId)).ToList();
@@ -66,6 +66,7 @@ public class ClassSession : Base
             attendance.UpdatedBy = userName;
             attendance.CreatedAt = DateHelper.Date.Now;
             attendance.UpdatedAt = DateHelper.Date.Now;
+            attendance.TenantId = tenantId;
 
             StudentAttendances.Add(attendance);
         }

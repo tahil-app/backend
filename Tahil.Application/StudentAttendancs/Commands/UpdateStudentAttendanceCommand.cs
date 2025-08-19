@@ -16,7 +16,7 @@ public class UpdateSessionAttendanceCommandHandler(
             return Result<bool>.Failure(locale.NotAvailableClassSession);
         }
 
-        session!.UpdateStudentAttendance(request.StudentAttendances.Adapt<List<StudentAttendance>>(), applicationContext.UserName);
+        session!.UpdateStudentAttendance(request.StudentAttendances.Adapt<List<StudentAttendance>>(), applicationContext.UserName, applicationContext.TenantId);
 
         var result = await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result<bool>.Success(result);
