@@ -47,7 +47,7 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
             .ToListAsync();
 
         // First time
-        if (!existingAttendances.Any()) 
+        if (!existingAttendances.Any())
         {
             var groupStudents = await _context.Set<StudentGroup>()
                 .Where(sg => sg.GroupId == session.GroupId)
@@ -58,7 +58,7 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
                 })
                 .ToListAsync();
 
-            groupStudents.ForEach(stud => 
+            groupStudents.ForEach(stud =>
             {
                 existingAttendances.Add(new StudentAttendanceDto
                 {
@@ -85,6 +85,26 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
         };
 
         return Result<StudentAttendanceDisplay>.Success(attendanceResult);
+    }
+
+    public async Task<Result<List<StudentMonthlyAttendanceDto>>> GetStudentMonthlyAttendancesAsync(int year, int student, Guid tenantId)
+    {
+        var attendances = await _dbSet.Where(r => r.Session!.Date.Year == year)
+            .GroupBy(r => r.Session!.Date.Month)
+            .Select(r => new StudentMonthlyAttendanceDto
+            {
+                Present = r.Where(r => r.Status == AttendanceStatus.Present).Count(),
+                Absent = r.Where(r => r.Status == AttendanceStatus.Absent).Count(),
+                Late = r.Where(r => r.Status == AttendanceStatus.Late).Count(),
+                Month = r.Key
+            }).ToListAsync();
+
+        if (attendances != null)
+        {
+            return Result<List<StudentMonthlyAttendanceDto>>.Success(attendances);
+        }
+
+        return Result<List<StudentMonthlyAttendanceDto>>.Success(new List<StudentMonthlyAttendanceDto>());
     }
 
     public async Task<bool> ExistsInTenantAsync(int id, Guid tenantId)
