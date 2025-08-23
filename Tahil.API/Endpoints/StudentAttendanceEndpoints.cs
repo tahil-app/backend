@@ -20,9 +20,15 @@ public class StudentAttendanceEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.StudentAttendance, AuthorizationOperation.ViewAll);
 
-        attendances.MapGet("/monthly/{yearId:int}/{studentId:int}", async (int yearId, int studentId, [FromServices] IMediator mediator) =>
+        attendances.MapGet("/monthly/{studentId:int}/{year:int}", async (int studentId, int year, [FromServices] IMediator mediator) =>
         {
-            var result = await mediator.Send(new GetStudentMonthlyAttendanceQuery(yearId, studentId));
+            var result = await mediator.Send(new GetStudentMonthlyAttendanceQuery(studentId, year));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.StudentAttendance, AuthorizationOperation.ViewAll);
+
+        attendances.MapGet("/daily/{studentId:int}/{year:int}/{month:int}", async (int studentId, int year, int month, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetStudentDailyAttendanceQuery(studentId, year, month));
             return Results.Ok(result);
         }).RequireAccess(EntityType.StudentAttendance, AuthorizationOperation.ViewAll);
 

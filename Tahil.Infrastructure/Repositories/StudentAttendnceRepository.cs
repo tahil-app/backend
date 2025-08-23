@@ -87,9 +87,11 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
         return Result<StudentAttendanceDisplay>.Success(attendanceResult);
     }
 
-    public async Task<Result<List<StudentMonthlyAttendanceDto>>> GetStudentMonthlyAttendancesAsync(int year, int student, Guid tenantId)
+    public async Task<Result<List<StudentMonthlyAttendanceDto>>> GetStudentMonthlyAttendancesAsync(int student, int year, Guid tenantId)
     {
-        var attendances = await _dbSet.Where(r => r.Session!.Date.Year == year && r.StudentId == student && r.TenantId == tenantId)
+        var query = _dbSet.Where(r => r.Session!.Date.Year == year && r.StudentId == student && r.TenantId == tenantId);
+
+        var attendances = await query
             .GroupBy(r => r.Session!.Date.Month)
             .Select(r => new StudentMonthlyAttendanceDto
             {
@@ -105,6 +107,26 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
         }
 
         return Result<List<StudentMonthlyAttendanceDto>>.Success(new List<StudentMonthlyAttendanceDto>());
+    }
+
+    public async Task<Result<List<StudentDailyAttendanceDto>>> GetStudentDailyAttendancesAsync(int student, int year, int month, Guid tenantId)
+    {
+        var query = _dbSet.Where(r => r.Session!.Date.Year == year && r.Session!.Date.Month == month && r.StudentId == student && r.TenantId == tenantId);
+
+        var attendances = await query
+            .Select(r => new StudentDailyAttendanceDto
+            {
+                Date = r.Session!.Date,
+                Status = r.Status,
+                Note = r.Note
+            }).ToListAsync();
+
+        if (attendances != null)
+        {
+            return Result<List<StudentDailyAttendanceDto>>.Success(attendances.OrderBy(r => r.Date).ToList());
+        }
+
+        return Result<List<StudentDailyAttendanceDto>>.Success(new List<StudentDailyAttendanceDto>());
     }
 
     public async Task<bool> ExistsInTenantAsync(int id, Guid tenantId)
