@@ -137,6 +137,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string NotAvailableUser => NotAvailable(User);
     public string UserHasTeachers => loc[nameof(UserHasTeachers)];
     public string UserHasStudents => loc[nameof(UserHasStudents)];
+    public string TeacherAndCourseHasGroup => loc[nameof(TeacherAndCourseHasGroup)];
     #endregion
 
 

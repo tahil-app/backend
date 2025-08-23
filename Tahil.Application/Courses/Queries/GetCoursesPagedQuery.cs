@@ -6,9 +6,19 @@ public class GetCoursesPagedQueryHandler(ICourseRepository courseRepository, IAp
 {
     public async Task<Result<PagedList<CourseDto>>> Handle(GetCoursesPagedQuery request, CancellationToken cancellationToken)
     {
-        var courses = await courseRepository.GetPagedAsync(request.QueryParams, r => r.TenantId == applicationContext.TenantId, [r => r.TeacherCourses]);
-        var pagedCourses = courses.Adapt<PagedList<CourseDto>>();
+        var courses = await courseRepository.GetPagedProjectionAsync(
+            request.QueryParams, 
+            s => new CourseDto 
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Description = s.Description,
+                IsActive = s.IsActive,
+                NumberOfTeachers = s.TeacherCourses.Count,
+            },
+            r => r.TenantId == applicationContext.TenantId);
 
+        var pagedCourses = courses.Adapt<PagedList<CourseDto>>();
         return Result.Success(pagedCourses);
     }
 }

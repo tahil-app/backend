@@ -7,5 +7,6 @@ public class CourseDto: BaseDto
     public bool IsActive { get; set; }
 
     public int? NumberOfTeachers { get; set; }
-    public List<TeacherDto>? Teachers { get; set; }
+    public List<LookupDto>? Teachers { get; set; }
+    public List<LookupDto>? Groups { get; set; }
 }

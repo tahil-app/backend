@@ -31,7 +31,7 @@ public class GroupEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetGroupsPagedQuery(queryParams));
             return Results.Ok(result);
-        });//.RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
 
         #endregion
 

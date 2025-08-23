@@ -3,7 +3,8 @@ namespace Tahil.Domain.Authorization.Strategies;
 public class StudentAuthorizationStrategy(
     IStudentRepository studentRepository,
     IAttachmentRepository attachmentRepository,
-    IGroupRepository groupRepository) 
+    IGroupRepository groupRepository,
+    IApplicationContext applicationContext) 
     : IEntityAuthorizationStrategy
 {
     public EntityType Type => EntityType.Student;
@@ -27,6 +28,10 @@ public class StudentAuthorizationStrategy(
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
         var studentExist = await studentRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
+
+        if (applicationContext.UserRole == UserRole.Student && context.EntityId.GetValueOrDefault() != applicationContext.UserId)
+            return false;
+
         return studentExist && context.HasAnyAccess;
     }
     

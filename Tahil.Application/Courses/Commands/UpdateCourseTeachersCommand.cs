@@ -10,7 +10,7 @@ public class UpdateCourseTeachersCommandHandler(IUnitOfWork unitOfWork, ICourseR
         if (updateResult.IsSuccess)
         {
             var result = await unitOfWork.SaveChangesAsync();
-            return Result.Success(result);
+            return Result.Success(updateResult.IsSuccess ? true : result);
         }
 
         return updateResult;

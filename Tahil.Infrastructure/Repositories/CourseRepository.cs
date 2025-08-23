@@ -1,4 +1,5 @@
 ﻿using Tahil.Domain.Dtos;
+using Tahil.Domain.Entities;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -29,34 +30,44 @@ public class CourseRepository : Repository<Course>, ICourseRepository
 
     public async Task<Result<bool>> DeleteCourseAsync(int id, Guid tenantId)
     {
-        var course = await GetAsync(c => c.Id == id && c.TenantId == tenantId, [c => c.TeacherCourses, g => g.Groups]);
+        // Check if course exists and has any child relationships in a single query
+        var courseWithRelationships = await _dbSet
+            .Where(r => r.Id == id && r.TenantId == tenantId)
+            .Select(r => new
+            {
+                Course = r,
+                HasGroups = r.Groups.Any(),
+                HasTeacherCourses = r.TeacherCourses.Any()
+            })
+            .FirstOrDefaultAsync();
 
-        if (course is null)
+        if (courseWithRelationships is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableCourse);
 
         // Check if course has child relationships
-        if (course.Groups.Any())
+        if (courseWithRelationships.HasGroups)
             return Result<bool>.Failure(_localizedStrings.CourseHasGroups);
 
-        if (course.TeacherCourses.Any())
+        if (courseWithRelationships.HasTeacherCourses)
             return Result<bool>.Failure(_localizedStrings.CourseHasTeachers);
 
         // If no child relationships exist, proceed with deletion
-        HardDelete(course);
+        HardDelete(courseWithRelationships.Course);
         return Result<bool>.Success(true);
     }
 
     public async Task<Result<CourseDto>> GetCourseAsync(int id, Guid tenantId)
     {
         var course = await _dbSet.Where(r => r.Id == id && r.TenantId == tenantId)
-            .Select(r => new CourseDto 
+            .Select(r => new CourseDto
             {
                 Id = r.Id,
                 Name = r.Name,
                 Description = r.Description,
                 IsActive = r.IsActive,
                 NumberOfTeachers = r.TeacherCourses.Count,
-                Teachers = r.TeacherCourses.Where(r => r.Teacher.User.IsActive).Select(r => new TeacherDto { Id = r.TeacherId, Name = r.Teacher.User.Name }).ToList()
+                Teachers = r.TeacherCourses.Where(r => r.Teacher.User.IsActive).Select(r => new LookupDto { Id = r.TeacherId, Name = r.Teacher.User.Name }).ToList(),
+                Groups = r.Groups.Select(r => new LookupDto { Id = r.Id, Name = r.Name }).ToList()
             }).FirstOrDefaultAsync();
 
         if (course is null)
@@ -68,10 +79,17 @@ public class CourseRepository : Repository<Course>, ICourseRepository
     public async Task<Result<bool>> UpdateTeachersAsync(int id, List<int> teacherIds, Guid tenantId)
     {
         // Get the course with its current teachers
-        var course = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.TeacherCourses]);
+        var course = await GetAsync(g => g.Id == id && g.TenantId == tenantId, [g => g.TeacherCourses, g => g.Groups]);
 
         if (course is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableCourse);
+
+       
+        var groupTeacherIds = course.Groups.Select(g => g.TeacherId).Distinct().ToList();
+        var missingTeachers = groupTeacherIds.Except(teacherIds).ToList();
+        if (missingTeachers.Any())
+            return Result<bool>.Failure(_localizedStrings.TeacherAndCourseHasGroup);
+
 
         // Get the teachers to be added to the group
         var teachers = await _context.Set<Teacher>().Where(s => teacherIds.Contains(s.Id)).ToListAsync();
@@ -85,7 +103,7 @@ public class CourseRepository : Repository<Course>, ICourseRepository
         return await _dbSet.AnyAsync(c => c.Id == id && c.TenantId == tenantId);
     }
 
-    private async Task<Result<bool>> CheckDuplicateCourseNameAsync(Course course, Guid tenantId) 
+    private async Task<Result<bool>> CheckDuplicateCourseNameAsync(Course course, Guid tenantId)
     {
         var existCourse = await _dbSet.AnyAsync(u => u.Name == course.Name && u.TenantId == tenantId);
 

@@ -18,8 +18,8 @@ public class UpdateStudentCommandHandler(IUnitOfWork unitOfWork, IStudentReposit
         if (request.Student.Password is not null && !string.IsNullOrEmpty(request.Student.Password))
             student.User.UpdatePassword(request.Student.Password);
 
-        if (request.Student.Groups is not null)
-            student.UpdateGroups(request.Student.Groups.Adapt<List<Group>>());
+ //       if (request.Student.Groups is not null)
+   //         student.UpdateGroups(request.Student.Groups.Adapt<List<Group>>());
 
         var result = await unitOfWork.SaveChangesAsync();
 

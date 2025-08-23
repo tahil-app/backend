@@ -6,9 +6,11 @@ namespace Tahil.Infrastructure.Repositories;
 public class StudentRepository : Repository<Student>, IStudentRepository
 {
     private readonly LocalizedStrings _localizedStrings;
+    private readonly BEContext _context;
     public StudentRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Student>())
     {
         _localizedStrings = localizedStrings;
+        _context = context;
     }
 
     public async Task<StudentDto> GetStudentAsync(int id, Guid tenantId)
@@ -43,6 +45,12 @@ public class StudentRepository : Repository<Student>, IStudentRepository
                     Name = s.CreatedBy,
                     Comment = s.Note,
                     Date = s.CreatedAt.ToString()
+                }).ToList(),
+                Groups = r.StudentGroups.Select(gr => new GroupDto
+                {
+                    Id = gr.Group.Id,
+                    Name = gr.Group.Name,
+                    CourseName = gr.Group.Course!.Name,
                 }).ToList(),
                 Attachments = r.StudentAttachments.Select(at => new AttachmentDto
                 {
@@ -81,20 +89,31 @@ public class StudentRepository : Repository<Student>, IStudentRepository
 
     public async Task<Result<bool>> DeleteStudentAsync(int id, Guid tenantId)
     {
-        var student = await GetAsync(s => s.Id == id && s.User.TenantId == tenantId, [s => s.StudentGroups, s => s.StudentAttachments]);
+        // Check if student exists and has any child relationships in a single query
+        var studentWithRelationships = await _dbSet
+            .Where(r => r.Id == id && r.User.TenantId == tenantId)
+            .Select(r => new
+            {
+                Student = r,
+                HasStudentGroups = r.StudentGroups.Any(),
+                HasStudentAttachments = r.StudentAttachments.Any()
+            })
+            .FirstOrDefaultAsync();
 
-        if (student is null)
+        if (studentWithRelationships is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableStudent);
 
         // Check if student has child relationships
-        if (student.StudentGroups.Any())
+        if (studentWithRelationships.HasStudentGroups)
             return Result<bool>.Failure(_localizedStrings.StudentHasGroups);
 
-        if (student.StudentAttachments.Any())
+        if (studentWithRelationships.HasStudentAttachments)
             return Result<bool>.Failure(_localizedStrings.StudentHasAttachments);
 
         // If no child relationships exist, proceed with deletion
-        HardDelete(student);
+        HardDelete(studentWithRelationships.Student);
+        _context.Remove(studentWithRelationships.Student.User);
+
         return Result<bool>.Success(true);
     }
 

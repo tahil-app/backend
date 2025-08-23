@@ -13,7 +13,7 @@ public static class UserSeeding
                 Name = "Admin",
                 Role = Domain.Enums.UserRole.Admin,
                 TenantId = Tenants.DarAlfor2an,
-                Password = "$2a$11$GGEGcXpeP39kYGG6NFIS3O0EskcYWfucTDcK8Y8kBLJw93iDqcjSG" //PasswordHasher.Hash("admin")
+                Password = "$2a$11$vdYkqoIhXwVHH/IWl3ddU.t1r8UD4XZJnPNMr2wRkqqpdDgLlDZ/K" //PasswordHasher.Hash("admin")
             }
         );
 

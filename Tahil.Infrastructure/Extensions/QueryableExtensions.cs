@@ -50,7 +50,27 @@ public static class QueryableExtensions
                 targetValue = converter.ConvertFromInvariantString(filter.ColumnValue?.ToString());
             }
 
-            var constant = Expression.Constant(targetValue);
+            // Create constant with the correct type to match the property type
+            Expression constant;
+            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                // For nullable types, we need to handle the conversion properly
+                if (targetValue == null)
+                {
+                    constant = Expression.Constant(null, propertyType);
+                }
+                else
+                {
+                    // Convert the value to the underlying type first, then create nullable
+                    var underlyingValue = Convert.ChangeType(targetValue, targetType);
+                    constant = Expression.Convert(Expression.Constant(underlyingValue, targetType), propertyType);
+                }
+            }
+            else
+            {
+                constant = Expression.Constant(targetValue, propertyType);
+            }
+
             Expression filterExpression;
 
             switch (filter.Operator)

@@ -9,32 +9,34 @@ public class GetGroupsPagedQueryHandler(IGroupRepository groupRepository, IAppli
 {
     public async Task<Result<PagedList<GroupDto>>> Handle(GetGroupsPagedQuery request, CancellationToken cancellationToken)
     {
-        Expression<Func<Group, bool>> filter = applicationContext.UserRole == UserRole.Teacher
-            ? group => group.TeacherId == applicationContext.UserId && group.TenantId == applicationContext.TenantId
-            : group => group.TenantId == applicationContext.TenantId;
+        Expression<Func<Group, bool>> filter = group => group.TenantId == applicationContext.TenantId;
 
-        var includes = new Expression<Func<Group, object>>[]
+        if (applicationContext.UserRole == UserRole.Teacher)
         {
-            r => r.StudentGroups,
-            r => r.Course!,
-            r => r.Teacher!
-        };
+            filter = group => group.TeacherId == applicationContext.UserId && group.TenantId == applicationContext.TenantId;
+        }
 
-        //if (applicationContext.UserRole == UserRole.Teacher)
-        //{
-        //    includes = new Expression<Func<Group, object>>[]
-        //    {
-        //        r => r.StudentGroups,
-        //        r => r.Course!,
-        //    };
-        //}
-
-        var groups = await groupRepository.GetPagedAsync(
+        var groups = await groupRepository.GetPagedProjectionAsync(
             queryParams: request.QueryParams,
-            predicate: filter,
-            includes: includes);
+            projection: g => new GroupDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Capacity = g.Capacity,
+                NumberOfStudents = g.StudentGroups.Count,
+                Course = new LookupDto
+                {
+                    Id = g.Course!.Id,
+                    Name = g.Course.Name
+                },
+                Teacher = new LookupDto
+                {
+                    Id = g.Teacher!.Id,
+                    Name = g.Teacher.User!.Name
+                }
+            },
+            predicate: filter);
 
-        var pagedGroups = groups.Adapt<PagedList<GroupDto>>();
-        return Result.Success(pagedGroups);
+        return Result.Success(groups);
     }
 }

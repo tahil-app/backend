@@ -6,8 +6,6 @@ public static class CourseMapping
 {
     public static void RegisterMappings()
     {
-        TypeAdapterConfig<Course, CourseDto>.NewConfig()
-            .Map(dest => dest.NumberOfTeachers, src => src.TeacherCourses.Count);
     }
 
     public static Course ToCourse(this CourseDto model)

@@ -10,8 +10,10 @@ public interface IRepository<T> where T : Base
 
     Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null);
     Task<List<T>> GetAllReadOnlyAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null);
+    Task<List<TResult>> GetAllReadOnlyProjectionAsyncAsync<TResult>(Expression<Func<T, TResult>> projection, Expression<Func<T, bool>>? predicate = null);
     Task<List<T>> GetDistinctListAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null);
     Task<PagedList<T>> GetPagedAsync(QueryParams queryParams, Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null);
+    Task<PagedList<TResult>> GetPagedProjectionAsync<TResult>(QueryParams queryParams, Expression<Func<T, TResult>> projection, Expression<Func<T, bool>>? predicate = null);
 
     Task<bool> AnyAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null);
     void Add(T entity);

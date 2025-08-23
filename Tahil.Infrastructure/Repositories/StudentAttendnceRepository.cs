@@ -89,7 +89,7 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
 
     public async Task<Result<List<StudentMonthlyAttendanceDto>>> GetStudentMonthlyAttendancesAsync(int year, int student, Guid tenantId)
     {
-        var attendances = await _dbSet.Where(r => r.Session!.Date.Year == year)
+        var attendances = await _dbSet.Where(r => r.Session!.Date.Year == year && r.StudentId == student && r.TenantId == tenantId)
             .GroupBy(r => r.Session!.Date.Month)
             .Select(r => new StudentMonthlyAttendanceDto
             {

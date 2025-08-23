@@ -87,7 +87,7 @@ public class StudentEndpoints : ICarterModule
                 return Results.BadRequest("No file uploaded.");
 
             var result = await mediator.Send(new UploadStudentAttachmetCommand(model));
-            return Results.Ok(true);
+            return Results.Ok(Result.Success(true));
         }).DisableAntiforgery().RequireAccess(EntityType.Student, AuthorizationOperation.Update, "userId");
 
         students.MapDelete("/delete-attachment/{attachmentId:int}", async (int attachmentId, [FromServices] IMediator mediator) =>

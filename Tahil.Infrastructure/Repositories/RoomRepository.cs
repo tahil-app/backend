@@ -26,20 +26,29 @@ public class RoomRepository : Repository<Room>, IRoomRepository
 
     public async Task<Result<bool>> DeleteRoomAsync(int id, Guid tenantId)
     {
-        var room = await GetAsync(r => r.Id == id && r.TenantId == tenantId, [r => r.Schedules, r => r.Sessions]);
+        // Check if room exists and has any child relationships in a single query
+        var roomWithRelationships = await _dbSet
+            .Where(r => r.Id == id && r.TenantId == tenantId)
+            .Select(r => new
+            {
+                Room = r,
+                HasSchedules = r.Schedules.Any(),
+                HasSessions = r.Sessions.Any()
+            })
+            .FirstOrDefaultAsync();
 
-        if (room is null)
+        if (roomWithRelationships == null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableRoom);
 
         // Check if room has child relationships
-        if (room.Schedules.Any())
+        if (roomWithRelationships.HasSchedules)
             return Result<bool>.Failure(_localizedStrings.RoomHasSchedules);
 
-        if (room.Sessions.Any())
+        if (roomWithRelationships.HasSessions)
             return Result<bool>.Failure(_localizedStrings.RoomHasSessions);
 
         // If no child relationships exist, proceed with deletion
-        HardDelete(room);
+        HardDelete(roomWithRelationships.Room);
         return Result<bool>.Success(true);
     }
 

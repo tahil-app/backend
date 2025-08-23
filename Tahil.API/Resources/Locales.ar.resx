@@ -306,6 +306,9 @@
   <data name="TeacherHasAttachments" xml:space="preserve">
     <value>المعلم له مرفقات، لا يمكن حذفه</value>
   </data>
+  <data name="TeacherAndCourseHasGroup" xml:space="preserve">
+    <value>المعلم والدورة لهما مجموعات، لا يمكن تحديث الدورات</value>
+  </data>
   <data name="TeacherHasAnotherSchedule" xml:space="preserve">
     <value>المعلم لديه جدول آخر في هذا الوقت</value>
   </data>

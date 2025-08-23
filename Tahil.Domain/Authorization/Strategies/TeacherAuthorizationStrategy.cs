@@ -3,7 +3,8 @@ namespace Tahil.Domain.Authorization.Strategies;
 public class TeacherAuthorizationStrategy(
     ITeacherRepository teacherRepository,
     IAttachmentRepository attachmentRepository,
-    ICourseRepository courseRepository) 
+    ICourseRepository courseRepository,
+    IApplicationContext applicationContext) 
     : IEntityAuthorizationStrategy
 {
     public EntityType Type => EntityType.Teacher;
@@ -27,6 +28,10 @@ public class TeacherAuthorizationStrategy(
     private async Task<bool> CanViewDetailAsync(AuthorizationContext context)
     {
         var teacherExist = await teacherRepository.ExistsInTenantAsync(context.EntityId.GetValueOrDefault(), context.UserTenantId);
+
+        if (applicationContext.UserRole == UserRole.Teacher && context.EntityId.GetValueOrDefault() != applicationContext.UserId)
+            return false;
+
         return teacherExist && context.HasAdminOrEmployeeOrTeacherAccess;
     }
     

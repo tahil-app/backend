@@ -306,6 +306,9 @@
   <data name="TeacherHasAttachments" xml:space="preserve">
     <value>Teacher has attachments, cannot delete</value>
   </data>
+  <data name="TeacherAndCourseHasGroup" xml:space="preserve">
+    <value>Teacher and course has groups, cannot update courses</value>
+  </data>
   <data name="TeacherHasAnotherSchedule" xml:space="preserve">
     <value>Teacher has another schedule at this time</value>
   </data>

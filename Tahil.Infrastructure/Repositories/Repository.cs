@@ -46,6 +46,15 @@ public abstract class Repository<T> : IRepository<T> where T : Base
         query = predicate != null ? query.Where(predicate) : query;
         return query.AsNoTracking().ToListAsync();
     }
+    public async Task<List<TResult>> GetAllReadOnlyProjectionAsyncAsync<TResult>(Expression<Func<T, TResult>> projection, Expression<Func<T, bool>>? predicate = null)
+    {
+        IQueryable<T> query = _query;
+
+        query = predicate != null ? query.Where(predicate) : query;
+
+        return await query.Select(projection).ToListAsync();
+    }
+
     public Task<List<T>> GetDistinctListAsync(Expression<Func<T, bool>>? predicate = null, Expression<Func<T, object>>[]? includes = null)
     {
         IQueryable<T> query = Include(includes);
@@ -66,6 +75,28 @@ public abstract class Repository<T> : IRepository<T> where T : Base
         var items = await query.Skip((queryParams.Page - 1) * queryParams.PageSize).Take(queryParams.PageSize).ToListAsync();
 
         return new PagedList<T>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = queryParams.Page,
+            PageSize = queryParams.PageSize
+        };
+    }
+
+    public async Task<PagedList<TResult>> GetPagedProjectionAsync<TResult>(QueryParams queryParams, Expression<Func<T, TResult>> projection, Expression<Func<T, bool>>? predicate = null)
+    {
+        IQueryable<T> query = _query;
+
+        query = predicate != null ? query.Where(predicate) : query;
+
+        query = queryParams.Filters != null ? query.ApplyFilters(queryParams.Filters) : query;
+
+        query = queryParams.Sort != null ? query.ApplySorting(queryParams.Sort) : query.OrderByDescending(r => r.Id);
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((queryParams.Page - 1) * queryParams.PageSize).Take(queryParams.PageSize).Select(projection).ToListAsync();
+
+        return new PagedList<TResult>
         {
             Items = items,
             TotalCount = totalCount,

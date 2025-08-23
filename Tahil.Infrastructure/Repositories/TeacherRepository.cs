@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MediatR;
 using Tahil.Domain.Dtos;
+using Tahil.Domain.Entities;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -8,9 +9,11 @@ namespace Tahil.Infrastructure.Repositories;
 public class TeacherRepository : Repository<Teacher>, ITeacherRepository
 {
     private readonly LocalizedStrings _localizedStrings;
+    private readonly BEContext _context;
     public TeacherRepository(BEContext context, LocalizedStrings localizedStrings) : base(context.Set<Teacher>())
     {
         _localizedStrings = localizedStrings;
+        _context = context;
     }
 
     public async Task<TeacherDto> GetTeacherAsync(int id, Guid tenantId)
@@ -19,6 +22,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
             .Select(r => new TeacherDto
             {
                 Id = r.Id,
+                Code = $"T_{r.Id}",
                 Name = r.User.Name,
                 Email = r.User.Email.Value,
                 PhoneNumber = r.User.PhoneNumber,
@@ -38,8 +42,19 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                 Groups = r.Groups.Select(gr => new GroupDto 
                 {
                     Id = gr.Id,
-                    Name = gr.Name
+                    Name = gr.Name,
+                    CourseName = gr.Course!.Name,
+                    NumberOfStudents = gr.StudentGroups.Count
                 }).ToList(),
+                DailySchedules = r.Groups.SelectMany(r => r.Schedules).Select(r => new DailyScheduleDto
+                {
+                    Day = r.Day,
+                    StartTime = r.StartTime,
+                    EndTime = r.EndTime,
+                    RoomName = r.Room!.Name,
+                    GroupName = r.Group!.Name,
+                    CourseName = r.Group!.Course!.Name,
+                }).OrderBy(r => r.StartTime).ToList(),
                 Attachments = r.TeacherAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,
@@ -96,27 +111,45 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
             teacher.User.UpdatePassword(teacherDto.Password);
 
         if (teacherDto.Courses is not null)
+        {
+
+            var groupCourseIds = teacher.Groups.Select(g => g.CourseId).Distinct().ToList();
+            var missingCourses = groupCourseIds.Except(teacherDto.Courses.Select(r => r.Id)).ToList();
+            if (missingCourses.Any())
+                return Result<bool>.Failure(_localizedStrings.TeacherAndCourseHasGroup);
+
             teacher.UpdateCourses(teacherDto.Courses.Adapt<List<Course>>());
+        }
 
         return Result<bool>.Success(true);
     }
 
     public async Task<Result<bool>> DeleteTeacherAsync(int id, Guid tenantId)
     {
-        var teacher = await GetAsync(t => t.Id == id && t.User.TenantId == tenantId, [t => t.TeacherCourses, t => t.TeacherAttachments]);
+        // Check if room exists and has any child relationships in a single query
+        var teacherWithRelationships = await _dbSet
+            .Where(r => r.Id == id && r.User.TenantId == tenantId)
+            .Select(r => new
+            {
+                Teacher = r,
+                HasTeacherAttachments = r.TeacherAttachments.Any(),
+                HasTeacherCourses = r.TeacherCourses.Any()
+            })
+            .FirstOrDefaultAsync();
 
-        if (teacher is null)
+        if (teacherWithRelationships is null)
             return Result<bool>.Failure(_localizedStrings.NotAvailableTeacher);
 
         // Check if teacher has child relationships
-        if (teacher.TeacherCourses.Any())
+        if (teacherWithRelationships.HasTeacherCourses)
             return Result<bool>.Failure(_localizedStrings.TeacherHasCourses);
 
-        if (teacher.TeacherAttachments.Any())
+        if (teacherWithRelationships.HasTeacherAttachments)
             return Result<bool>.Failure(_localizedStrings.TeacherHasAttachments);
 
         // If no child relationships exist, proceed with deletion
-        HardDelete(teacher);
+        HardDelete(teacherWithRelationships.Teacher);
+        _context.Remove(teacherWithRelationships.Teacher.User);
         return Result<bool>.Success(true);
     }
 

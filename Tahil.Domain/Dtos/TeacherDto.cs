@@ -8,4 +8,5 @@ public class TeacherDto : UserDto
     public List<AttachmentDto>? Attachments { get; set; }
     public List<CourseDto>? Courses { get; set; }
     public List<GroupDto>? Groups { get; set; }
+    public List<DailyScheduleDto> DailySchedules { get; set; } = new();
 }

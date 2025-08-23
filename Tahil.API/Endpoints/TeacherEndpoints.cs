@@ -31,7 +31,7 @@ public class TeacherEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetCourseTeachersQueryQuery(courseId));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.Teacher, AuthorizationOperation.ViewDetail, "courseId", "course");
+        }).RequireAccess(EntityType.Teacher, AuthorizationOperation.ViewAll, "courseId", "course");
 
         teachers.MapPost("/paged", async ([FromBody] QueryParams queryParams, [FromServices] IMediator mediator) =>
         {
