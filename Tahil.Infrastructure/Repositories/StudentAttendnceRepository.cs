@@ -117,8 +117,11 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
             .Select(r => new StudentDailyAttendanceDto
             {
                 Date = r.Session!.Date,
+                StartTime = r.Session!.StartTime,
+                EndTime = r.Session!.EndTime,
                 Status = r.Status,
-                Note = r.Note
+                Note = r.Note,
+                CourseName = r.Session!.Schedule!.Group!.Course!.Name
             }).ToListAsync();
 
         if (attendances != null)
