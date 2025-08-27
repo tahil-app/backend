@@ -39,6 +39,24 @@ public class StudentEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewPaged);
 
+        students.MapGet("/schedules/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetStudentSchedulesQuery(id));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        students.MapGet("/groups/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetStudentGroupsQuery(id));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        students.MapGet("/feedbacks/{id:int}/{year:int}/{month:int}", async (int id, int year, int month, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetStudentFeedbacksQuery(id, year, month));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
         #endregion
 
         #region Create / Update / Delete

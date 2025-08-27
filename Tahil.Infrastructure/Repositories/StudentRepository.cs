@@ -1,4 +1,5 @@
 ﻿using Tahil.Domain.Dtos;
+using Tahil.Domain.Entities;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -30,28 +31,6 @@ public class StudentRepository : Repository<Student>, IStudentRepository
                 Qualification = r.Qualification,
                 ImagePath = r.User.ImagePath,
                 Code = $"S_{r.Id}",
-                DailySchedules = r.StudentGroups.SelectMany(r => r.Group.Schedules).Select(r => new DailyScheduleDto
-                {
-                    Day = r.Day,
-                    StartTime = r.StartTime,
-                    EndTime = r.EndTime,
-                    RoomName = r.Room!.Name,
-                    GroupName = r.Group!.Name,
-                    CourseName = r.Group!.Course!.Name,
-                    TeacherName = r.Group!.Teacher!.User!.Name,
-                }).OrderBy(r => r.StartTime).ToList(),
-                Feedbacks = r.StudentAttendances.Where(r => !string.IsNullOrEmpty(r.Note)).Select(s => new FeedbackDto
-                {
-                    Name = s.CreatedBy,
-                    Comment = s.Note,
-                    Date = s.CreatedAt.ToString()
-                }).ToList(),
-                Groups = r.StudentGroups.Select(gr => new GroupDto
-                {
-                    Id = gr.Group.Id,
-                    Name = gr.Group.Name,
-                    CourseName = gr.Group.Course!.Name,
-                }).ToList(),
                 Attachments = r.StudentAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,
@@ -62,6 +41,62 @@ public class StudentRepository : Repository<Student>, IStudentRepository
             });
 
         return await query.FirstOrDefaultAsync() ?? new();
+    }
+
+    public async Task<List<GroupDto>> GetStudentGroupsAsync(int id, Guid tenantId)
+    {
+        return await _dbSet.Where(s => s.User.IsActive && s.Id == id && s.User.TenantId == tenantId)
+            .SelectMany(s => s.StudentGroups)
+            .Select(gr => new GroupDto
+            {
+                Id = gr.GroupId,
+                Name = gr.Group.Name,
+                CourseName = gr.Group.Course!.Name,
+                NumberOfStudents = gr.Group.StudentGroups.Count
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<DailyScheduleDto>> GetStudentSchedulesAsync(int id, Guid tenantId)
+    {
+        var result = await _dbSet.Where(s => s.User.IsActive && s.Id == id && s.User.TenantId == tenantId)
+            .SelectMany(s => s.StudentGroups)
+            .SelectMany(sg => sg.Group.Schedules)
+            .Select(sc => new DailyScheduleDto
+            {
+                Day = sc.Day,
+                StartTime = sc.StartTime,
+                EndTime = sc.EndTime,
+                RoomName = sc.Room!.Name,
+                GroupName = sc.Group!.Name,
+                CourseName = sc.Group!.Course!.Name,
+                TeacherName = sc.Group!.Teacher!.User!.Name,
+            })
+            .OrderBy(sc => sc.StartTime)
+            .ToListAsync();
+
+        return result.OrderBy(r => r.Day).ToList();
+    }
+
+    public async Task<List<FeedbackDto>> GetStudentFeedbacksAsync(int id, int year, int month, Guid tenantId)
+    {
+        var result = await _dbSet.Where(s => 
+            s.User.IsActive && 
+            s.Id == id && 
+            s.StudentAttendances.Any(sa => sa.Session!.Date.Month == month) &&
+            s.StudentAttendances.Any(sa => sa.Session!.Date.Year == year) &&
+            s.User.TenantId == tenantId)
+            .SelectMany(s => s.StudentAttendances
+                .Where(a => !string.IsNullOrEmpty(a.Note))
+                .Select(a => new FeedbackDto
+                {
+                    Name = a.CreatedBy,
+                    Comment = a.Note,
+                    Date = a.CreatedAt.ToString()
+                }))
+            .ToListAsync();
+
+        return result.OrderByDescending(r => r.Date).ToList();
     }
 
     public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName, Guid tenantId)

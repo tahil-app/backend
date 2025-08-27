@@ -18,7 +18,7 @@ public class StudentAttendanceEndpoints : ICarterModule
         {
             var result = await mediator.Send(new GetStudentAttendancesQuery(sessionId));
             return Results.Ok(result);
-        }).RequireAccess(EntityType.StudentAttendance, AuthorizationOperation.ViewAll);
+        }).RequireAccess(EntityType.StudentAttendance, AuthorizationOperation.ViewDetail, "sessionId");
 
         attendances.MapGet("/monthly/{studentId:int}/{year:int}", async (int studentId, int year, [FromServices] IMediator mediator) =>
         {

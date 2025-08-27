@@ -116,10 +116,14 @@ public class StudentAttendnceRepository : Repository<StudentAttendance>, IStuden
         var attendances = await query
             .Select(r => new StudentDailyAttendanceDto
             {
+                SessionId = r.SessionId,
                 Date = r.Session!.Date,
                 StartTime = r.Session!.StartTime,
                 EndTime = r.Session!.EndTime,
                 Status = r.Status,
+                Late = r.Status == AttendanceStatus.Late,
+                Absent = r.Status == AttendanceStatus.Absent,
+                Present = r.Status == AttendanceStatus.Present,
                 Note = r.Note,
                 CourseName = r.Session!.Schedule!.Group!.Course!.Name
             }).ToListAsync();

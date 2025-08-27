@@ -33,6 +33,18 @@ public class GroupEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
 
+        groups.MapGet("/attendances/{id:int}/{year:int}", async (int id, int year, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetGroupAttendancesQuery(id, year));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewDetail);
+
+        groups.MapGet("/schedules/{id:int}", async (int id, [FromServices] IMediator mediator) =>
+        {
+            var result = await mediator.Send(new GetGroupSchedulesQuery(id));
+            return Results.Ok(result);
+        }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewDetail);
+
         #endregion
 
         #region Create / Update / Delete

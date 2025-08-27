@@ -12,8 +12,6 @@ public class GroupDto: BaseDto
     public LookupDto? Course { get; set; }
     public LookupDto? Teacher { get; set; }
     public List<LookupDto>? Students { get; set; }
-    public List<GroupDailyAttendance>? Attendces { get; set; } = new();
-    public List<DailyScheduleDto> DailySchedules { get; set; } = new();
 }
 
 public class GroupDailyAttendance 

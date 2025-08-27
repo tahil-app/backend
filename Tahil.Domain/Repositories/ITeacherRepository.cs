@@ -3,6 +3,8 @@
 public interface ITeacherRepository : IRepository<Teacher> 
 {
     Task<TeacherDto> GetTeacherAsync(int id, Guid tenantId);
+    Task<List<GroupDto>> GetTeacherGroupsAsync(int id, Guid tenantId);
+    Task<List<DailyScheduleDto>> GetTeacherSchedulesAsync(int id, Guid tenantId);
     Task<string> GetAttachmentDisplayNameAsync(string attachmentName, Guid tenantId);
     Task<Result<bool>> AddTeacherAsync(Teacher teacher, Guid tenantId);
     Task<Result<bool>> UpdateTeacherAsync(TeacherDto teacherDto, Guid tenantId);

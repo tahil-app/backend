@@ -39,22 +39,6 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
                     Id = cr.Course.Id,
                     Name = cr.Course.Name
                 }).ToList(),
-                Groups = r.Groups.Select(gr => new GroupDto 
-                {
-                    Id = gr.Id,
-                    Name = gr.Name,
-                    CourseName = gr.Course!.Name,
-                    NumberOfStudents = gr.StudentGroups.Count
-                }).ToList(),
-                DailySchedules = r.Groups.SelectMany(r => r.Schedules).Select(r => new DailyScheduleDto
-                {
-                    Day = r.Day,
-                    StartTime = r.StartTime,
-                    EndTime = r.EndTime,
-                    RoomName = r.Room!.Name,
-                    GroupName = r.Group!.Name,
-                    CourseName = r.Group!.Course!.Name,
-                }).OrderBy(r => r.StartTime).ToList(),
                 Attachments = r.TeacherAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,
@@ -65,6 +49,38 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
             });
 
         return await query.FirstOrDefaultAsync() ?? new();
+    }
+
+    public async Task<List<GroupDto>> GetTeacherGroupsAsync(int id, Guid tenantId)
+    {
+        return await _dbSet.Where(r => r.User.IsActive && r.Id == id && r.User.TenantId == tenantId)
+                .SelectMany(r => r.Groups.Select(gr => new GroupDto
+                {
+                    Id = gr.Id,
+                    Name = gr.Name,
+                    CourseName = gr.Course!.Name,
+                    NumberOfStudents = gr.StudentGroups.Count
+                }).ToList()).ToListAsync();
+    }
+
+    public async Task<List<DailyScheduleDto>> GetTeacherSchedulesAsync(int id, Guid tenantId)
+    {
+        var result = await _dbSet.Where(r => r.User.IsActive && r.Id == id && r.User.TenantId == tenantId)
+            .SelectMany(r => r.Groups)
+            .SelectMany(g => g.Schedules)
+            .Select(s => new DailyScheduleDto
+            {
+                Day = s.Day,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                RoomName = s.Room!.Name,
+                GroupName = s.Group!.Name,
+                CourseName = s.Group!.Course!.Name,
+            })
+            .OrderBy(s => s.StartTime)
+            .ToListAsync();
+
+        return result.OrderBy(r => r.Day).ToList();
     }
 
     public async Task<string> GetAttachmentDisplayNameAsync(string attachmentName, Guid tenantId)
@@ -97,7 +113,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
             return Result<bool>.Failure(_localizedStrings.NotAvailableTeacher);
 
 
-        if (teacher.User.Email.Value != teacherDto.Email || teacher.User.PhoneNumber != teacherDto.PhoneNumber) 
+        if (teacher.User.Email.Value != teacherDto.Email || teacher.User.PhoneNumber != teacherDto.PhoneNumber)
         {
             var existTeacher = await CheckDuplicateTeacherAsync(teacherDto.Id, teacherDto.Email, teacherDto.PhoneNumber, teacherDto.Password, tenantId);
             if (!existTeacher.IsSuccess)

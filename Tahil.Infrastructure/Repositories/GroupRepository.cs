@@ -68,32 +68,48 @@ public class GroupRepository : Repository<Group>, IGroupRepository
                 TeacherId = r.TeacherId,
                 Teacher = new LookupDto { Id = r.TeacherId, Name = r.Teacher.User.Name },
                 Students = r.StudentGroups.Select(s => new LookupDto { Id = s.Student.Id, Name = s.Student.User.Name }).ToList(),
-                DailySchedules = r.Schedules.Select(r => new DailyScheduleDto
-                {
-                    Day = r.Day,
-                    StartTime = r.StartTime,
-                    EndTime = r.EndTime,
-                    RoomName = r.Room!.Name,
-                    CourseName = r.Group!.Course!.Name,
-                }).OrderBy(r => r.StartTime).ToList(),
                 Capacity = r.Capacity,
-                NumberOfStudents = r.StudentGroups.Count,
-                Attendces = r.Schedules.SelectMany(s => s.Sessions).GroupBy(s => s.Date).Select(a => new GroupDailyAttendance
-                {
-                    Date = a.Key,
-                    SessionId = a.FirstOrDefault().Id,
-                    Absent = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Absent)).Count(),
-                    Late = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Late)).Count(),
-                    Present = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Present)).Count(),
-                }).ToList(),
+                NumberOfStudents = r.StudentGroups.Count
             }).FirstOrDefaultAsync();
 
         if (query == null)
             return Result<GroupDto>.Failure(_localizedStrings.NotAvailableGroup);
 
-        query.DailySchedules = query.DailySchedules.OrderBy(r => r.Day).ToList();
-        query.Attendces = query.Attendces.OrderByDescending(s => s.Date).ToList();
         return Result<GroupDto>.Success(query);
+    }
+
+    public async Task<List<DailyScheduleDto>> GetGroupSchedulesAsync(int id, Guid tenantId)
+    {
+        var result = await _dbSet.Where(r => r.Id == id && r.TenantId == tenantId)
+            .SelectMany(g => g.Schedules)
+            .Select(s => new DailyScheduleDto
+            {
+                Day = s.Day,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                RoomName = s.Room!.Name,
+                GroupName = s.Group!.Name,
+                CourseName = s.Group!.Course!.Name,
+            })
+            .OrderBy(s => s.StartTime)
+            .ToListAsync();
+
+        return result.OrderBy(r => r.Day).ToList();
+    }
+
+    public async Task<Result<List<GroupDailyAttendance>>> GetGroupAttendancesAsync(int id, int year, Guid tenantId)
+    {
+        var query = await _dbSet.Where(r => r.Id == id && r.Schedules.Any(s => s.Sessions.Any(ss => ss.Date.Year == year)) && r.TenantId == tenantId)
+            .SelectMany(s => s.Schedules.SelectMany(r => r.Sessions)).GroupBy(s => s.Date).Select(a => new GroupDailyAttendance
+            {
+                Date = a.Key,
+                SessionId = a.FirstOrDefault().Id,
+                Absent = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Absent)).Count(),
+                Late = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Late)).Count(),
+                Present = a.Where(r => r.StudentAttendances.Any(sa => sa.Status == AttendanceStatus.Present)).Count(),
+            }).ToListAsync();
+
+        return Result<List<GroupDailyAttendance>>.Success(query.OrderByDescending(s => s.Date).ToList());
     }
 
     public async Task<Result<bool>> UpdateStudentsAsync(int id, List<int> studentIds, Guid tenantId)
