@@ -1,5 +1,6 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using QuestPDF.Infrastructure;
 using Tahil.API.Middlewares;
 using Tahil.Application;
 using Tahil.Domain.Helpers;
@@ -30,6 +31,8 @@ builder.Services.AddQuartaz();
 
 builder.Services.AddJwtAuthentication();
 builder.Services.AddAuthorizationPolicies();
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

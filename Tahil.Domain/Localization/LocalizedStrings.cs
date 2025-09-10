@@ -3,6 +3,7 @@
 public class LocalizedStrings(ILocalizationService loc)
 {
     public string ServerRunning => loc[nameof(ServerRunning)];
+    public bool IsAr => loc["Lang"] == "ar";
 
     #region Auth
     public string InvalidCredentials => loc[nameof(InvalidCredentials)];
@@ -102,6 +103,7 @@ public class LocalizedStrings(ILocalizationService loc)
     #endregion
 
     #region Shared
+    public string AppName => loc[nameof(AppName)];
     public string Name => loc[nameof(Name)];
     public string User => loc[nameof(User)];
     public string Attachment => loc[nameof(Attachment)];
@@ -140,6 +142,9 @@ public class LocalizedStrings(ILocalizationService loc)
     public string TeacherAndCourseHasGroup => loc[nameof(TeacherAndCourseHasGroup)];
     #endregion
 
+    #region Reports
+    public string Schedules => loc[nameof(Schedules)];
+    #endregion
 
     private string Duplicate(string item) => $"{item} {loc["IsDuplicated"]}";
     private string NotFound(string item) => $"{item} {loc["IsNotFount"]}";

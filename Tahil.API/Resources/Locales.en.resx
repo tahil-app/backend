@@ -351,4 +351,13 @@
   <data name="ScheduleHasSessionAfterStartDate" xml:space="preserve">
     <value>Schedule has sessions after start date, cannot update start date</value>
   </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Misk Academy</value>
+  </data>
+  <data name="Lang" xml:space="preserve">
+    <value>en</value>
+  </data>
+  <data name="Schedules" xml:space="preserve">
+    <value>Schedules</value>
+  </data>
 </root>

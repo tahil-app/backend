@@ -22,6 +22,7 @@ using Tahil.Domain.Repositories;
 using Tahil.EmailSender.Models;
 using Tahil.EmailSender.Services;
 using Tahil.Infrastructure.Data;
+using Tahil.Infrastructure.Reports;
 using Tahil.Infrastructure.Repositories;
 
 namespace Tahil.API.Extensions;
@@ -83,6 +84,10 @@ public static class SetupExtensions
         services.AddScoped<IUploadService, UploadService>();
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IApplicationContext, ApplicationContext>();
+        
+        // Report services
+        services.AddScoped<IReportService, ReportService>();
+        services.AddScoped<IReport, TeacherScheduleReport>();
         
         // Authorization services
         services.AddScoped<IResourceAuthorizationService, ResourceAuthorizationService>();

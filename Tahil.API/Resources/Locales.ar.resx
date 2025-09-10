@@ -351,4 +351,13 @@
   <data name="ScheduleHasSessionAfterStartDate" xml:space="preserve">
     <value>الجدول له جلسات بعد تاريخ البداية، لا يمكن تعديل تاريخ البداية</value>
   </data>
+  <data name="AppName" xml:space="preserve">
+    <value>مِسْك أَكَادِيمِي</value>
+  </data>
+  <data name="Lang" xml:space="preserve">
+    <value>ar</value>
+  </data>
+  <data name="Schedules" xml:space="preserve">
+    <value>المواعيد</value>
+  </data>
 </root>
