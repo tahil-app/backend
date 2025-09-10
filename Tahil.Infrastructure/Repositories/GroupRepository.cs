@@ -97,9 +97,9 @@ public class GroupRepository : Repository<Group>, IGroupRepository
         return result.OrderBy(r => r.Day).ToList();
     }
 
-    public async Task<Result<List<GroupDailyAttendance>>> GetGroupAttendancesAsync(int id, int year, Guid tenantId)
+    public async Task<Result<List<GroupDailyAttendance>>> GetGroupAttendancesAsync(int id, int year, int month, Guid tenantId)
     {
-        var query = await _dbSet.Where(r => r.Id == id && r.Schedules.Any(s => s.Sessions.Any(ss => ss.Date.Year == year)) && r.TenantId == tenantId)
+        var query = await _dbSet.Where(r => r.Id == id && r.Schedules.Any(s => s.Sessions.Any(ss => ss.Date.Year == year && ss.Date.Month == month)) && r.TenantId == tenantId)
             .SelectMany(s => s.Schedules.SelectMany(r => r.Sessions)).GroupBy(s => s.Date).Select(a => new GroupDailyAttendance
             {
                 Date = a.Key,

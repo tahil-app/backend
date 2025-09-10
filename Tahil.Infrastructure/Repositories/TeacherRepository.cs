@@ -1,7 +1,6 @@
 ﻿using Mapster;
-using MediatR;
 using Tahil.Domain.Dtos;
-using Tahil.Domain.Entities;
+using Tahil.Domain.Helpers;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -22,7 +21,7 @@ public class TeacherRepository : Repository<Teacher>, ITeacherRepository
             .Select(r => new TeacherDto
             {
                 Id = r.Id,
-                Code = $"T_{r.Id}",
+                Code = r.Id.GetTeacherCode(),
                 Name = r.User.Name,
                 Email = r.User.Email.Value,
                 PhoneNumber = r.User.PhoneNumber,

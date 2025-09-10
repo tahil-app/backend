@@ -33,9 +33,9 @@ public class GroupEndpoints : ICarterModule
             return Results.Ok(result);
         }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewPaged);
 
-        groups.MapGet("/attendances/{id:int}/{year:int}", async (int id, int year, [FromServices] IMediator mediator) =>
+        groups.MapGet("/attendances/{id:int}/{year:int}/{month:int}", async (int id, int year, int month, [FromServices] IMediator mediator) =>
         {
-            var result = await mediator.Send(new GetGroupAttendancesQuery(id, year));
+            var result = await mediator.Send(new GetGroupAttendancesQuery(id, year, month));
             return Results.Ok(result);
         }).RequireAccess(EntityType.Group, AuthorizationOperation.ViewDetail);
 

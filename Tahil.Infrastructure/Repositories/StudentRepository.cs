@@ -1,5 +1,5 @@
 ﻿using Tahil.Domain.Dtos;
-using Tahil.Domain.Entities;
+using Tahil.Domain.Helpers;
 using Tahil.Domain.Localization;
 
 namespace Tahil.Infrastructure.Repositories;
@@ -30,7 +30,7 @@ public class StudentRepository : Repository<Student>, IStudentRepository
                 Role = r.User.Role,
                 Qualification = r.Qualification,
                 ImagePath = r.User.ImagePath,
-                Code = $"S_{r.Id}",
+                Code = r.Id.GetStudentCode(),
                 Attachments = r.StudentAttachments.Select(at => new AttachmentDto
                 {
                     Id = at.Attachment.Id,
