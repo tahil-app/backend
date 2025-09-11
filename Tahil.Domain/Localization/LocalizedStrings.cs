@@ -149,8 +149,10 @@ public class LocalizedStrings(ILocalizationService loc)
     public string Comments => loc[nameof(Comments)];
     public string ReportTeacherSchedule => loc[nameof(ReportTeacherSchedule)];
     public string StudentAttendnceMonthly => loc[nameof(StudentAttendnceMonthly)];
+    public string StudentAttendnceDaily => loc[nameof(StudentAttendnceDaily)];
     public string AttendanceSummary => loc[nameof(AttendanceSummary)];
     public string MonthlyDetails => loc[nameof(MonthlyDetails)];
+    public string DailyDetails => loc[nameof(DailyDetails)];
     public string PerformanceAnalysis => loc[nameof(PerformanceAnalysis)];
     public string Present => loc[nameof(Present)];
     public string Absent => loc[nameof(Absent)];

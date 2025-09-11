@@ -6,5 +6,6 @@ public enum ReportType
     TeacherSchedule,
     StudentSchedule,
     StudentFeedback,
-    StudentAttendnceMonthly
+    StudentAttendnceMonthly,
+    StudentAttendnceDaily
 }

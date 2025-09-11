@@ -217,6 +217,46 @@ public abstract class BaseReport
         });
     }
 
+    protected virtual void GenerateAttendanceStatusCell(IContainer container, bool isPresent, bool isLate, bool isAbsent)
+    {
+        container.Element(container =>
+        {
+            var statusText = "";
+            var statusColor = Colors.Grey.Darken2;
+            
+            if (isPresent)
+            {
+                statusText = "✅";
+                statusColor = Color.FromHex("#28a745"); // Green
+            }
+            else if (isLate)
+            {
+                statusText = "⚠️";
+                statusColor = Color.FromHex("#fd7e14"); // Orange
+            }
+            else if (isAbsent)
+            {
+                statusText = "❌";
+                statusColor = Color.FromHex("#dc3545"); // Red
+            }
+            else
+            {
+                statusText = "☐";
+                statusColor = Colors.Grey.Darken2;
+            }
+
+            var textContainer = container.Border(1)
+                .Background(Colors.White)
+                .BorderColor(Color.FromHex(BorderColor))
+                .Padding(5)
+                .Text(statusText)
+                .FontSize(12)
+                .FontColor(statusColor);
+
+            textContainer.AlignCenter();
+        });
+    }
+
     protected virtual void GenerateKeyValue(IContainer container, string key, string value)
     {
         var _container = Localized.IsAr ? container.AlignRight() : container.AlignLeft();

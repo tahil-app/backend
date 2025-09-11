@@ -360,11 +360,17 @@
   <data name="StudentAttendnceMonthly" xml:space="preserve">
     <value>Student Monthly Attendance Report</value>
   </data>
+  <data name="StudentAttendnceDaily" xml:space="preserve">
+    <value>Student Daily Attendance Report</value>
+  </data>
   <data name="AttendanceSummary" xml:space="preserve">
     <value>Attendance Summary</value>
   </data>
   <data name="MonthlyDetails" xml:space="preserve">
     <value>Monthly Details</value>
+  </data>
+  <data name="DailyDetails" xml:space="preserve">
+    <value>Daily Details</value>
   </data>
   <data name="PerformanceAnalysis" xml:space="preserve">
     <value>Performance Analysis</value>

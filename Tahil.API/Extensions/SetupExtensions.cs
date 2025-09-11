@@ -92,6 +92,7 @@ public static class SetupExtensions
         services.AddScoped<IReport, StudentScheduleReport>();
         services.AddScoped<IReport, StudentFeedbackReport>();
         services.AddScoped<IReport, StudentAttendanceMonthlyReport>();
+        services.AddScoped<IReport, StudentAttendanceDailyReport>();
         
         // Authorization services
         services.AddScoped<IResourceAuthorizationService, ResourceAuthorizationService>();
