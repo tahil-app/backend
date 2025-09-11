@@ -357,6 +357,57 @@
   <data name="Lang" xml:space="preserve">
     <value>ar</value>
   </data>
+  <data name="StudentAttendnceMonthly" xml:space="preserve">
+    <value>تقرير حضور الطالب الشهري</value>
+  </data>
+  <data name="AttendanceSummary" xml:space="preserve">
+    <value>ملخص الحضور</value>
+  </data>
+  <data name="MonthlyDetails" xml:space="preserve">
+    <value>التفصيل الشهري</value>
+  </data>
+  <data name="PerformanceAnalysis" xml:space="preserve">
+    <value>تحليل الأداء</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>حاضر</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>غائب</value>
+  </data>
+  <data name="Late" xml:space="preserve">
+    <value>متأخر</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+  <data name="AttendancePercentage" xml:space="preserve">
+    <value>نسبة الحضور</value>
+  </data>
+  <data name="OverallPerformance" xml:space="preserve">
+    <value>الأداء العام</value>
+  </data>
+  <data name="BestMonth" xml:space="preserve">
+    <value>أفضل شهر</value>
+  </data>
+  <data name="WorstMonth" xml:space="preserve">
+    <value>أسوأ شهر</value>
+  </data>
+  <data name="Excellent" xml:space="preserve">
+    <value>ممتاز</value>
+  </data>
+  <data name="Good" xml:space="preserve">
+    <value>جيد</value>
+  </data>
+  <data name="BelowAverage" xml:space="preserve">
+    <value>أقل من المتوسط</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>لا يوجد</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>الشهر</value>
+  </data>
   <data name="Schedules" xml:space="preserve">
     <value>المواعيد</value>
   </data>
@@ -365,5 +416,11 @@
   </data>
   <data name="ReportTeacherSchedule" xml:space="preserve">
     <value>تقرير مواعيد معلم</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>الملاحظات</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
   </data>
 </root>

@@ -357,6 +357,57 @@
   <data name="Lang" xml:space="preserve">
     <value>en</value>
   </data>
+  <data name="StudentAttendnceMonthly" xml:space="preserve">
+    <value>Student Monthly Attendance Report</value>
+  </data>
+  <data name="AttendanceSummary" xml:space="preserve">
+    <value>Attendance Summary</value>
+  </data>
+  <data name="MonthlyDetails" xml:space="preserve">
+    <value>Monthly Details</value>
+  </data>
+  <data name="PerformanceAnalysis" xml:space="preserve">
+    <value>Performance Analysis</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
+  <data name="Late" xml:space="preserve">
+    <value>Late</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="AttendancePercentage" xml:space="preserve">
+    <value>Percentage</value>
+  </data>
+  <data name="OverallPerformance" xml:space="preserve">
+    <value>Overall Performance</value>
+  </data>
+  <data name="BestMonth" xml:space="preserve">
+    <value>Best Month</value>
+  </data>
+  <data name="WorstMonth" xml:space="preserve">
+    <value>Worst Month</value>
+  </data>
+  <data name="Excellent" xml:space="preserve">
+    <value>Excellent</value>
+  </data>
+  <data name="Good" xml:space="preserve">
+    <value>Good</value>
+  </data>
+  <data name="BelowAverage" xml:space="preserve">
+    <value>Below Average</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>No Data</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
   <data name="Schedules" xml:space="preserve">
     <value>Schedules</value>
   </data>
@@ -365,5 +416,11 @@
   </data>
   <data name="ReportTeacherSchedule" xml:space="preserve">
     <value>Report Teacher Schedule</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
   </data>
 </root>

@@ -2,6 +2,7 @@
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Globalization;
+using Tahil.Domain.Dtos;
 using Tahil.Domain.Enums;
 using Tahil.Domain.Localization;
 
@@ -159,22 +160,24 @@ public abstract class BaseReport
         });
     }
 
-    protected virtual void GenerateDayHeader(IContainer container, WeekDays day)
+    protected virtual void GenerateTextHeader(IContainer container, WeekDays? day = null , string? text = null)
     {
+        text = text ?? Localized.GetDayName(day!.Value);
+
         var textContainer = container.Background(Color.FromHex("#f8f9fa"))
             .BorderRight(Localized.IsAr ? 0 : 3).BorderLeft(Localized.IsAr ? 3 : 0).BorderColor(Color.FromHex("#559c8b"))
             .CornerRadius(BorderRadius)
             .Padding(8)
-            .Text(Localized.GetDayName(day))
+            .Text(text)
             .FontSize(11)
             .Bold()
-            .FontColor(Color.FromHex("#559c8b"));
+            .FontColor(Colors.Grey.Darken3);
 
         if (Localized.IsAr) textContainer.AlignRight();
         else textContainer.AlignLeft();
     }
 
-    protected virtual void GenerateTableHeaderCell(IContainer container, string title)
+    protected virtual void GenerateTableHeaderCell(IContainer container, string title, bool alignCenter = false)
     {
         container.Background(Color.FromHex("#f5f5f5")).Element(container =>
         {
@@ -188,14 +191,18 @@ public abstract class BaseReport
 
             if (Localized.IsAr) textContainer.AlignRight();
             else textContainer.AlignLeft();
+
+            if (alignCenter)
+                textContainer.AlignCenter();
         });
     }
 
-    protected virtual void GenerateTableBodyCell(IContainer container, string title)
+    protected virtual void GenerateTableBodyCell(IContainer container, string title, bool alignCenter = false)
     {
         container.Element(container =>
         {
             var textContainer = container.Border(1)
+                .Background(Colors.White)
                 .BorderColor(Color.FromHex(BorderColor))
                 .Padding(5)
                 .Text(title)
@@ -204,6 +211,9 @@ public abstract class BaseReport
 
             if (Localized.IsAr) textContainer.AlignRight();
             else textContainer.AlignLeft();
+
+            if(alignCenter)
+                textContainer.AlignCenter();
         });
     }
 
@@ -231,4 +241,79 @@ public abstract class BaseReport
 
         return $"{startTime:HH:mm} - {endTime:HH:mm}";
     }
+    
+    protected virtual string GetDate(string date)
+    {
+        return DateTime.Parse(date).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+    }
+
+    protected void GenerateScheduleTable(IContainer container, List<DailyScheduleDto> schedules)
+    {
+        container.Border(1).BorderColor(Color.FromHex(BorderColor)).CornerRadius(BorderRadius - 1).Table(table =>
+        {
+            // Define columns based on language direction
+            table.ColumnsDefinition(columns =>
+            {
+                if (Localized.IsAr)
+                {
+                    // Arabic: Course, Room, Group, Time (right to left)
+                    columns.RelativeColumn(3f);   // Course
+                    columns.RelativeColumn(2.5f); // Room/Session
+                    columns.RelativeColumn(2.5f); // Group
+                    columns.RelativeColumn(2f);   // Time
+                }
+                else
+                {
+                    // English: Time, Group, Room, Course (left to right)
+                    columns.RelativeColumn(2f);   // Time
+                    columns.RelativeColumn(2.5f); // Group
+                    columns.RelativeColumn(2.5f); // Room/Session
+                    columns.RelativeColumn(3f);   // Course
+                }
+            });
+
+            // Table Header
+            table.Header(header =>
+            {
+                if (Localized.IsAr)
+                {
+                    // Arabic order: Course, Room, Group, Time
+                    GenerateTableHeaderCell(header.Cell(), Localized.Course);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Room);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Group);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Time);
+                }
+                else
+                {
+                    // English order: Time, Group, Room, Course
+                    GenerateTableHeaderCell(header.Cell(), Localized.Time);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Group);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Room);
+                    GenerateTableHeaderCell(header.Cell(), Localized.Course);
+                }
+            });
+
+            // Schedule rows
+            foreach (var schedule in schedules.OrderBy(s => s.StartTime))
+            {
+                if (Localized.IsAr)
+                {
+                    // Arabic order: Course, Room, Group, Time
+                    GenerateTableBodyCell(table.Cell(), schedule.CourseName ?? "");
+                    GenerateTableBodyCell(table.Cell(), schedule.RoomName ?? "");
+                    GenerateTableBodyCell(table.Cell(), schedule.GroupName ?? "");
+                    GenerateTableBodyCell(table.Cell(), GetTimeRange(schedule.StartTime, schedule.EndTime));
+                }
+                else
+                {
+                    // English order: Time, Group, Room, Course
+                    GenerateTableBodyCell(table.Cell(), GetTimeRange(schedule.StartTime, schedule.EndTime));
+                    GenerateTableBodyCell(table.Cell(), schedule.GroupName ?? "");
+                    GenerateTableBodyCell(table.Cell(), schedule.RoomName ?? "");
+                    GenerateTableBodyCell(table.Cell(), schedule.CourseName ?? "");
+                }
+            }
+        });
+    }
+
 }
