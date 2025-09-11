@@ -53,6 +53,15 @@ public class TeacherEndpoints : ICarterModule
 
         #endregion
 
+        #region Reports
+        teachers.MapGet("/schedules-report/{teacherId:int}", async (int teacherId, IReportService reportService) =>
+        {
+            var report = await reportService.GenerateAsync(ReportType.TeacherSchedule, teacherId);
+
+            return Results.File(report, "application/pdf");
+        }).RequireAccess(EntityType.Teacher, AuthorizationOperation.ViewDetail, "teacherId");
+        #endregion
+
         #region Create / Update / Delete
 
         teachers.MapPost("/create", async (TeacherDto model, [FromServices] IMediator mediator) =>

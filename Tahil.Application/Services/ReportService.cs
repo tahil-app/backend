@@ -2,7 +2,7 @@
 
 public class ReportService(IEnumerable<IReport> reports) : IReportService
 {
-    public async Task<byte[]> GenerateAsync<T>(ReportType type, T dataSet) where T : BaseDto
+    public async Task<byte[]> GenerateAsync<T>(ReportType type, T dataSet)
     {
         var report = reports.FirstOrDefault(r => r.Type == type);
         if (report == null)

@@ -360,4 +360,10 @@
   <data name="Schedules" xml:space="preserve">
     <value>المواعيد</value>
   </data>
+  <data name="Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="ReportTeacherSchedule" xml:space="preserve">
+    <value>تقرير مواعيد معلم</value>
+  </data>
 </root>

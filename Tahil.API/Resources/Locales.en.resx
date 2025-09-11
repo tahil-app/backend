@@ -360,4 +360,10 @@
   <data name="Schedules" xml:space="preserve">
     <value>Schedules</value>
   </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ReportTeacherSchedule" xml:space="preserve">
+    <value>Report Teacher Schedule</value>
+  </data>
 </root>

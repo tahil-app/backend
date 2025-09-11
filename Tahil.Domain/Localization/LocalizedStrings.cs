@@ -109,6 +109,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string Attachment => loc[nameof(Attachment)];
     public string PhoneNumber => loc[nameof(PhoneNumber)];
     public string Email => loc[nameof(Email)];
+    public string Time => loc[nameof(Time)];
     public string StartDate => loc[nameof(StartDate)];
     public string EndDate => loc[nameof(EndDate)];
     public string ConflictBusyTime => loc[nameof(ConflictBusyTime)];
@@ -144,11 +145,27 @@ public class LocalizedStrings(ILocalizationService loc)
 
     #region Reports
     public string Schedules => loc[nameof(Schedules)];
+    public string ReportTeacherSchedule => loc[nameof(ReportTeacherSchedule)];
+    
     #endregion
 
     private string Duplicate(string item) => $"{item} {loc["IsDuplicated"]}";
     private string NotFound(string item) => $"{item} {loc["IsNotFount"]}";
     private string NotAvailable(string item) => $"{item} {loc["IsNotAvailable"]}";
     private string Required(string item) => $"{item} {loc["IsRequired"]}";
+
+
+    public string GetDayName(WeekDays day) => IsAr ? GetArabicDayName(day) : day.ToString();
+    private string GetArabicDayName(WeekDays day) => day switch
+    {
+        WeekDays.Saturday => "السبت",
+        WeekDays.Sunday => "الأحد",
+        WeekDays.Monday => "الاثنين",
+        WeekDays.Tuesday => "الثلاثاء",
+        WeekDays.Wednesday => "الأربعاء",
+        WeekDays.Thursday => "الخميس",
+        WeekDays.Friday => "الجمعة",
+        _ => day.ToString()
+    };
 
 }
