@@ -47,6 +47,16 @@ public class GroupEndpoints : ICarterModule
 
         #endregion
 
+        #region Reports
+        groups.MapGet("/schedules-report/{id:int}", async (int id, IReportService reportService) =>
+        {
+            var report = await reportService.GenerateAsync(ReportType.GroupSchedule, id);
+
+            return Results.File(report, "application/pdf");
+        });//.RequireAccess(EntityType.Teacher, AuthorizationOperation.ViewDetail);
+        #endregion
+
+
         #region Create / Update / Delete
 
         groups.MapPost("/create", async (GroupDto model, [FromServices] IMediator mediator) =>

@@ -110,6 +110,7 @@ public class LocalizedStrings(ILocalizationService loc)
     public string PhoneNumber => loc[nameof(PhoneNumber)];
     public string Email => loc[nameof(Email)];
     public string Time => loc[nameof(Time)];
+    public string Date => loc[nameof(Date)];
     public string StartDate => loc[nameof(StartDate)];
     public string EndDate => loc[nameof(EndDate)];
     public string ConflictBusyTime => loc[nameof(ConflictBusyTime)];
@@ -145,7 +146,27 @@ public class LocalizedStrings(ILocalizationService loc)
 
     #region Reports
     public string Schedules => loc[nameof(Schedules)];
+    public string Comments => loc[nameof(Comments)];
     public string ReportTeacherSchedule => loc[nameof(ReportTeacherSchedule)];
+    public string StudentAttendnceMonthly => loc[nameof(StudentAttendnceMonthly)];
+    public string StudentAttendnceDaily => loc[nameof(StudentAttendnceDaily)];
+    public string AttendanceSummary => loc[nameof(AttendanceSummary)];
+    public string MonthlyDetails => loc[nameof(MonthlyDetails)];
+    public string DailyDetails => loc[nameof(DailyDetails)];
+    public string PerformanceAnalysis => loc[nameof(PerformanceAnalysis)];
+    public string Present => loc[nameof(Present)];
+    public string Absent => loc[nameof(Absent)];
+    public string Late => loc[nameof(Late)];
+    public string Total => loc[nameof(Total)];
+    public string AttendancePercentage => loc[nameof(AttendancePercentage)];
+    public string OverallPerformance => loc[nameof(OverallPerformance)];
+    public string BestMonth => loc[nameof(BestMonth)];
+    public string WorstMonth => loc[nameof(WorstMonth)];
+    public string Excellent => loc[nameof(Excellent)];
+    public string Good => loc[nameof(Good)];
+    public string BelowAverage => loc[nameof(BelowAverage)];
+    public string NoData => loc[nameof(NoData)];
+    public string Month => loc[nameof(Month)];
     
     #endregion
 
@@ -166,6 +187,40 @@ public class LocalizedStrings(ILocalizationService loc)
         WeekDays.Thursday => "الخميس",
         WeekDays.Friday => "الجمعة",
         _ => day.ToString()
+    };
+
+    public string GetMonthName(int month) => IsAr ? GetArabicMonthName(month) : GetEnglishMonthName(month);
+    private string GetArabicMonthName(int month) => month switch
+    {
+        1 => "يناير",
+        2 => "فبراير",
+        3 => "مارس",
+        4 => "أبريل",
+        5 => "مايو",
+        6 => "يونيو",
+        7 => "يوليو",
+        8 => "أغسطس",
+        9 => "سبتمبر",
+        10 => "أكتوبر",
+        11 => "نوفمبر",
+        12 => "ديسمبر",
+        _ => month.ToString()
+    };
+    private string GetEnglishMonthName(int month) => month switch
+    {
+        1 => "January",
+        2 => "February",
+        3 => "March",
+        4 => "April",
+        5 => "May",
+        6 => "June",
+        7 => "July",
+        8 => "August",
+        9 => "September",
+        10 => "October",
+        11 => "November",
+        12 => "December",
+        _ => month.ToString()
     };
 
 }

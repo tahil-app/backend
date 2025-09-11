@@ -34,6 +34,24 @@ public class StudentAttendanceEndpoints : ICarterModule
 
         #endregion
 
+        #region Reports
+
+        attendances.MapGet("/monthly-report/{id:int}/{year:int}", async (int id, int year, IReportService reportService) =>
+        {
+            var report = await reportService.GenerateAsync(ReportType.StudentAttendnceMonthly, new { Id = id, Year = year });
+
+            return Results.File(report, "application/pdf");
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        attendances.MapGet("/daily-report/{id:int}/{year:int}/{month:int}", async (int id, int year, int month, IReportService reportService) =>
+        {
+           var report = await reportService.GenerateAsync(ReportType.StudentAttendnceDaily, new { Id = id, Year = year, Month = month });
+
+           return Results.File(report, "application/pdf");
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        #endregion
+
         #region Update
 
         attendances.MapPut("/update/{sessionId:int}", async (int sessionId, List<StudentAttendanceDto> model, [FromServices] IMediator mediator) =>

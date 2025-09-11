@@ -88,6 +88,11 @@ public static class SetupExtensions
         // Report services
         services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IReport, TeacherScheduleReport>();
+        services.AddScoped<IReport, GroupScheduleReport>();
+        services.AddScoped<IReport, StudentScheduleReport>();
+        services.AddScoped<IReport, StudentFeedbackReport>();
+        services.AddScoped<IReport, StudentAttendanceMonthlyReport>();
+        services.AddScoped<IReport, StudentAttendanceDailyReport>();
         
         // Authorization services
         services.AddScoped<IResourceAuthorizationService, ResourceAuthorizationService>();

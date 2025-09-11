@@ -2,7 +2,10 @@
 
 public enum ReportType
 {
+    GroupSchedule,
     TeacherSchedule,
     StudentSchedule,
-    GroupSchedule
+    StudentFeedback,
+    StudentAttendnceMonthly,
+    StudentAttendnceDaily
 }

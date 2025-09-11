@@ -59,6 +59,24 @@ public class StudentEndpoints : ICarterModule
 
         #endregion
 
+        #region Reports
+
+        students.MapGet("/schedules-report/{id:int}", async (int id, IReportService reportService) =>
+        {
+            var report = await reportService.GenerateAsync(ReportType.StudentSchedule, id);
+
+            return Results.File(report, "application/pdf");
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        students.MapGet("/feedbacks-report/{id:int}/{year:int}/{month:int}", async (int id, int year, int month, IReportService reportService) =>
+        {
+            var report = await reportService.GenerateAsync(ReportType.StudentFeedback, new { Id = id, Year = year, Month = month });
+
+            return Results.File(report, "application/pdf");
+        }).RequireAccess(EntityType.Student, AuthorizationOperation.ViewDetail);
+
+        #endregion
+
         #region Create / Update / Delete
 
         students.MapPost("/create", async (StudentDto model, [FromServices] IMediator mediator) =>
